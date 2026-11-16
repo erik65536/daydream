@@ -1,0 +1,58 @@
+theme: >-
+  Set in a typical Midwestern corporate office building, a dysfunctional but surprisingly capable IT team
+  navigates the absurdities of working for a massive corporation.
+
+
+  The team includes developers, business analysts, project managers, interns, and other familiar office
+  archetypes, each with unique personalities, skills, and weaknesses.
+
+
+  Everyday corporate frustrations become exaggerated threats: angry users, homicidal office supplies, sentient
+  unread emails demanding attention, impossible deadlines, endless meetings, and executives with ambitious
+  visions but no understanding of implementation.
+
+
+  The world should feel familiar and mundane, even when events become completely ridiculous.
+prompts:
+  - topic: art
+    text: A charming, detailed claymation aesthetic, with handcrafted characters, expressive faces, tactile
+      materials, and exaggerated physical comedy. Contrast the colorful, playful visuals with the drab
+      corporate environment.
+  - topic: rules
+    text: >-
+      No traditional magic, swords, or medieval fantasy mechanics. Instead, reinterpret familiar RPG mechanics
+      through corporate office life:
+
+      * Hacking: Replaces magic, using scripts, exploits, automation, and questionable technical solutions.
+
+      * Verbal attacks: Replaces bow/ranged, passive-aggressive remarks, corporate jargon, sarcastic emails,
+      and weaponized politeness.
+
+      * Improvised office weapons: Replaces melee, staplers, coffee mugs, rubber bands, paper airplanes,
+      malfunctioning printers, and other mundane office objects.
+
+      * Support abilities: Coffee boosts, motivational speeches, strategic delegation, calendar manipulation,
+      and conveniently timed sick days.
+
+
+      Abilities should reflect each character's professional role and personality.
+  - topic: story
+    text: >-
+      Dry, sarcastic, absurdist workplace comedy with occasional dark humor. Characters react to increasingly
+      outrageous situations with the exhausted resignation of people who have worked in corporate IT for too
+      long.
+
+
+      The story should satirize bureaucracy, corporate politics, technical incompetence, management buzzwords,
+      and the disconnect between executive ambition and reality.
+
+
+      Avoid constant jokes, forced punchlines, and cliches. Favor clever dialogue, escalating absurdity,
+      recurring office rivalries, and situations that are funny because everyone treats them as normal.
+
+
+      Allow the AI creative freedom to invent characters, conflicts, mechanics, environments, and storylines
+      rather than adhering too literally to these examples.
+size: medium
+length: long
+communication: 2

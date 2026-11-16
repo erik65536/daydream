@@ -1,0 +1,66 @@
+# Values every step may read, as {{constants.<name>}}; a text is also a partial, filled in where it stands
+# ({{> name}}), so it may read what the step reads. Every step's system prompt is the partial `system`, which reads
+# the owner's wish for how people talk (ownerStyle) or falls back to plain, everyday words.
+system: |-
+  You're designing the world of a role-playing game from its owner's theme. The owner's theme and prompts come first, always.
+
+  {{#ownerStyle.speech}}Write everything players read or hear the way the owner asked: {{ownerStyle.speech}} Keep it easy to follow the first time through.{{/ownerStyle.speech}}{{^ownerStyle.speech}}Write everything players read or hear in plain, everyday words that are easy to follow the first time through: short sentences, common words, one thing at a time. If you use a name, say what it is. Let the world come through in what happens, not in fancy wording. Don't sound like a robot, and don't overact.{{/ownerStyle.speech}}
+
+# The world's rule words, as the rules steps list them under TERMINOLOGY ({{> terminology}}).
+terminology: |
+  - Health: {{rulesCore.words.health}}
+  - Physical damage: {{rulesCore.classes.physical.damage.name}}
+  - Physical defense: {{rulesCore.classes.physical.damage.defence}}
+  {{#rulesCore.words.magic}}- Magic: {{rulesCore.words.magic}}
+  {{/rulesCore.words.magic}}
+  {{#rulesCore.classes.magical.damage}}- Magic damage: {{name}}
+  {{/rulesCore.classes.magical.damage}}
+  {{#rulesCore.classes.magical.damage}}- Magic defense: {{defence}}
+  {{/rulesCore.classes.magical.damage}}
+
+# The world's classes, as the steps that read them list them under CLASSES ({{> classes}}).
+classes: |
+  {{#rulesCore.classes.physical.melee}}- {{name}} ({{rulesCore.classes.physical.damage.name}} attacks up close): {{description}}
+  {{/rulesCore.classes.physical.melee}}
+  {{#rulesCore.classes.physical.ranged}}- {{name}} ({{rulesCore.classes.physical.damage.name}} attacks from a distance): {{description}}
+  {{/rulesCore.classes.physical.ranged}}
+  {{#rulesCore.classes.magical.melee}}- {{name}} ({{rulesCore.classes.magical.damage.name}} attacks up close): {{description}}
+  {{/rulesCore.classes.magical.melee}}
+  {{#rulesCore.classes.magical.ranged}}- {{name}} ({{rulesCore.classes.magical.damage.name}} attacks from a distance): {{description}}
+  {{/rulesCore.classes.magical.ranged}}
+  {{#rulesCore.classes.healer}}- {{name}} (healer and light {{reach}} attacks): {{description}}
+  {{/rulesCore.classes.healer}}
+  {{#rulesCore.classes.buff_and_debuff}}- {{name}} (buffs, debuffs, and light {{reach}} attacks): {{description}}
+  {{/rulesCore.classes.buff_and_debuff}}
+
+# How a speaker is described for designing their voice (docs/voices.md).
+voice: >-
+  How they sound when they speak aloud, for designing their voice: age, pitch, pace, accent, and texture, in one or
+  two sentences, such as "An older woman's voice, small and bright, quick and warm, with a cozy country lilt." Not
+  what they say or who they are.
+
+# What makes a quest make sense to the player, for the main story and side quests alike.
+questSense: >-
+  Every quest starts from a real need of the one who asks, which matters more to them than the task, and each step
+  plainly serves it.
+
+# How a world's sounds are written for the generator (docs/sound.md); settled by ear in docs/experiments/audio.
+soundCraft: |-
+  The game fixes what every sound is for: its mood, its shape, and its length are the same in every world, so a level-up is always a proud ding and defeat is always a sad falling phrase. You write only what this world makes each sound from, so that it belongs to this world and no other, for a sound-effects and music generator (Stable Audio 3).
+
+  Write the way a sound library describes a recording: real, physical things in plain words.
+  - Name real objects, materials, instruments, machines, and animals. The generator does not know the world: never use names of people, places, creatures, or invented things. Describe them by what they are physically ("a round frog with icy skin", not "a Rimefen Rattlefrog").
+  - Never add mood, shape, or length words to a material ("triumphant", "rising", "short", "sad"): the game adds those.
+  - Tonal sounds must be made on something with a clear, pleasant pitch (a bell, a chime, struck glass, a marimba, a harp, a celesta, a clean soft synth tone). Never add clicks, buzzes, static, crackle, or noise to them, even in a world of machines: a machine world uses clean electronic chimes.
+  - Prefer middle pitches. Avoid tiny, piercing, shrill, or whistling sources.
+  - A material is a short lowercase phrase that continues the game's purpose, starting with "on", "of", "as", "from", or "like", and ending with how it is recorded in two or three words: "on hollow wood, close and dry", "of a few small brass buttons, close and dry", "as a soft clean electronic chime, dry", "on a soft harp, clean". Pitch comes from the source you choose; do not write "middle register".
+  - A spell must be heard as its kind of damage by any player, so its sound starts with "of " and the real sound of what those attacks are made of (fire: a whoosh into crackling flame; cold: a bright crystalline shimmer of ice forming with a cold breathy whoosh, never crackle, creak, or sizzle; lightning: a sharp electric zap and crackle), then what this world makes it from. The kind's name is the world's own and the generator cannot know it: describe the sound instead (something the generator cannot know, such as malware or pressure, by a real sound that suggests it).
+  - A kind of damage's hit is the impact of a blow carrying it, starting with "of " and what it clearly sounds like as an impact (fire: a burst of flame; cold: an icy shatter; lightning: a sharp electric crack), then what this world makes it from.
+  - Every sound is made on its own, so each one names its source in full: never write "the same", "it" or "again", even for a sound that pairs with another (closing, setting down, a death, a shield breaking).
+  - A creature's cry and death start with "from" and describe the creature physically, the death again in full, with the character of its last sound: "from a round frog with icy skin, a weak gurgling croak, close".
+  - A place's ambience is what is heard steadily in that place, two or three continuous layers and nothing that happens once: "of a gentle breeze in pine trees, a trickling stream, and soft insects, distant". No bird calls, bells, voices, footsteps, creaks, knocks, or drips: one-off sounds are heard again on every loop.
+
+  Music: first choose the soundtrack, a genre and a palette of instruments that fit this world's tone and setting as a film composer would (a cozy woodland tale might be acoustic folk; a dying mining colony slow industrial ambient with synths and piano; a sinking kingdom melancholic orchestral; an office comedy quirky with pizzicato strings, bassoon, and muted brass). The examples are other worlds: do not reuse them unless they truly fit. Then describe each piece as a short style phrase and its instruments, drawn from that palette.
+  - Style: genre words a music library would use, such as "A short quiet folk cue" or "A heavy industrial battle instrumental".
+  - Instruments: a lowercase list of three to five real instruments and how they are played, naming the one that carries the melody, as one phrase that follows "with" (do not write "with" yourself). No sentences, semicolons, or capitals. The melody rests on low and middle instruments (cello, viola, bassoon, clarinet, French horn, trombone, alto flute, piano, guitar, marimba, a mid-register synth lead). No steady high lines: no piccolo, high flute, tin whistle, high fiddle, or glockenspiel melodies.
+  - No mood words in the instruments: the game adds the mood. Keep the same musical family across the world so it sounds like one soundtrack, while each place and boss has its own instruments.

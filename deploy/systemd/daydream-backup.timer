@@ -1,0 +1,11 @@
+[Unit]
+Description=Back up the game's data every night
+
+[Timer]
+OnCalendar=*-*-* 04:30
+# A night missed while the machine was off is made up at the next boot.
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target

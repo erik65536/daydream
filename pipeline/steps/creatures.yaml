@@ -1,0 +1,93 @@
+# The world's creatures and foes, family by family: as many families as the world's size gives (one key per family
+# slot, so none is left out), each with members of different kinds of fighter. Where each family lives is chosen
+# from the world's wilds and dungeons, each named with the world's own word for it (the old build gave habitat
+# words, which the engine then matched to places).
+# Each member fights as one of the world's classes, so it uses that class's skills and deals its damage: nothing is
+# designed for creatures alone, and a creature's damage always fits the world's. Its kind of fighter is its body (size,
+# toughness, numbers, experience) and its habit in a fight, which any class can have: a brute fighting as a ranged class
+# is a big, tough shooter. The class's skills keep their names (a hunter's Careful Shot), so the class field says the
+# member attacks the way its class does: told only "the class it fights as", Luna made wolves and lynx fight as a
+# world's rifle-shooting hunters. The kinds were once roles (archer, caster, healer) that the classes now say, and a
+# family had an element of its own, chosen from the old rules' kinds of damage.
+purpose: world.design
+maxTokens: 6000
+system: '{{> system}}'
+user: |
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=monsters].length}}
+  THE OWNER'S PROMPT ABOUT THE CREATURES AND FOES:
+  {{#input.prompts[topic=monsters]}}
+  {{text}}
+  {{/input.prompts[topic=monsters]}}
+  {{/input.prompts[topic=monsters].length}}
+
+  THE WILDS (called {{rulesCore.words.wilds}} in this world), in the order players reach them:
+  {{#map.areas[kind=wilderness]}}
+  - {{placePlan.name}}: {{placePlan.description}}
+  {{/map.areas[kind=wilderness]}}
+  {{#map.areas[kind=dungeon].length}}
+  THE DUNGEONS (called {{rulesCore.words.dungeon}} in this world):
+  {{#map.areas[kind=dungeon]}}
+  - {{placePlan.name}} (off {{off.placePlan.name}}): {{placePlan.description}}
+  {{/map.areas[kind=dungeon]}}
+  {{/map.areas[kind=dungeon].length}}
+
+  CLASSES:
+  {{> classes}}
+
+  Design the families of creatures and foes players fight in this world. Every one of these wilds and dungeons has a family living there.
+# Quests choose families and their members by name, so no two share one.
+names:
+  - 'creatures.families[*].name'
+  - 'creatures.families[*].members[*].name'
+schema:
+  type: object
+  properties:
+    families:
+      keys: { from: 'map.families[*].id' }
+      each:
+        type: object
+        properties:
+          name: { type: string, maxLength: 48 }
+          description: { type: string, maxLength: 300 }
+          lives:
+            type: array
+            minItems: 1
+            maxItems: 4
+            description: The wilds and dungeons they live in
+            items: { enum: { from: 'map.areas[*].placePlan.name' } }
+          members:
+            type: array
+            minItems: 2
+            maxItems: 5
+            description: Each a different kind of fighter
+            items:
+              type: object
+              properties:
+                fighter:
+                  description: Its kind of fighter
+                  anyOf:
+                    - { const: soldier, description: An ordinary fighter }
+                    - { const: brute, description: 'Big and tough; charges whoever is nearest' }
+                    - { const: swarm, description: 'Small and weak, comes in numbers; rushes whoever is nearest' }
+                    - { const: stalker, description: 'Hits hard but is fragile; hunts the weakest' }
+                    - { const: guardian, description: 'Big and sturdy; protects its allies' }
+                class:
+                  description: 'The class it fights as: it attacks the way that class does, with its skills'
+                  anyOf:
+                    - { const: physical_melee, when: rulesCore.classes.physical.melee, description: '{{rulesCore.classes.physical.melee.name}}' }
+                    - { const: physical_ranged, when: rulesCore.classes.physical.ranged, description: '{{rulesCore.classes.physical.ranged.name}}' }
+                    - { const: magic_melee, when: rulesCore.classes.magical.melee, description: '{{rulesCore.classes.magical.melee.name}}' }
+                    - { const: magic_ranged, when: rulesCore.classes.magical.ranged, description: '{{rulesCore.classes.magical.ranged.name}}' }
+                    - { const: healer, when: rulesCore.classes.healer, description: '{{rulesCore.classes.healer.name}}' }
+                    - { const: buff_and_debuff, when: rulesCore.classes.buff_and_debuff, description: '{{rulesCore.classes.buff_and_debuff.name}}' }
+                name: { type: string, maxLength: 48 }
+                description: { type: string, maxLength: 240 }
+                appearance: { type: string, maxLength: 240, description: 'What it looks like, used to draw it' }

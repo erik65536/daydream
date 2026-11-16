@@ -1,0 +1,61 @@
+# How the world's fights look: for each kind of damage (physical, and magic where it deals damage), healing
+# and every status, the shapes, colors, motion, and trail its effects are drawn with (the client draws them in code);
+# and for each kind of damage, how its skills move: a rush, a ranged skill's shot, and an area skill's blast.
+# Keyed by the rules' own names, so every one gets a look; the old build asked for a list and lost the ones it left
+# out. What each field is for is said in the schema; the prompt carried examples (paper scraps in an office) that
+# other worlds copied. The shapes are named for what they are (paper was "scrap", which a harbor's and a wood's
+# blows took for debris and threw as paper) and said in a word each, and each kind of damage comes with the attacks
+# of its classes, so a rifle's shot is chosen knowing it is a rifle's.
+purpose: world.content
+maxTokens: 5000
+system: '{{> system}}'
+user: |
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+  Its look: {{art.artStyle}}
+
+  DAMAGE TYPES:
+  {{#rulesCore.classes.physical}}
+  - {{damage.name}} ({{damage.color}}), the attacks of {{#melee}}{{name}} (up close: {{description}}){{/melee}}{{#ranged}}{{#melee}} and {{/melee}}{{name}} (from a distance: {{description}}){{/ranged}}
+  {{/rulesCore.classes.physical}}
+  {{#rulesCore.classes.magical}}
+  - {{damage.name}} ({{damage.color}}), the attacks of {{#melee}}{{name}} (up close: {{description}}){{/melee}}{{#ranged}}{{#melee}} and {{/melee}}{{name}} (from a distance: {{description}}){{/ranged}}
+  {{/rulesCore.classes.magical}}
+  STATUSES:
+  {{#rulesStatuses.statuses}}
+  - {{name}} ({{color}}, {{kind}}): {{description}}
+  {{/rulesStatuses.statuses}}
+
+  Design how this world's fights look.
+schema:
+  type: object
+  description: 'Every hit, heal, and status in a fight is drawn as a few small moving shapes in two or three colors, made of what this world is made of. Healing reads as good at a glance. The shapes: spark a bright point, ember a glowing sliver, shard a sharp splinter, chunk a rough lump (of stone, wood, ice), droplet a drop, bubble a clear bubble, mote a soft speck, flake a snowflake, petal a flower petal, leaf a leaf, paper a scrap of paper, pixel a square block, glyph a written rune, star a star, smoke a puff of smoke, dust a fleck of dust, streak a short line, note a music note, bolt a zigzag of lightning, feather a feather, coin a coin, crescent a crescent moon, halo a thin ring'
+  properties:
+    # One look, written once (a YAML anchor) and used for each.
+    damageTypes:
+      keys: { from: 'rulesCore.classes[*].damage.name' }
+      description: 'Plain hits, the most common effect: crisp and matter-of-fact'
+      each: &look
+        type: object
+        properties:
+          shapes: { type: array, minItems: 1, maxItems: 2, items: { enum: { from: 'game.fx.shapes[*]' } }, description: 'The main shape first, and a second for variety' }
+          colors: { type: array, minItems: 2, maxItems: 3, items: { type: string, pattern: '^#[0-9a-fA-F]{6}$' }, description: 'Close to the color given, a lighter tint first and deeper shades after' }
+          glow: { type: boolean, description: 'True only for what gives off light' }
+          motion: { enum: { from: 'game.fx.motions[*]' } }
+          trail: { enum: { from: 'game.fx.trails[*]' }, description: What it leaves behind when thrown or shot }
+    moves:
+      keys: { from: 'rulesCore.classes[*].damage.name' }
+      description: "How this kind of damage's skills move"
+      each:
+        type: object
+        properties:
+          rush: { enum: { from: 'game.fx.rushes[*]' }, description: 'A fighter rushing to a foe: dash runs low in a cloud of dust, blur leaves fading copies of the fighter, blink vanishes and reappears, streak flies as a bright streak, leap jumps in an arc and lands hard' }
+          shot: { enum: { from: 'game.fx.shots[*]' }, description: 'What a ranged skill sends: arrow is a fast, thin shot (an arrow, a bullet, a dart), orb a glowing ball with a trail, lob an arcing throw, bolt a jagged flash, ray a steady beam, swarm a stream of many small shapes' }
+          blast: { enum: { from: 'game.fx.blasts[*]' }, description: 'An area skill landing: ring spreads out over the ground, pillar bursts up from it, rain falls from above, vortex draws in and bursts, quake shakes it in rings of dust' }
+    healing: *look
+    statuses:
+      keys: { from: 'rulesStatuses.statuses[*].name' }
+      description: 'Shown faintly on whoever has it: a harmful one clings or drips, a helpful one lifts'
+      each: *look

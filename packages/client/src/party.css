@@ -1,0 +1,136 @@
+/* =====================================================================================================
+   The party display (ui/party.tsx), floating over the world in the top-left corner like the rest of the HUD:
+   no panels, soft shadows under text and portraits. The player's own heroes get full frames; each other
+   player one compact row in their color (--pc). Whose turn it is glows gold, the downed are grayed, those far
+   away dimmed.
+   ===================================================================================================== */
+.party { position: absolute; left: 14px; top: 14px; display: flex; flex-direction: column; gap: 4px; width: 236px; }
+
+/* --------------------------------------------------------------------------- the player's own heroes */
+.pf-hero { position: relative; display: flex; gap: 10px; padding: 4px 6px 4px 4px; cursor: pointer; border-radius: 8px; }
+.pf-face { position: relative; flex: none; align-self: flex-start; }
+.pf-face .portrait { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; background: rgba(10, 9, 13, 0.85); border: 1px solid var(--hair-strong, var(--line)); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); }
+.portrait canvas { width: 100%; height: 100%; display: block; }
+.pf-hero.sel .pf-face .portrait { border-color: var(--gold); }
+.pf-body { flex: 1; min-width: 0; padding-top: 1px; }
+.pf-name { display: flex; align-items: baseline; gap: 4px; font: 600 12.5px/1.2 var(--sans); letter-spacing: 0.02em; text-shadow: var(--float-text); }
+.pf-name .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf-name .pts { font-size: 10px; font-weight: 700; color: var(--quest); flex: none; }
+
+/* The level on a ring around the portrait that fills with experience toward the next level, so the two read as one. */
+.xpring { position: absolute; inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px); transform: rotate(-90deg); pointer-events: none; overflow: visible; }
+.xpring circle { fill: none; stroke-width: 2.2; }
+.xpring .track { stroke: rgba(0, 0, 0, 0.55); }
+.xpring .fill { stroke: var(--gold-2); stroke-linecap: round; transition: stroke-dasharray .4s ease; filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.8)); }
+.plvl { position: absolute; left: -6px; bottom: -6px; z-index: 1; min-width: 19px; height: 19px; padding: 0 4px; box-sizing: border-box; border-radius: 10px; display: grid; place-items: center;
+  font: 700 10.5px/1 var(--sans); font-variant-numeric: tabular-nums; color: var(--gold-2); background: rgba(12, 11, 15, 0.94); border: 1px solid color-mix(in srgb, var(--gold) 75%, transparent); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.75); }
+.plvl.max { color: #1a1408; background: var(--gold-2); }
+
+/* Who decides the hero's turns: the blade-and-star chip on the portrait, faint while you command, lit in the world's
+   highlight when the hero fights on their own (never dimmed, which would read as downed). */
+.pf-hero .aichip { position: absolute; left: 34px; top: 34px; z-index: 1; width: 22px; height: 22px; padding: 0; display: grid; place-items: center; border-radius: 50%; cursor: pointer;
+  color: rgba(220, 210, 190, .4); background: rgba(10, 9, 13, .92); border: 1px solid var(--hair-strong, var(--line)); transition: color .25s, border-color .25s, background .25s; }
+.pf-hero .aichip:hover { color: var(--gold-2); border-color: var(--gold); }
+.pf-hero .aichip.on { color: var(--gold-2); border-color: var(--gold); background: color-mix(in srgb, var(--gold) 30%, rgba(10, 9, 13, .92)); }
+.pf-hero .aichip.on:hover { color: var(--text); }
+
+/* Lasting states: a chip per status with its own shape in its colors and the turns left; a harmful one has a red foot. */
+.pstats { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.pstat { position: relative; width: 19px; height: 19px; display: grid; place-items: center; border-radius: 5px; cursor: default;
+  background: color-mix(in srgb, var(--sc) 24%, rgba(10, 9, 13, 0.88)); border: 1px solid color-mix(in srgb, var(--sc) 70%, transparent); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); }
+.pstat.bad::after { content: ''; position: absolute; left: 2px; right: 2px; bottom: -3px; height: 2px; border-radius: 1px; background: var(--danger, #e0604a); }
+.pstat .turns { position: absolute; right: -4px; top: -5px; font: 700 9px/1 var(--sans); color: #fff; text-shadow: var(--float-text); font-variant-numeric: tabular-nums; }
+.pstat.more { --sc: #9a9080; font: 700 9px/1 var(--sans); color: var(--text); }
+
+/* --------------------------------------------------------------------------- the other players */
+.friends { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; padding-top: 8px; position: relative; }
+.friends::before { content: ''; position: absolute; top: 0; left: 6px; right: 40%; height: 1px; background: linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent); }
+.pf-friend { display: flex; flex-direction: column; gap: 5px; padding: 0 2px 0 4px; transition: opacity .3s; }
+.pf-friend.far { opacity: 0.8; }
+.pf-friend.away { opacity: 0.5; }
+.pf-who { flex: 1; display: flex; align-items: center; gap: 5px; min-width: 0; cursor: default; white-space: nowrap; text-shadow: var(--float-text); }
+.pf-who .nm { flex: none; max-width: 72%; overflow: hidden; text-overflow: ellipsis; font: 600 12px/1.25 var(--sans); letter-spacing: 0.02em; color: var(--pc); }
+.pf-who svg { flex: none; }
+.pf-who .where { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; font: 500 10.5px/1.25 var(--sans); color: color-mix(in srgb, var(--text) 78%, transparent); }
+.pf-who .where::before { content: '·'; margin-right: 5px; opacity: .7; }
+.pf-line { display: flex; align-items: center; gap: 8px; min-height: 22px; }
+.pf-minis { display: flex; flex-wrap: wrap; gap: 9px 7px; padding-bottom: 6px; }
+/* Follow / Join: floating text like the rest of the display (and the action bar's Flee), in the friend's color. */
+.pf-go { flex: none; height: 22px; padding: 0 4px; border: 0; border-radius: 4px; background: none; cursor: pointer; font: 600 10px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--pc) 72%, var(--text)); text-shadow: var(--float-text); transition: color .2s; }
+.pf-go:hover:not(:disabled) { color: var(--text); text-decoration: underline; text-decoration-color: var(--pc); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.pf-go:disabled { opacity: .45; cursor: default; color: var(--muted); }
+/* Following: lit in the friend's color and underlined for as long as it lasts; a click stops it. */
+.pf-go.on { color: var(--text); text-decoration: underline; text-decoration-color: var(--pc); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.pf-go.on:hover { text-decoration-thickness: 1px; }
+
+/* A friend's hero: their portrait in a ring of the player's color, a sliver of Health under it (as in the turn order),
+   their worst statuses on its shoulder. */
+.pf-mini { position: relative; flex: none; --s: 34px; }
+.pf-mini .face { width: var(--s); height: var(--s); border-radius: 50%; overflow: hidden; box-sizing: border-box; background: rgba(10, 9, 13, 0.88); border: 2px solid var(--pc); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.65); }
+.pf-mini .hp { position: absolute; left: 14%; right: 14%; bottom: -5px; height: 3px; border-radius: 2px; overflow: hidden; background: rgba(0, 0, 0, 0.75); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); }
+.pf-mini .hp > div { height: 100%; transition: width .25s; }
+.pf-mini .sts { position: absolute; right: -5px; top: -4px; display: flex; flex-direction: column; gap: 1px; }
+.pf-mini .st { width: 13px; height: 13px; display: grid; place-items: center; border-radius: 4px; background: rgba(10, 9, 13, 0.92); border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.7); }
+.pf-mini .st.bad { border-color: color-mix(in srgb, var(--danger, #e0604a) 85%, transparent); }
+.pf-mini .st.more { font: 700 7.5px/1 var(--sans); color: var(--text); }
+
+/* --------------------------------------------------------------------------- turns, the downed */
+.pf-hero.acting .pf-face .portrait { border-color: #ffd56a; animation: acting 1.6s ease-in-out infinite; }
+.pf-hero.acting .pf-name { color: #ffe3a0; }
+.pf-mini.acting .face { border-color: #ffd56a; animation: acting 1.6s ease-in-out infinite; }
+@keyframes acting {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(255, 213, 106, 0.85), 0 0 10px rgba(255, 213, 106, 0.35), 0 2px 10px rgba(0, 0, 0, 0.7); }
+  50% { box-shadow: 0 0 0 2px rgba(255, 213, 106, 1), 0 0 20px rgba(255, 213, 106, 0.6), 0 2px 10px rgba(0, 0, 0, 0.7); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pf-hero.acting .pf-face .portrait, .pf-mini.acting .face { animation: none; box-shadow: 0 0 0 2px #ffd56a, 0 0 14px rgba(255, 213, 106, 0.5); }
+}
+.pf-hero.down .pf-face, .pf-mini.down .face { filter: grayscale(1) brightness(.7); }
+.pf-hero.down .bar-num { color: #ff9a8a; letter-spacing: .04em; }
+.pf-mini.down .face { opacity: .7; }
+
+/* --------------------------------------------------------------------------- tooltips */
+.pf-tipstatus { display: flex; gap: 7px; align-items: flex-start; margin-top: 6px; }
+.pf-tipstatus canvas { flex: none; margin-top: 2px; }
+.pf-tipstatus .tname { font-size: 12px; margin: 0; }
+
+/* --------------------------------------------------------------------------- the controller's ring (View) */
+.party.pad-nav { z-index: 5; }
+.party .pad-focus { outline: none; }
+.pf-hero.pad-focus { background: rgba(255, 255, 255, 0.06); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 70%, transparent); }
+.pstat.pad-focus { box-shadow: 0 0 0 2px var(--gold-2), 0 1px 4px rgba(0, 0, 0, 0.6); }
+.pf-mini.pad-focus .face { box-shadow: 0 0 0 2px var(--gold-2), 0 2px 8px rgba(0, 0, 0, 0.65); }
+.pf-go.pad-focus { box-shadow: 0 0 0 1px var(--gold-2); }
+.party-hint { align-self: flex-start; margin: 4px 0 0 6px; font: 600 10.5px var(--sans); color: var(--muted); text-shadow: var(--float-text); }
+
+/* --------------------------------------------------------------------------- touch, tablets, phones */
+:root.touch .pf-hero .aichip { width: 26px; height: 26px; left: 30px; top: 30px; }
+:root.touch .pf-go { height: 28px; padding: 0 8px; }
+@media (max-width: 900px) { .party { width: 200px; } }
+@media (max-width: 640px) {
+  .party { left: 8px; top: 8px; width: 180px; gap: 2px; }
+  .pf-hero { gap: 8px; padding: 3px 4px 3px 3px; }
+  .pf-face .portrait { width: 34px; height: 34px; }
+  .pf-hero .aichip { left: 22px; top: 22px; }
+  .pstats { gap: 4px; margin-top: 4px; }
+  .pf-friend { gap: 4px; }
+  .pf-mini { --s: 26px; }
+  .pf-minis { gap: 5px; }
+  .pf-go { padding: 0 4px; }
+  :root.touch .pf-hero .aichip { width: 22px; height: 22px; left: 20px; top: 20px; }
+}
+/* Phones on their side, short windows: everything tighter, the friends' rows a line each. */
+@media (max-height: 500px) and (min-width: 520px) {
+  .party { left: 8px; top: 6px; width: 188px; gap: 0; }
+  .pf-hero { padding: 2px 4px 2px 3px; gap: 8px; }
+  .pf-face .portrait { width: 32px; height: 32px; }
+  .pf-hero .aichip { left: 20px; top: 20px; }
+  .pstats { margin-top: 3px; }
+  .pstat { width: 16px; height: 16px; }
+  .friends { gap: 4px; margin-top: 4px; padding-top: 6px; }
+  .pf-friend { gap: 3px; }
+  .pf-mini { --s: 24px; }
+  .pf-minis { gap: 5px; }
+  :root.touch .pf-hero .aichip { width: 24px; height: 24px; left: 16px; top: 16px; }
+}

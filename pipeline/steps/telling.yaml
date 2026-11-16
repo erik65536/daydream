@@ -1,0 +1,40 @@
+# What players read and hear of the story: the pitch on the world's page, the narrator's opening and ending, and the
+# narrator's voice, and what the narrator says as each arc ends (before, the arcs had no words of their own and ended on
+# a title alone); the last arc ends with the story's ending. Written from the finished story, so it can tell only of what really happens (the old concept
+# wrote its intro before the story existed). The ending is told as the outcome the last arc's quests lead to.
+purpose: world.design
+maxTokens: 4000
+system: '{{> system}}'
+user: |
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  WHERE THE STORY BEGINS: {{#map.places[first=true]}}{{placePlan.name}}: {{placePlan.description}}{{/map.places[first=true]}}
+
+  THE STORY:
+  {{#map.arcs}}
+  {{n}}. {{story.title}}
+  {{#story.quests}}
+  - {{title}}: {{background}}
+  {{/story.quests}}
+  {{/map.arcs}}
+
+  Tell this story to players. The party is the players' own characters (one to six of them), so never say who they are.
+schema:
+  type: object
+  properties:
+    pitch: { type: string, minLength: 40, maxLength: 500, description: Two or three sentences a player reads before choosing this world }
+    intro: { type: string, maxLength: 800, description: "What the narrator says as the story begins, in about 80 to 150 words: where the party is and what is wrong, without giving away what comes later" }
+    arcs:
+      keys: { from: 'map.arcs[last=false].id' }
+      each:
+        type: object
+        properties:
+          closing: { type: string, maxLength: 400, description: 'What the narrator says as this part of the story ends: what changed, and what it leads to' }
+    ending: { type: string, maxLength: 800, description: What the narrator says when the story is over }
+    narratorVoice: { type: string, minLength: 10, maxLength: 240, description: "The voice that reads this world's story aloud, suited to its tone: age, pitch, pace, accent, and texture, in one or two sentences" }

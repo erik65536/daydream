@@ -1,0 +1,30 @@
+# The world in general terms, from the owner's theme alone: the owner's other prompts are acted on by later steps,
+# and seen here they leaked their plot into what everyone in the world would know.
+purpose: world.design
+maxTokens: 4000
+system: '{{> system}}'
+user: |
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  Describe this world.
+schema:
+  type: object
+  properties:
+    setting:
+      type: string
+      maxLength: 1400
+      description: The reality this world is set in, in general terms
+    tone:
+      type: string
+      maxLength: 300
+      description: 'How it feels to be here: the mood, the kind of humor, how dark or light, what kind of story this is'
+    genre:
+      type: string
+      maxLength: 40
+      description: One or two words
+    title:
+      type: string
+      minLength: 2
+      maxLength: 80
+      description: The world's name, as on the cover of a book

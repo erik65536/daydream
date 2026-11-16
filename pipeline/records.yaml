@@ -1,0 +1,20 @@
+# Which output fills each of the game's records (packages/server/src/pipeline/records.ts).
+ownerStyle: ownerStyle
+concept: concept
+art: art
+places: placePlan.places
+rulesSystems: rulesSystems
+rulesCore: rulesCore
+rulesStatuses: rulesStatuses
+rulesSkills: rulesSkills
+rulesPassives: rulesPassives
+rulesGear: rulesGear
+rulesItems: rulesItems
+fightLooks: fightLooks
+creatures: creatures.families
+story: story
+telling: telling
+towns: towns
+areas: areas
+people: people
+sounds: sounds

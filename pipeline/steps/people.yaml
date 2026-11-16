@@ -1,0 +1,114 @@
+# The inner lives of each town's people, one call per town so their opinions of each other fit together: what each
+# wants, their days, how they talk, what wins them over, what they know and keep to themselves, and the lines they
+# say before anyone talks to them. One entry per person of the town, story's people included, by the engine's ids;
+# opinions name people by id, and a stash is kept in one of the places next to the town.
+purpose: world.content
+maxTokens: 16000
+forEach: map.towns
+system: '{{> system}}'
+user: |
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=people].length}}
+  THE OWNER'S PROMPT ABOUT THE PEOPLE:
+  {{#input.prompts[topic=people]}}
+  {{text}}
+  {{/input.prompts[topic=people]}}
+  {{/input.prompts[topic=people].length}}
+
+  THE TOWN: {{$.placePlan.name}}: {{$.placePlan.description}}
+  Places next to it: {{#$.links}}{{placePlan.name}} ({{label}}){{^$last}}, {{/$last}}{{/$.links}}.
+
+  THE PEOPLE OF {{$.placePlan.name}}:
+  {{#$.cast}}
+  - {{id}}: {{story.name}}, {{towns.title}}, part of the main story: {{story.who}} {{towns.personality}} {{towns.backstory}}
+  {{/$.cast}}
+  {{#$.residents}}
+  - {{id}}: {{towns.name}}, {{towns.title}} ({{label}}): {{towns.personality}} {{towns.backstory}}
+  {{/$.residents}}
+
+  THE STORY'S PEOPLE ELSEWHERE, whom they may know of:
+  {{#map.cast}}
+  - {{id}}: {{story.name}} of {{town.placePlan.name}}
+  {{/map.cast}}
+
+  THE MAIN STORY:
+  {{#map.arcs}}
+  {{#story.quests}}
+  - "{{title}}", asked by {{giver}}: {{background}}
+  {{/story.quests}}
+  {{/map.arcs}}
+
+  THIS TOWN'S SIDE QUESTS:
+  {{#$.quests}}
+  - "{{towns.title}}", asked by {{towns.giver}}: {{towns.background}}
+  {{/$.quests}}
+
+  Write the inner life of every one of these people, as a novelist who knows them well, each distinct from the others.
+schema:
+  type: object
+  properties:
+    cast:
+      keys: { from: '$.cast[*].id' }
+      each: &person
+        type: object
+        description: "A real person who lives here, not a character in a game. The world's mood decides what their life is like, not how hard they act. Everything they say is said out loud, so write it the way a normal person talks: plain and easy to follow the first time, using the world's own words for things. No sayings, spooky hints, or talk of quests, levels, or players."
+        properties:
+          want: { type: string, maxLength: 220, description: "One thing they want right now that could actually happen here (something found or returned, someone persuaded or forgiven, a debt paid, a place made safe, a rival shown up) and why it matters to them, tied where it fits to the quests they are part of" }
+          life:
+            type: array
+            minItems: 2
+            maxItems: 3
+            description: "Concrete, ordinary details of their days here, this week's trouble among them, naming real places, people, and things"
+            items: { type: string, maxLength: 180 }
+          manner: { type: string, maxLength: 180, description: 'How they come across when they talk (calm, blunt, chatty, shy, warm, tired), in a few plain words' }
+          likes: { type: array, minItems: 1, maxItems: 3, description: 'Behavior a visitor could show that wins them over', items: { type: string, maxLength: 90 } }
+          dislikes: { type: array, minItems: 1, maxItems: 3, description: 'Behavior a visitor could show that they cannot stand', items: { type: string, maxLength: 90 } }
+          opinions:
+            type: array
+            minItems: 1
+            maxItems: 4
+            description: "What they honestly think of others, neighbors first: specific, sometimes unflattering, not always what those people think of themselves"
+            items:
+              type: object
+              properties:
+                of:
+                  anyOf:
+                    - enum: { from: '$.town.residents[*].id' }
+                    - enum: { from: 'map.cast[*].id' }
+                text: { type: string, maxLength: 180 }
+          knowledge: { type: array, minItems: 2, maxItems: 4, description: "Practical, local things they know and would tell anyone who asked, from where they stand (it may be partly wrong); nothing from their secrets", items: { type: string, maxLength: 260 } }
+          secrets:
+            type: array
+            maxItems: 2
+            description: 'What they keep to themselves because telling would cost them something'
+            items:
+              type: object
+              properties:
+                text: { type: string, maxLength: 320 }
+                tellsWhen: { type: string, maxLength: 140, description: 'What a visitor could do, say, or show to make them tell' }
+                stash:
+                  type: object
+                  nullable: true
+                  description: 'Something put away in a place nearby that they would let a trusted visitor take (savings, a spare tool, something of a lost friend), which the secret says where to find and why; about one person in three has one'
+                  properties:
+                    place: { enum: { from: '$.town.links[*].placePlan.name' } }
+                    thing: { type: string, maxLength: 48 }
+          greeting: { type: string, maxLength: 220, description: The first thing they say to someone new who comes up to them }
+          returning:
+            type: object
+            description: 'What they say to someone they have met before, with no names'
+            properties:
+              warm: { type: string, maxLength: 120, description: When they like them }
+              plain: { type: string, maxLength: 120, description: When they feel nothing much }
+              cold: { type: string, maxLength: 120, description: When they dislike them }
+          barks: { type: array, minItems: 3, maxItems: 6, description: 'Five or six short things they say out loud as someone walks past, a dozen words at most: about their work, a neighbor, the weather, their trouble, or to the person walking by. All different.', items: { type: string, maxLength: 110 } }
+    residents:
+      keys: { from: '$.residents[*].id' }
+      each: *person

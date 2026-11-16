@@ -1,0 +1,13 @@
+theme: "A cozy woodland of talking animals: badger blacksmiths, hedgehog healers, mice running tea shops
+  inside hollow logs. The seasons are turning strangely and spring has not arrived."
+prompts:
+  - topic: story
+    text: Someone has stolen the Spring Lantern. A gentle mystery, with friendship and courage more important than
+      fighting.
+  - topic: monsters
+    text: "Suitable for children: opponents are mischievous rather than evil, and nothing is gory."
+size: small
+length: short
+communication: 2
+rules:
+  crafting: true

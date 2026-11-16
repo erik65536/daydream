@@ -1,0 +1,8 @@
+# How the steps read, in the editor and the CLI: groups by subject, each listing its steps in order. Every step is
+# listed once, after every step it reads (the editor shows a problem otherwise). Running does not follow this list:
+# each step starts once the steps it reads are done, side by side with the others that are ready.
+World: [ ownerStyle, concept, art ]
+Rules: [ rulesSystems, rulesCore, rulesStatuses, rulesSkills, rulesPassives, rulesGear, rulesItems ]
+Map and story: [ ownerPlaces, placePlan, creatures, story, telling ]
+Places and people: [ towns, areas, people ]
+Looks and sound: [ fightLooks, sounds ]

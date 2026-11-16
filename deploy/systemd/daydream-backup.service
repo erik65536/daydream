@@ -1,0 +1,21 @@
+# Tonight's snapshot of the game's data, and older snapshots pruned (packages/server/src/cli/backup.ts).
+[Unit]
+Description=Daydream nightly backup
+
+[Service]
+Type=oneshot
+User=daydream
+Group=daydream
+WorkingDirectory=/opt/daydream/packages/server
+ExecStart=/usr/bin/node src/cli/backup.ts
+Environment=NODE_ENV=production DAYDREAM_DATA_DIR=/var/lib/daydream DAYDREAM_BACKUP_DIR=/var/lib/daydream-backups
+# Reads the data the server writes; snapshots go to their own folder on the same disk.
+StateDirectory=daydream daydream-backups
+StateDirectoryMode=0750
+Nice=10
+IOSchedulingClass=idle
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes

@@ -1,0 +1,60 @@
+# Which of the game's optional systems this world has, decided first: later rules steps ask only for what the
+# systems on need (crafting materials, control statuses, the kinds of potion), so nothing is designed for a system that is
+# off. A system the owner chose is fixed by construction: it can only be their choice.
+purpose: world.design
+maxTokens: 2000
+system: '{{> system}}'
+user: |-
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=rules].length}}
+  THE OWNER'S PROMPT ABOUT THE RULES:
+  {{#input.prompts[topic=rules]}}
+  {{text}}
+  {{/input.prompts[topic=rules]}}
+  {{/input.prompts[topic=rules].length}}
+
+  Decide which of the game's optional gameplay systems fit this world and the intent of the owner.
+schema:
+  type: object
+  properties:
+    magic: { enum: { from: 'input.systems.magic[*]' }, description: 'Players fight with a power apart from weapons and the body: magic, or what stands for it in this world' }
+    crafting: { enum: { from: 'input.systems.crafting[*]' }, description: Players use materials to craft new items or gear }
+    upgrades: { enum: { from: 'input.systems.upgrades[*]' }, description: Players use materials to make their gear stronger }
+    enchanting: { enum: { from: 'input.systems.enchanting[*]' }, description: Players use materials to give their gear extra properties or stats }
+    control: { enum: { from: 'input.systems.control[*]' }, description: "Crowd control: skills that stun, root, silence, or disarm a target" }
+    crit: { enum: { from: 'input.systems.crit[*]' }, description: 'Some hits are critical hits, dealing extra damage' }
+    dodge: { enum: { from: 'input.systems.dodge[*]' }, description: Players can dodge attacks }
+    fastTravel: { enum: { from: 'input.systems.fastTravel[*]' }, description: Players can fast travel between towns they have visited }
+    storage: { enum: { from: 'input.systems.storage[*]' }, description: 'Where players can store items in towns: nowhere, a bank in each town that holds only what was left there, or one storage shared by every town' }
+    lifeSteal: { enum: { from: 'input.systems.lifeSteal[*]' }, description: "Attacks or skills restore the attacker's health by part of the damage they deal" }
+    thorns: { enum: { from: 'input.systems.thorns[*]' }, description: 'Gear and buffs that hurt whoever hits their wearer' }
+    regeneration: { enum: { from: 'input.systems.regeneration[*]' }, description: 'Gear and buffs that restore health every turn in battle' }
+    healing: { enum: { from: 'input.systems.healing[*]' }, description: 'Players heal one another during battle with skills. All worlds have healing outside of battle.' }
+    shields: { enum: { from: 'input.systems.shields[*]' }, description: 'Players can carry a shield in their offhand' }
+    revive:
+      enum: { from: 'input.systems.revive[*]' }
+      description: 'How a slain or unconscious player is revived: through any healing (heal), only through revive skills (special), or only after the fight is won (after_combat)'
+    defeat:
+      type: object
+      description: 'The penalty for a total party wipe; none for a world without a penalty'
+      properties:
+        loseExperience: { enum: { from: 'input.systems.defeat.loseExperience[*]' }, description: Players lose some experience }
+        loseMoney: { enum: { from: 'input.systems.defeat.loseMoney[*]' }, description: Players lose some money }
+        recoverBody: { enum: { from: 'input.systems.defeat.recoverBody[*]' }, description: 'Players drop their equipment where they are slain, and must go back for it' }
+    potions:
+      type: object
+      description: 'The consumables players can use'
+      properties:
+        healing: { enum: { from: 'input.systems.potions.healing[*]' }, description: 'Restore health' }
+        cleansing: { enum: { from: 'input.systems.potions.cleansing[*]' }, description: 'Remove harmful statuses' }
+        buffs: { enum: { from: 'input.systems.potions.buffs[*]' }, description: 'Give the user a helpful status' }
+        debuffs: { enum: { from: 'input.systems.potions.debuffs[*]' }, description: 'Put a harmful status on enemies' }
+        bombs: { enum: { from: 'input.systems.potions.bombs[*]' }, description: 'Damage enemies' }
+    swing: { enum: { from: 'game.rules.variances[*]' }, description: How much the damage of each hit varies }

@@ -1,0 +1,43 @@
+# What is found written in each wild place and dungeon (a journal, a carving, a log, a letter), one call per place,
+# as many as the engine gives it. Written from the story as it really is: the old notes were told to hint at the
+# concept's secret, which the story no longer has, and wrote mysteries the story never paid off.
+purpose: world.content
+maxTokens: 4000
+forEach: map.areas
+system: '{{> system}}'
+user: |
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  THE PLACE: {{$.placePlan.name}} ({{$.label}}{{#$.off}}, off {{placePlan.name}}{{/$.off}}{{#$.placePlan.indoor}}, indoors{{/$.placePlan.indoor}}): {{$.placePlan.description}}
+
+  THE CREATURES AND FOES:
+  {{#map.families}}
+  - {{creatures.name}}, living in {{#creatures.lives}}{{.}}{{^$last}}, {{/$last}}{{/creatures.lives}}: {{creatures.description}}
+  {{/map.families}}
+
+  THE STORY:
+  {{#map.arcs}}
+  {{n}}. {{story.title}}
+  {{#story.quests}}
+  - {{title}}: {{background}}
+  {{/story.quests}}
+  {{/map.arcs}}
+
+  Write what can be found written in this place: left by people who live, work, or passed through here, or by those who came before. Each tells something of this place, its creatures, or what happened here, in the writer's own voice, and agrees with the story without telling what is still to come in it.
+schema:
+  type: object
+  properties:
+    notes:
+      keys: { from: '$.notes[*].id' }
+      each:
+        type: object
+        properties:
+          title: { type: string, maxLength: 80 }
+          what: { type: string, maxLength: 80, description: 'What it is, in a few words: a torn journal page, a carving on a post' }
+          text: { type: string, minLength: 20, maxLength: 900, description: 60 to 160 words }

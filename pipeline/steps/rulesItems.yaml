@@ -1,0 +1,142 @@
+# The items a character uses up, sells, or crafts with. Consumables of each kind the world has:
+# a healing item and a cleansing one that removes harmful statuses (apart, so each has its own use and price), items
+# that put on one of rulesStatuses' statuses by name (helpful ones on the user, harmful ones on enemies), and a bomb for
+# each kind of damage. Nothing here adds a mechanic: they reuse the statuses and damage the world has, using one in a
+# fight costs AP, and the engine and the balance simulation set every amount. Valuables are found and sold. Materials
+# are four, shared between the crafts at a town's workshop, each there when a craft that uses it is: one for weapons
+# and shields and one for armor and accessories (crafting and upgrading), an essence (enchanting) and a reagent (making
+# consumables, which every world with consumables has, with gear crafting or without: so the brewing craft is named
+# wherever there is a consumable to brew). There are no recipes (a player picks what to make from the
+# gear and the consumables) and no rarer materials (better things take more of the same); found gear is salvaged into
+# materials. The item that takes a party home comes with fast travel from the engine, and enchanting is random, so
+# neither needs anything designed.
+purpose: world.design
+maxTokens: 4000
+system: '{{> system}}'
+user: |
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=rules].length}}
+  THE OWNER'S PROMPT ABOUT THE RULES:
+  {{#input.prompts[topic=rules]}}
+  {{text}}
+  {{/input.prompts[topic=rules]}}
+  {{/input.prompts[topic=rules].length}}
+
+  TERMINOLOGY:
+  - Health: {{rulesCore.words.health}}
+  - Money: {{rulesCore.words.money}}
+  - Physical damage: {{rulesCore.classes.physical.damage.name}}
+  {{#rulesCore.classes.magical.damage}}- Magic damage: {{name}}
+  {{/rulesCore.classes.magical.damage}}
+
+  STATUSES:
+  {{#rulesStatuses.statuses}}
+  - {{name}} ({{kind}}): {{description}}
+  {{/rulesStatuses.statuses}}
+
+  Design this world's consumables and valuables.
+names:
+  - 'rulesCore.classes[*].name'
+  - 'rulesCore.classes[*][*].name'
+  - 'rulesCore.races[*].name'
+  - 'rulesStatuses.statuses[*].name'
+  - 'rulesSkills[*][*][*].name'
+  - 'rulesPassives[*][*][*].name'
+  - 'rulesGear.weapons[*][*].name'
+  - 'rulesGear.shields[*].name'
+  - 'rulesGear.armor[*].pieces[*]'
+  - 'rulesGear.accessories[*][*].name'
+  - 'rulesItems.healing.name'
+  - 'rulesItems.cleansing.name'
+  - 'rulesItems.buffs[*].name'
+  - 'rulesItems.debuffs[*].name'
+  - 'rulesItems.bombs[*].name'
+  - 'rulesItems.valuables[*].name'
+  - 'rulesItems.materials[*].name'
+schema:
+  type: object
+  properties:
+    healing:
+      when: rulesSystems.potions.healing
+      type: object
+      description: 'Restores {{rulesCore.words.health}}'
+      properties:
+        name: &name { type: string, maxLength: 32 }
+        description: &description { type: string, maxLength: 140 }
+    cleansing:
+      when: rulesSystems.potions.cleansing
+      type: object
+      description: Removes harmful statuses
+      properties: { name: *name, description: *description }
+    buffs:
+      when: 'rulesSystems.potions.buffs & rulesStatuses.statuses[kind=buff]'
+      type: array
+      minItems: 2
+      maxItems: 4
+      description: Each gives its user a helpful status
+      items:
+        type: object
+        properties:
+          status: { enum: { from: 'rulesStatuses.statuses[kind=buff].name' } }
+          name: *name
+          description: *description
+    debuffs:
+      when: 'rulesSystems.potions.debuffs & rulesStatuses.statuses[kind=debuff]'
+      type: array
+      minItems: 1
+      maxItems: 3
+      description: Each puts a harmful status on enemies
+      items:
+        type: object
+        properties:
+          status: { enum: { from: 'rulesStatuses.statuses[kind=debuff].name' } }
+          name: *name
+          description: *description
+    bombs:
+      when: rulesSystems.potions.bombs
+      type: object
+      description: Damage enemies
+      properties:
+        physical: { type: object, description: '{{rulesCore.classes.physical.damage.name}} damage', properties: { name: *name, description: *description } }
+        magic: { when: rulesCore.classes.magical.damage, type: object, description: '{{rulesCore.classes.magical.damage.name}} damage', properties: { name: *name, description: *description } }
+    valuables:
+      type: array
+      minItems: 3
+      maxItems: 6
+      items: { type: object, properties: { name: *name, description: *description } }
+    crafts:
+      type: object
+      description: "The crafts a player learns and grows better at, each named as people here would call the skill"
+      properties:
+        craft: { when: rulesSystems.crafting, type: object, description: 'Making weapons, armor, and accessories at a workshop', properties: { name: *name, description: *description } }
+        brew: { when: [ rulesSystems.potions.healing, rulesSystems.potions.cleansing, rulesSystems.potions.buffs, rulesSystems.potions.debuffs, rulesSystems.potions.bombs ], type: object, description: 'Making the consumables', properties: { name: *name, description: *description } }
+        upgrade: { when: rulesSystems.upgrades, type: object, description: 'Making gear stronger', properties: { name: *name, description: *description } }
+        enchant: { when: rulesSystems.enchanting, type: object, description: 'Giving gear new random properties', properties: { name: *name, description: *description } }
+    materials:
+      type: object
+      description: Crafting materials
+      properties:
+        hard:
+          when: [ rulesSystems.crafting, rulesSystems.upgrades ]
+          type: object
+          description: 'For making and upgrading weapons{{#rulesSystems.shields}} and shields{{/rulesSystems.shields}}'
+          properties: { name: *name, description: *description }
+        soft:
+          when: [ rulesSystems.crafting, rulesSystems.upgrades ]
+          type: object
+          description: For making and upgrading armor and accessories
+          properties: { name: *name, description: *description }
+        essence:
+          when: rulesSystems.enchanting
+          type: object
+          description: For enchanting
+          properties: { name: *name, description: *description }
+        reagent:
+          when: [ rulesSystems.potions.healing, rulesSystems.potions.cleansing, rulesSystems.potions.buffs, rulesSystems.potions.debuffs, rulesSystems.potions.bombs ]
+          type: object
+          description: For making consumables
+          properties: { name: *name, description: *description }

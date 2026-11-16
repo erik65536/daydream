@@ -1,0 +1,102 @@
+{
+  "_comment": "Copy to config/genai.json. Every text, decision and speech purpose runs on OpenAI (put OPENAI_API_KEY in .env at the repository root, or use \"credential:NAME\" for a systemd credential); every image is painted with ComfyUI behind the GPU broker (docs/gpu-broker.md), which must be running before a world is built. A purpose with no provider is simply off: worlds cannot be built without the world, image and check purposes, and people answer with simple stock replies without npc.decision.",
+  "providers": {
+    "openai": {
+      "type": "openai-responses",
+      "apiKey": "env:OPENAI_API_KEY",
+      "model": "gpt-6-luna",
+      "serviceTier": "flex",
+      "concurrency": 8,
+      "timeoutMs": 900000,
+      "reasoningTokens": 12000,
+      "_comment": "Building worlds: Luna writes and plans; strict structured output enforces each answer's schema while decoding. 'flex' is half price; busy capacity is waited out."
+    },
+    "openai-live": {
+      "type": "openai-responses",
+      "apiKey": "env:OPENAI_API_KEY",
+      "model": "gpt-6-luna",
+      "concurrency": 8,
+      "timeoutMs": 60000,
+      "reasoningTokens": 2000,
+      "_comment": "Play-time calls (conversations, item legends): the standard tier, for low latency."
+    },
+    "openai-decide": {
+      "type": "openai-decision",
+      "apiKey": "env:OPENAI_API_KEY",
+      "model": "gpt-6-luna",
+      "concurrency": 8,
+      "timeoutMs": 120000,
+      "_comment": "OpenAI's decisions endpoint (/v1/decisions): checks of painted art and places."
+    },
+    "openai-stt": {
+      "type": "openai-transcribe",
+      "apiKey": "env:OPENAI_API_KEY",
+      "model": "gpt-4o-mini-transcribe",
+      "concurrency": 4,
+      "timeoutMs": 30000,
+      "_comment": "Speech to text for talking to people."
+    },
+    "gpt-image": {
+      "type": "openai-image",
+      "apiKey": "env:OPENAI_API_KEY",
+      "model": "gpt-image-2.5-flare",
+      "quality": "low",
+      "timeoutMs": 600000,
+      "_comment": "GPT Image (list prices: text input $5, image input $8, image output $30 per million tokens; half through the Batch API). It paints the art (image.sprite, image.icon: transparent, at the least size, each round through the Batch API, about $0.003 an image), the animation (image.animation sheets and image.walk GIFs, always batched: about $0.026 per character that fights and $0.005 per townsperson for the sheets, plus $0.044 each for the walk GIFs) and reads the places (image.read: two plans per painting, about $0.06). Leave image.animation out to keep still images."
+    },
+    "pocket": {
+      "type": "pocket-tts",
+      "lines": 2,
+      "threads": 1,
+      "_comment": "Pocket TTS on this machine's CPU, in the game server on ONNX Runtime (packages/server/src/speech/pocket.ts): speaks every voice while the GPU is busy or away. It speaks with the models packages/server/speech/pocket_export.py exported to models/pocket in the repository (docs/hosting.md, step 4a; models names another folder). lines: lines spoken at once, each on threads threads; while lines due soon wait, it speaks with its small model (smallModel, default english_18m_2026-10; empty for none)."
+    },
+    "comfy": {
+      "type": "comfyui",
+      "baseUrl": "http://127.0.0.1:8190",
+      "_comment": "The GPU broker in front of ComfyUI (production: the GPU PC's LAN address, with \"apiKey\": \"credential:gpu-broker\"). Places and every asset are painted with FLUX 3 Image Klein. Assets use the workflow below: Klein paints the subject on the chroma-key backdrop the prompt writer picked; the engine keys it out of the backdrop and scores the cut. Models: diffusion_models/flux3-image-klein-int8-convrot.safetensors, text_encoders/qwen3vl_4b_int8_convrot.safetensors, vae/flux2-vae.safetensors; reading places on the GPU (when image.read is left out) also needs Qwen-Image 2.1 Turbo (docs/places.md).",
+      "workflow": "config/comfyui/klein_cutout.json",
+      "checkpoint": "flux3-image-klein-int8-convrot.safetensors",
+      "steps": 16,
+      "cfg": 1,
+      "concurrency": 1,
+      "timeoutMs": 300000
+    }
+  },
+  "purposes": {
+    "speech.cpu": { "provider": "pocket" },
+    "speech.gpu": { "provider": "comfy" },
+    "world.design": {
+      "provider": "openai",
+      "maxTokens": 8000,
+      "retries": 2,
+      "extraBody": { "reasoning": { "effort": "medium" } },
+      "_comment": "Concept, world plan, story, places' plans and checks. strongModel (default gpt-6.1-sol, null turns it off) names each place's landmarks, at its list price ($2 input, $0.10 cached, $10 output per million tokens; flex halves them)."
+    },
+    "world.content": { "provider": "openai", "maxTokens": 9000, "retries": 2, "extraBody": { "reasoning": { "effort": "low" } } },
+    "image.prompt": {
+      "provider": "openai",
+      "maxTokens": 4000,
+      "retries": 1,
+      "extraBody": { "reasoning": { "effort": "low" } },
+      "_comment": "Writes each asset's image prompt and picks its chroma-key backdrop (green, blue or magenta) and, for creatures, the view (front or side)."
+    },
+    "npc.judge": { "provider": "openai-decide" },
+    "npc.decision": { "provider": "openai-live", "maxTokens": 900, "retries": 1, "extraBody": { "reasoning": { "effort": "low" } } },
+    "narration": { "provider": "openai-live", "maxTokens": 400, "extraBody": { "reasoning": { "effort": "low" } } },
+    "image.sprite": { "provider": "gpt-image", "model": "gpt-image-2.5-flare", "maxAttempts": 3, "_comment": "Characters, creatures and objects by GPT Image 2.5 Flare (its batches came back in minutes where Sunburst's took up to an hour; docs/experiments/gpt-art). Klein is the backup: { \"provider\": \"comfy\", \"width\": 832, \"height\": 1216, \"maxAttempts\": 3 }." },
+    "image.icon": { "provider": "gpt-image", "model": "gpt-image-2.5-flare", "maxAttempts": 2, "_comment": "Item icons by GPT Image; Klein backup: { \"provider\": \"comfy\", \"width\": 1024, \"height\": 1024, \"maxAttempts\": 2 }." },
+    "image.read": { "provider": "gpt-image", "batch": false, "_comment": "Places read for walkable ground by two GPT Image plans (2.5 and 2.6 Sunburst), as accurate as Qwen with Luna (docs/experiments/gpt-read). Direct, since each painting's judging waits for it and Sunburst's batches took up to two hours; \"batch\": true halves its price (about $0.03 a painting). A Flare pair batches fast but read 1.7 points worse. Leave it out to read with Qwen on the GPU." },
+    "image.check": { "provider": "openai-decide", "minScore": 3.5, "_comment": "Judges each painting's content (subject, framing, pose). The cut itself is scored without a model, against the known backdrop." },
+    "image.animation": { "provider": "gpt-image", "_comment": "Characters' and creatures' animation frames (docs/world-art.md, Characters in motion), painted in the background after the art." },
+    "image.walk": { "provider": "gpt-image", "model": "gpt-image-2.6-sunburst", "_comment": "Walks painted as looping GIFs of eight frames by GPT Image 2.6 Sunburst, one per painted view, through the Batch API (with image.animation on; the other clips stay sheets). About $0.044 per character. Leave it out to paint the walk in the sheets too." },
+    "speech.input": { "provider": "openai-stt" }
+  },
+  "jobConcurrency": 1,
+  "waitForModelsMs": 1800000,
+  "spending": {
+    "dailyTotalUsd": 3,
+    "adminsUnlimited": true,
+    "_comment": "OpenAI spending in dollars: the whole server's daily ceiling, and whether administrators are unlimited. Each player's monthly budget is set on their account (Users page, $10 by default). Providers may set \"pricing\": {\"inputPerM\", \"cachedPerM\", \"outputPerM\"}; OpenAI providers default to gpt-6-luna prices."
+  }
+
+}

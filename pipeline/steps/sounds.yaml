@@ -1,0 +1,99 @@
+# What the world makes each of its sounds from, and its soundtrack (docs/sound.md). The game fixes every sound's
+# purpose; this step writes only its material. Every moment, kind of damage, creature family, place, and boss is a
+# required key (the old build asked for lists, then asked again for whatever they left out).
+purpose: world.content
+maxTokens: 10000
+system: '{{> system}}'
+user: |
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+  Its look: {{art.artStyle}}
+
+  {{constants.soundCraft}}
+
+  THE GAME'S SOUNDS (write the material of each; its purpose is fixed):
+  {{#game.moments}}
+  - {{id}}: {{purpose}}{{#tonal}} (tonal){{/tonal}}{{#source}}. {{source}}{{/source}}
+  {{/game.moments}}
+
+  KINDS OF DAMAGE (a spell and a hit each; the game adds "A quick spell burst", and "One short punchy impact" or "One heavy crushing impact"):
+  {{#rulesCore.classes.physical}}
+  - {{damage.name}}, the attacks of {{#melee}}{{name}} ({{description}}){{/melee}}{{#ranged}}{{#melee}} and {{/melee}}{{name}} ({{description}}){{/ranged}}
+  {{/rulesCore.classes.physical}}
+  {{#rulesCore.classes.magical}}
+  - {{damage.name}}, the attacks of {{#melee}}{{name}} ({{description}}){{/melee}}{{#ranged}}{{#melee}} and {{/melee}}{{name}} ({{description}}){{/ranged}}
+  {{/rulesCore.classes.magical}}
+
+  CREATURE FAMILIES (a fighting cry and a death each; the game adds "One short angry cry of a creature ready to fight" and "One short dying cry of a defeated creature, fading away"):
+  {{#map.families}}
+  - {{creatures.name}}: {{creatures.description}} {{#creatures.members}}{{name}}: {{appearance}} {{/creatures.members}}
+  {{/map.families}}
+
+  PLACES (a steady ambience each, to which the game adds "A steady continuous ambience" and "no sudden sounds, no voices, no music"; and a short cue for first arriving):
+  {{#map.places}}
+  - {{placePlan.name}} ({{label}}): {{placePlan.description}}
+  {{/map.places}}
+
+  BOSSES (a battle loop each):
+  {{#map.arcs}}
+  {{#story.quests}}
+  {{#steps[kind=boss]}}
+  - {{name}}: {{who}} {{looks}}
+  {{/steps[kind=boss]}}
+  {{/story.quests}}
+  {{/map.arcs}}
+
+  Write the sound of this world: the world theme (on the title screen), defeat (when the party falls), and everything above.
+schema:
+  type: object
+  properties:
+    soundtrack: { type: string, minLength: 20, maxLength: 300, description: "The soundtrack you choose for this world, in one sentence: its genre and its palette of instruments, and why they fit the world's tone" }
+    gameKind: { type: string, minLength: 10, maxLength: 80, description: 'The kind of game in plain words, without its title, such as "a cozy woodland adventure video game"' }
+    genreTag: { type: string, minLength: 3, maxLength: 24, description: 'One or two genre words a music library would tag this soundtrack with, such as Folk, Orchestral, Industrial, Comedy, Ambient' }
+    materials:
+      keys: { from: 'game.moments[*].id' }
+      each:
+        type: string
+        minLength: 8
+        maxLength: 160
+        description: 'What this world makes "{{$.purpose}}" from, and how it is recorded{{#$.tonal}}; a tonal sound, on something with a clear pleasant pitch, with no clicks or noise{{/$.tonal}}'
+    elements:
+      keys: { from: 'rulesCore.classes[*].damage.name' }
+      each:
+        type: object
+        properties:
+          sound: { type: string, minLength: 10, maxLength: 180, description: 'The spell: "of ", then what these attacks clearly sound like, then what this world makes them from' }
+          hit: { type: string, minLength: 10, maxLength: 180, description: 'A blow of this kind: "of ", then what it clearly sounds like as an impact, then what this world makes it from' }
+    families:
+      keys: { from: 'map.families[*].id' }
+      each:
+        type: object
+        description: '{{$.creatures.name}}'
+        properties:
+          cry: { type: string, minLength: 10, maxLength: 180, description: 'Lowercase, starting with "from": who makes the cry, described physically, and its character' }
+          death: { type: string, minLength: 10, maxLength: 180, description: 'Lowercase, starting with "from": the creature of the cry described again in full, and the character of its last sound' }
+    ambience:
+      keys: { from: 'map.places[*].id' }
+      each:
+        type: string
+        minLength: 10
+        maxLength: 200
+        description: 'Lowercase, starting with "of": two or three continuous layers heard steadily in {{$.placePlan.name}}, and how far away'
+    music:
+      type: object
+      properties:
+        theme: &piece
+          type: object
+          properties:
+            style: { type: string, minLength: 8, maxLength: 120, description: 'Genre words for this piece in the soundtrack genre, such as "A short quiet folk cue"' }
+            instruments: { type: string, minLength: 20, maxLength: 240, description: 'A lowercase list of three to five real instruments and how they are played, naming the melody instrument, as one phrase following "with"; low and middle registers, no mood words' }
+            bpm: { type: integer, minimum: 50, maximum: 140, description: 'Tempo in beats per minute: 60 to 110 for the theme and places, 50 to 90 for defeat, 110 to 140 for bosses' }
+        defeat: *piece
+        places:
+          keys: { from: 'map.places[*].id' }
+          each: *piece
+        bosses:
+          keys: { from: 'story.arcs[*].quests[*].steps[kind=boss].name' }
+          each: *piece

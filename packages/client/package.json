@@ -1,0 +1,17 @@
+{
+  "name": "@daydream/client",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@daydream/shared": "1.0.0",
+    "@simplewebauthn/browser": "14.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}

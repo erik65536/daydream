@@ -1,0 +1,44 @@
+# How the world looks: the art style every image uses, and the interface's look.
+purpose: world.design
+maxTokens: 2000
+system: '{{> system}}'
+user: |
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=art].length}}
+  THE OWNER'S PROMPT ABOUT THE ART:
+  {{#input.prompts[topic=art]}}
+  {{text}}
+  {{/input.prompts[topic=art]}}
+  {{/input.prompts[topic=art].length}}
+
+  Design how this world looks.
+schema:
+  type: object
+  properties:
+    artStyle:
+      type: string
+      maxLength: 300
+      description: 'Comma-separated keywords for one consistent illustrated look, used for every image: medium, palette, lighting, mood'
+    palette:
+      type: object
+      description: The interface's colors
+      properties:
+        primary: { type: string, pattern: '^#[0-9a-fA-F]{6}$', description: 'A color as hex, such as #6a8a3a' }
+        secondary: { type: string, pattern: '^#[0-9a-fA-F]{6}$', description: 'A color as hex, such as #6a8a3a' }
+        accent: { type: string, pattern: '^#[0-9a-fA-F]{6}$', description: 'A color as hex, such as #6a8a3a' }
+    interface:
+      type: object
+      description: The look of the game's interface
+      properties:
+        material: { enum: { from: 'game.rules.ui.materials[*]' }, description: What the interface's panels are made of }
+        ornament: { enum: { from: 'game.rules.ui.ornaments[*]' }, description: How the panels are decorated }
+        typeface: { enum: { from: 'game.rules.ui.typefaces[*]' }, description: The lettering }
+        tint: { type: string, pattern: '^#[0-9a-fA-F]{6}$', description: The color the game view is graded toward }
+        mood: { enum: { from: 'game.rules.ui.moods[*]' }, description: The game view's color grading }

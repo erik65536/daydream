@@ -1,0 +1,207 @@
+# Every class's active skills in one call, by tier (as many tiers and skills as the level cap gives, from facts),
+# each with its target, area, and effects. Tiers say what a skill is like (deeper is more involved). A damage class's
+# skills deal that class's damage and reach as far as the class does, up close or from a distance; a healer or buff
+# and debuff class's skills reach as far as its class does too, and may deal either kind of damage. Statuses come
+# from rulesStatuses by name, each put on those the skill is used on or on its user.
+# A skill is one of three kinds, by whom it is used on, and each kind offers only the effects that fit it: on an enemy
+# it deals damage and puts statuses on enemies or its user; on an ally it heals, cleanses, revives, and puts statuses on
+# allies or its user; on its user alone it does the same for them. So no skill both hurts and blesses those it reaches
+# (the rules compiler refuses one that does), and an effect the world does not have (healing, life steal, reviving by
+# skill) is not offered. Costs, cooldowns, and amounts come from the rules compiler (rules/worldRules.ts) and the
+# balance simulation; no skill is required.
+purpose: world.design
+maxTokens: 8000
+system: '{{> system}}'
+user: |
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=rules].length}}
+  THE OWNER'S PROMPT ABOUT THE RULES:
+  {{#input.prompts[topic=rules]}}
+  {{text}}
+  {{/input.prompts[topic=rules]}}
+  {{/input.prompts[topic=rules].length}}
+
+  TERMINOLOGY:
+  {{> terminology}}
+
+  CLASSES:
+  {{> classes}}
+
+  STATUSES:
+  {{#rulesStatuses.statuses}}
+  - {{name}} ({{kind}}): {{description}} Effects: {{json effects}}
+  {{/rulesStatuses.statuses}}
+
+  Design the skills of each class. Each skill name is unique and does not repeat the name of a status.
+# A hero starts with a skill of their class's first tier and must be able to fight with it: each class that deals
+# damage has one used on an enemy there (the three kinds would allow a first tier of help alone).
+checks:
+  - { when: rulesCore.classes.physical.melee, says: 'physical_melee needs a skill used on an enemy in tier_1', in: [ 'physical_melee.tier_1[*].target' ], has: [ enemy ] }
+  - { when: rulesCore.classes.physical.ranged, says: 'physical_ranged needs a skill used on an enemy in tier_1', in: [ 'physical_ranged.tier_1[*].target' ], has: [ enemy ] }
+  - { when: rulesCore.classes.magical.melee, says: 'magic_melee needs a skill used on an enemy in tier_1', in: [ 'magic_melee.tier_1[*].target' ], has: [ enemy ] }
+  - { when: rulesCore.classes.magical.ranged, says: 'magic_ranged needs a skill used on an enemy in tier_1', in: [ 'magic_ranged.tier_1[*].target' ], has: [ enemy ] }
+names:
+  - 'rulesCore.classes[*].name'
+  - 'rulesCore.classes[*][*].name'
+  - 'rulesStatuses.statuses[*].name'
+  - 'rulesSkills[*][*][*].name'
+schema:
+  type: object
+  properties:
+    physical_melee:
+      when: rulesCore.classes.physical.melee
+      description: '{{rulesCore.classes.physical.melee.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each:
+        type: array
+        minItems: { from: '$.actives' }
+        maxItems: { from: '$.actives' }
+        items: &melee
+          anyOf:
+            - type: object
+              description: Used on an enemy
+              properties:
+                name: &name { type: string, maxLength: 32 }
+                description: &description { type: string, maxLength: 140 }
+                target: &onEnemy { const: enemy }
+                area: &area { enum: [ single, small, large ] }
+                effects:
+                  type: array
+                  minItems: 1
+                  maxItems: 3
+                  items:
+                    anyOf:
+                      - &damage { const: damage }
+                      - &statusOnEnemies
+                        type: object
+                        properties:
+                          status: &status { enum: { from: 'rulesStatuses.statuses[*].name' } }
+                          on: { enum: [ enemies, self ] }
+                      - &lifeSteal { const: life_steal, when: rulesSystems.lifeSteal, description: "Restores the user's {{rulesCore.words.health}} by part of the damage dealt" }
+                      - { const: dash, description: 'Rushes a few steps to the enemy first' }
+            - &onAlly
+              type: object
+              description: Used on an ally
+              properties:
+                name: *name
+                description: *description
+                target: { const: ally }
+                area: *area
+                effects:
+                  type: array
+                  minItems: 1
+                  maxItems: 3
+                  items:
+                    anyOf:
+                      - type: object
+                        properties:
+                          status: *status
+                          on: { enum: [ allies, self ] }
+                      - &heal { const: heal, when: rulesSystems.healing, description: 'Restores {{rulesCore.words.health}}' }
+                      - &removes { const: removes_statuses, description: Takes harmful statuses off }
+                      - { const: revive, when: rulesSystems.revive=special, description: Brings a fallen ally back }
+            - &onSelf
+              type: object
+              description: Used on its user alone
+              properties:
+                name: *name
+                description: *description
+                target: { const: self }
+                area: { const: single }
+                effects:
+                  type: array
+                  minItems: 1
+                  maxItems: 3
+                  items:
+                    anyOf:
+                      - type: object
+                        properties:
+                          status: *status
+                          on: { const: self }
+                      - *heal
+                      - *removes
+    physical_ranged:
+      when: rulesCore.classes.physical.ranged
+      description: '{{rulesCore.classes.physical.ranged.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each:
+        type: array
+        minItems: { from: '$.actives' }
+        maxItems: { from: '$.actives' }
+        items: &attack
+          anyOf:
+            - type: object
+              description: Used on an enemy
+              properties:
+                name: *name
+                description: *description
+                target: *onEnemy
+                area: *area
+                effects:
+                  type: array
+                  minItems: 1
+                  maxItems: 3
+                  items:
+                    anyOf: [ *damage, *statusOnEnemies, *lifeSteal ]
+            - *onAlly
+            - *onSelf
+    magic_melee:
+      when: rulesCore.classes.magical.melee
+      description: '{{rulesCore.classes.magical.melee.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each:
+        type: array
+        minItems: { from: '$.actives' }
+        maxItems: { from: '$.actives' }
+        items: *melee
+    magic_ranged:
+      when: rulesCore.classes.magical.ranged
+      description: '{{rulesCore.classes.magical.ranged.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each:
+        type: array
+        minItems: { from: '$.actives' }
+        maxItems: { from: '$.actives' }
+        items: *attack
+    healer:
+      when: rulesCore.classes.healer
+      description: '{{rulesCore.classes.healer.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each:
+        type: array
+        minItems: { from: '$.actives' }
+        maxItems: { from: '$.actives' }
+        items: &support
+          anyOf:
+            - type: object
+              description: Used on an enemy
+              properties:
+                name: *name
+                description: *description
+                target: *onEnemy
+                area: *area
+                effects:
+                  type: array
+                  minItems: 1
+                  maxItems: 3
+                  items:
+                    anyOf:
+                      - { const: physical_damage, description: '{{rulesCore.classes.physical.damage.name}} damage' }
+                      - { const: magic_damage, when: rulesCore.classes.magical.damage, description: '{{rulesCore.classes.magical.damage.name}} damage' }
+                      - *statusOnEnemies
+                      - *lifeSteal
+            - *onAlly
+            - *onSelf
+    buff_and_debuff:
+      when: rulesCore.classes.buff_and_debuff
+      description: '{{rulesCore.classes.buff_and_debuff.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each:
+        type: array
+        minItems: { from: '$.actives' }
+        maxItems: { from: '$.actives' }
+        items: *support

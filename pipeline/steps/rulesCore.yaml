@@ -1,0 +1,146 @@
+# The rules' words, slots, and item qualities, and the world's classes and races, each named for the world. Any player can
+# put points into any class; a hybrid is a player who mixes classes. For each kind of damage the world has a melee class,
+# a ranged class or both, each null where it does not fit, and magic that deals no damage has no damage to name and no
+# classes. (A list of choices was needed only while a class could fight at both ranges, to keep it apart from two classes.)
+# Races have no strengths, since builds come from classes: a race is who a hero is, and its look (every person of it is
+# painted from that) and three to six example first names of its people, which the game draws from (and later steps match the style of); all are one size on the map. A world of one people has one race.
+# A world has one healer class and one buff and debuff class at most, magic in a world with magic, each attacking up close or
+# from a distance. A class that fought at both ranges was dropped: each skill worked at one, so whichever weapon a hero
+# drew, half the class's skills could not be used; a hero who wants both mixes a melee and a ranged class. Earlier versions gave
+# a world two fixed kinds of skill and classes a hero chose one of, then let each skill tree choose its own damage,
+# pool, effects, and tools: physical damage then split into several types in simple worlds, and with up to four effects every class
+# did nearly everything.
+purpose: world.design
+maxTokens: 6000
+system: '{{> system}}'
+user: |-
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=rules].length}}
+  THE OWNER'S PROMPT ABOUT THE RULES (it decides above all):
+  {{#input.prompts[topic=rules]}}
+  {{text}}
+  {{/input.prompts[topic=rules]}}
+  {{/input.prompts[topic=rules].length}}
+
+  WORDS: Choose words that are familiar to players but also fit the world. Prefer standard RPG terms unless they don't fit the world.
+
+  Design this world's gameplay terminology, its classes, and its races.
+# Each class may be nothing where it does not fit, and a world needs one that deals damage: an answer with none is
+# asked for again.
+checks:
+  - says: Give this world at least one class that deals damage, a melee or a ranged class
+    in: [ 'classes.physical.melee.name', 'classes.physical.ranged.name', 'classes.magical.melee.name', 'classes.magical.ranged.name' ]
+names:
+  - 'rulesCore.classes[*].name'
+  - 'rulesCore.classes[*][*].name'
+  - 'rulesCore.races[*].name'
+schema:
+  type: object
+  properties:
+    name: { type: string, maxLength: 40, description: "The name of this world's gameplay system" }
+    words:
+      type: object
+      description: 'What players see for each of these on a character sheet or UI: a word or two, capitalized'
+      properties:
+        health: { type: string, maxLength: 24, description: Health }
+        experience: { type: string, maxLength: 24, description: Experience }
+        level: { type: string, maxLength: 24, description: Level }
+        money: { type: string, maxLength: 24, description: The money people pay with }
+        party: { type: string, maxLength: 24, description: The group of characters who travel together }
+        quest: { type: string, maxLength: 24, description: A task someone asks of the party }
+        town: { type: string, maxLength: 24, description: A place where people live and work }
+        wilds: { type: string, maxLength: 24, description: The open country between places }
+        dungeon: { type: string, maxLength: 24, description: A dangerous enclosed place }
+        race: { type: string, maxLength: 24, description: "What a player's race is called" }
+        class: { type: string, maxLength: 24, description: "What a player's class is called" }
+        talent_point: { type: string, maxLength: 24, description: 'One of the points a player spends to learn skills and passives' }
+        talent_points: { type: string, maxLength: 24, description: 'talent_point in the plural' }
+        magic: { type: string, maxLength: 24, when: rulesSystems.magic, description: "What this world's magic system is called" }
+    healthColor: { type: string, pattern: '^#[0-9a-fA-F]{6}$', description: The color of the health bar }
+    numbers: { enum: { from: 'game.rules.numbers[*]' }, description: 'How big the numbers feel: small for a gentle or silly world, medium for most, large for a high-tech one' }
+    classes:
+      type: object
+      description: "The game's classes. Choose the options that best fit this world."
+      properties:
+        physical:
+          type: object
+          properties:
+            damage:
+              type: object
+              description: The type of damage these classes deal
+              properties: &damage
+                name: { type: string, maxLength: 24, description: 'Name this damage type, displayed as "<name> damage"' }
+                color: { type: string, pattern: '^#[0-9a-fA-F]{6}$' }
+                defence: { type: string, maxLength: 24, description: "The defense that reduces this damage, as labeled on a player's character sheet" }
+            melee: &heroClass
+              type: object
+              nullable: true
+              description: 'A class that attacks up close. Null if this world has none'
+              properties:
+                name: &className { type: string, maxLength: 24, description: 'The name of this class, a word or two' }
+                description: &classDescription { type: string, maxLength: 160 }
+            ranged: &rangedClass
+              type: object
+              nullable: true
+              description: 'A class that attacks from a distance. Null if this world has none'
+              properties: { name: *className, description: *classDescription }
+        magical:
+          when: rulesSystems.magic
+          type: object
+          nullable: true
+          description: "Null if this world's magic deals no damage"
+          properties:
+            damage: { type: object, description: The type of damage these classes deal, properties: *damage }
+            melee: *heroClass
+            ranged: *rangedClass
+        healer:
+          type: object
+          nullable: true
+          when: rulesSystems.healing
+          properties:
+            name: *className
+            description: *classDescription
+            reach: { enum: [ melee, ranged ], description: 'Whether this class attacks up close or from a distance' }
+        buff_and_debuff:
+          type: object
+          nullable: true
+          properties:
+            name: *className
+            description: *classDescription
+            reach: { enum: [ melee, ranged ], description: 'Whether this class attacks up close or from a distance' }
+    races:
+      type: array
+      minItems: 1
+      maxItems: 6
+      description: "The races of this game world"
+      items:
+        type: object
+        properties:
+          name: { type: string, maxLength: 32 }
+          description: { type: string, maxLength: 200 }
+          look: { type: string, maxLength: 240, description: 'Describe how one player of this race looks to someone drawing them using this description alone' }
+          names: { type: array, minItems: 3, maxItems: 6, description: 'Example first names for people of this race', items: { type: string, maxLength: 24 } }
+    slots:
+      type: object
+      description: "The equipment screen: a label for each equipment slot, a word or two named for this world. Every label is unique."
+      properties:
+        weapon: { type: string, maxLength: 24, description: The slot for the weapon }
+        offhand: { type: string, maxLength: 24, when: rulesSystems.shields, description: "The slot for a shield" }
+        armor: { type: array, minItems: 1, maxItems: 4, items: { type: string, maxLength: 24 }, description: 'A slot for each piece of armor or clothing a player wears' }
+        accessories: { type: array, maxItems: 3, items: { type: string, maxLength: 24 }, description: "A slot for each small thing a player has equipped other than armor; none if this world's players have none" }
+    qualities:
+      type: object
+      description: "What items of each quality are called, from the most common to the rarest"
+      properties:
+        common: { type: string, maxLength: 24, description: Most items }
+        uncommon: { type: string, maxLength: 24, description: A little better than most }
+        rare: { type: string, maxLength: 24, description: Seldom found }
+        epic: { type: string, maxLength: 24, description: Very rare and powerful }
+        legendary: { type: string, maxLength: 24, description: 'The rarest of all, a handful in a world' }

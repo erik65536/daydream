@@ -1,0 +1,117 @@
+# The passives of the classes: a few in each tier of each class (from facts), each a
+# permanent bonus a player buys once with points there, of one effect in the first tier and up to two deeper. The
+# effects are steady ones: Health, each defense, dodge, and crit chance where the world has them, and the strength of
+# the class's own skills, so that it rewards putting points in that class and does not add up across classes. That is one
+# effect in the game, the damage and healing of the class's skills, shown to Luna as skill damage in a damage class and
+# as skill power in a healer or buff and debuff class. Stronger effects (statuses that last longer, regeneration,
+# thorns, life steal) are left to capstones and gear, and movement to no one. Passives have no ranks (more passives
+# give the choice instead) and no description: the game writes each effect and its amount, which the balance
+# simulation sets. Shown each class's skills with nothing said, Luna named a quarter of the passives after them, so the
+# prompt lists every active skill by name and asks for names apart from them.
+purpose: world.design
+maxTokens: 5000
+system: '{{> system}}'
+user: |
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=rules].length}}
+  THE OWNER'S PROMPT ABOUT THE RULES:
+  {{#input.prompts[topic=rules]}}
+  {{text}}
+  {{/input.prompts[topic=rules]}}
+  {{/input.prompts[topic=rules].length}}
+
+  TERMINOLOGY:
+  {{> terminology}}
+
+  CLASSES:
+  {{> classes}}
+
+  ACTIVE SKILLS:
+  {{#rulesSkills[*][*][*]}}{{name}}{{^$last}}, {{/$last}}{{/rulesSkills[*][*][*]}}
+
+  Design the passives of each class. Each passive name is unique and does not repeat the name of an active skill.
+names:
+  - 'rulesCore.classes[*].name'
+  - 'rulesCore.classes[*][*].name'
+  - 'rulesStatuses.statuses[*].name'
+  - 'rulesSkills[*][*][*].name'
+  - 'rulesPassives[*][*][*].name'
+schema:
+  type: object
+  properties:
+    physical_melee:
+      when: rulesCore.classes.physical.melee
+      description: '{{rulesCore.classes.physical.melee.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each:
+        type: array
+        minItems: { from: '$.passives' }
+        maxItems: { from: '$.passives' }
+        items: &passive
+          type: object
+          properties:
+            effects:
+              type: array
+              minItems: 1
+              maxItems: { from: '$.passiveEffects' }
+              items:
+                anyOf:
+                  - &health { const: health, description: 'Maximum {{rulesCore.words.health}}' }
+                  - &physicalDefence { const: physical_defence, description: '{{rulesCore.classes.physical.damage.defence}}' }
+                  - &magicDefence { const: magic_defence, when: rulesCore.classes.magical.damage, description: '{{rulesCore.classes.magical.damage.defence}}' }
+                  - { const: skill_damage, description: "The damage of this class's skills" }
+                  - &dodge { const: dodge, when: rulesSystems.dodge, description: 'The chance to dodge attacks' }
+                  - &crit { const: crit_chance, when: rulesSystems.crit, description: 'The chance to land critical hits' }
+            name: &passiveName { type: string, maxLength: 32 }
+    physical_ranged:
+      when: rulesCore.classes.physical.ranged
+      description: '{{rulesCore.classes.physical.ranged.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each: { type: array, minItems: { from: '$.passives' }, maxItems: { from: '$.passives' }, items: *passive }
+    magic_melee:
+      when: rulesCore.classes.magical.melee
+      description: '{{rulesCore.classes.magical.melee.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each: { type: array, minItems: { from: '$.passives' }, maxItems: { from: '$.passives' }, items: *passive }
+    magic_ranged:
+      when: rulesCore.classes.magical.ranged
+      description: '{{rulesCore.classes.magical.ranged.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each: { type: array, minItems: { from: '$.passives' }, maxItems: { from: '$.passives' }, items: *passive }
+    healer:
+      when: rulesCore.classes.healer
+      description: '{{rulesCore.classes.healer.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each:
+        type: array
+        minItems: { from: '$.passives' }
+        maxItems: { from: '$.passives' }
+        items: &supportPassive
+          type: object
+          properties:
+            effects:
+              type: array
+              minItems: 1
+              maxItems: { from: '$.passiveEffects' }
+              items:
+                anyOf:
+                  - *health
+                  - *physicalDefence
+                  - *magicDefence
+                  - { const: skill_power, description: "The damage{{#rulesSystems.healing}} and healing{{/rulesSystems.healing}} of this class's skills" }
+                  - *dodge
+                  - *crit
+            name: *passiveName
+    buff_and_debuff:
+      when: rulesCore.classes.buff_and_debuff
+      description: '{{rulesCore.classes.buff_and_debuff.name}}'
+      keys: { from: 'input.tiers[*].id' }
+      each:
+        type: array
+        minItems: { from: '$.passives' }
+        maxItems: { from: '$.passives' }
+        items: *supportPassive

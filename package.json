@@ -1,0 +1,50 @@
+{
+  "name": "daydream",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "A GenAI-built 2D top-down RPG: describe a theme, and the game builds a world to play",
+  "type": "module",
+  "engines": {
+    "node": ">=24.12"
+  },
+  "workspaces": [
+    "packages/shared",
+    "packages/server",
+    "packages/client",
+    "packages/gpu-broker",
+    "packages/designer"
+  ],
+  "scripts": {
+    "setup": "node packages/server/src/cli/setup.ts",
+    "dev": "node scripts/dev.mjs",
+    "play": "node packages/server/src/cli/play.ts",
+    "dev:lan": "node scripts/dev.mjs --lan",
+    "dev:server": "npm run dev -w @daydream/server",
+    "dev:client": "npm run dev -w @daydream/client",
+    "build": "npm run build -w @daydream/client",
+    "start": "npm run start -w @daydream/server",
+    "broker": "npm run start -w @daydream/gpu-broker",
+    "designer": "npm run start -w @daydream/designer",
+    "typecheck": "node scripts/link-workspaces.mjs && tsc -p packages/shared && tsc -p packages/server && tsc -p packages/client && tsc -p packages/gpu-broker && tsc -p packages/designer",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/ws": "^8.18.2",
+    "@vitejs/plugin-react": "^6.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  },
+  "overrides": {
+    "tar": "^7.5.23"
+  },
+  "allowScripts": {
+    "@discordjs/opus": true,
+    "onnxruntime-node": false
+  }
+}

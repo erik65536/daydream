@@ -1,0 +1,177 @@
+{
+ "barrier_absorb": {
+  "files": [
+   "barrier_absorb.0.opus"
+  ]
+ },
+ "barrier_break": {
+  "files": [
+   "barrier_break.0.opus"
+  ]
+ },
+ "cast": {
+  "files": [
+   "cast.0.opus"
+  ]
+ },
+ "chat": {
+  "files": [
+   "chat.0.opus"
+  ]
+ },
+ "chest_open": {
+  "files": [
+   "chest_open.0.opus"
+  ]
+ },
+ "craft": {
+  "files": [
+   "craft.0.opus"
+  ]
+ },
+ "dodge": {
+  "files": [
+   "dodge.0.opus"
+  ]
+ },
+ "enchant": {
+  "files": [
+   "enchant.0.opus"
+  ]
+ },
+ "fight": {
+  "files": [
+   "fight.0.opus"
+  ]
+ },
+ "friend": {
+  "files": [
+   "friend.0.opus"
+  ]
+ },
+ "gold": {
+  "files": [
+   "gold.0.opus"
+  ]
+ },
+ "heal": {
+  "files": [
+   "heal.0.opus"
+  ]
+ },
+ "hero_falls": {
+  "files": [
+   "hero_falls.0.opus"
+  ]
+ },
+ "hit": {
+  "files": [
+   "hit.0.opus"
+  ]
+ },
+ "improve": {
+  "files": [
+   "improve.0.opus"
+  ]
+ },
+ "learn": {
+  "files": [
+   "learn.0.opus"
+  ]
+ },
+ "legendary": {
+  "files": [
+   "legendary.0.opus"
+  ]
+ },
+ "level_up": {
+  "files": [
+   "level_up.0.opus"
+  ]
+ },
+ "my_turn": {
+  "files": [
+   "my_turn.0.opus"
+  ]
+ },
+ "panel_close": {
+  "files": [
+   "panel_close.0.opus"
+  ]
+ },
+ "panel_open": {
+  "files": [
+   "panel_open.0.opus"
+  ]
+ },
+ "put": {
+  "files": [
+   "put.0.opus"
+  ]
+ },
+ "quest_accept": {
+  "files": [
+   "quest_accept.0.opus"
+  ]
+ },
+ "quest_complete": {
+  "files": [
+   "quest_complete.0.opus"
+  ]
+ },
+ "quest_failed": {
+  "files": [
+   "quest_failed.0.opus"
+  ]
+ },
+ "refusal": {
+  "files": [
+   "refusal.0.opus"
+  ]
+ },
+ "status_harmful": {
+  "files": [
+   "status_harmful.0.opus"
+  ]
+ },
+ "status_helpful": {
+  "files": [
+   "status_helpful.0.opus"
+  ]
+ },
+ "success": {
+  "files": [
+   "success.0.opus"
+  ]
+ },
+ "swing": {
+  "files": [
+   "swing.0.opus"
+  ]
+ },
+ "take": {
+  "files": [
+   "take.0.opus"
+  ]
+ },
+ "tap": {
+  "files": [
+   "tap.0.opus"
+  ]
+ },
+ "theme": {
+  "files": [
+   "theme.0.opus"
+  ]
+ },
+ "timer_tick": {
+  "files": [
+   "timer_tick.0.opus"
+  ]
+ },
+ "trap_spotted": {
+  "files": [
+   "trap_spotted.0.opus"
+  ]
+ }
+}

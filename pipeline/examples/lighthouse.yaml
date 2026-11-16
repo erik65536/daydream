@@ -1,0 +1,8 @@
+theme: A lighthouse island of smugglers and drowned caves, where the keeper's lamp is the only law and the tide
+  takes something from the town every night.
+prompts:
+  - topic: story
+    text: Someone is dimming the lamp on purpose, so the smugglers' boats can land unseen.
+size: tiny
+length: brief
+communication: 2

@@ -1,0 +1,1599 @@
+{
+ "length": "short",
+ "records": {
+  "rulesSystems": {
+   "magic": true,
+   "crafting": true,
+   "upgrades": true,
+   "enchanting": true,
+   "control": true,
+   "crit": true,
+   "dodge": true,
+   "fastTravel": true,
+   "storage": "shared",
+   "lifeSteal": false,
+   "thorns": false,
+   "regeneration": true,
+   "healing": true,
+   "shields": true,
+   "revive": "heal",
+   "defeat": {
+    "loseExperience": false,
+    "loseMoney": false,
+    "recoverBody": false
+   },
+   "potions": {
+    "healing": true,
+    "cleansing": true,
+    "buffs": true,
+    "debuffs": false,
+    "bombs": false
+   },
+   "swing": "low"
+  },
+  "rulesCore": {
+   "name": "Bramblewood's Hearth & Hedge",
+   "words": {
+    "health": "Hearts",
+    "experience": "Experience",
+    "level": "Level",
+    "money": "Acorns",
+    "party": "Traveling Company",
+    "quest": "Errand",
+    "town": "Village",
+    "wilds": "Greenways",
+    "dungeon": "Deep Hollow",
+    "race": "Kind",
+    "class": "Calling",
+    "talent_point": "Skill Seed",
+    "talent_points": "Skill Seeds",
+    "magic": "Hearthcraft"
+   },
+   "healthColor": "#75a96a",
+   "numbers": "small",
+   "classes": {
+    "physical": {
+     "damage": {
+      "name": "Thump",
+      "color": "#a87358",
+      "defence": "Padding"
+     },
+     "melee": {
+      "name": "Hedgeguard",
+      "description": "A stout-hearted close-up defender who protects friends with a sturdy shield, a well-made tool, and a brave stance."
+     },
+     "ranged": {
+      "name": "Thornshot",
+      "description": "A nimble scout who keeps trouble at a distance with a sling, a bow, or a carefully tossed pinecone."
+     }
+    },
+    "magical": {
+     "damage": {
+      "name": "Glimmer",
+      "color": "#9b82c4",
+      "defence": "Wonder"
+     },
+     "melee": null,
+     "ranged": {
+      "name": "Greenweaver",
+      "description": "A keeper of gentle woodland magic who sends little sparks of frost, leaf, and lantern-light from afar."
+     }
+    },
+    "healer": {
+     "name": "Hearthhealer",
+     "description": "A patient caretaker who restores hearts with herbal teas, warm bandages, and a listening ear.",
+     "reach": "ranged"
+    },
+    "buff_and_debuff": {
+     "name": "Pathfinder",
+     "description": "A clever helper who lifts companions' spirits, spots a safe way through, and distracts foes with a decoy or a tale.",
+     "reach": "ranged"
+    }
+   },
+   "races": [
+    {
+     "name": "Badger",
+     "description": "Strong, steady folk who often make excellent smiths, builders, and keepers of a warm underground hearth.",
+     "look": "A stocky upright badger with a broad, striped face, rounded ears, dark paws, and a simple work apron over a sturdy coat.",
+     "names": [
+      "Brindle",
+      "Moss",
+      "Tansy",
+      "Bram"
+     ]
+    },
+    {
+     "name": "Hedgehog",
+     "description": "Thoughtful folk whose careful hands and patient natures make them beloved healers, gardeners, and makers.",
+     "look": "A small upright hedgehog with a soft, expressive face, neat brown spines, a knitted scarf, and a pouch of herbs at the hip.",
+     "names": [
+      "Pip",
+      "Prickle",
+      "Hazel",
+      "Thistle"
+     ]
+    },
+    {
+     "name": "Mouse",
+     "description": "Quick-witted and resourceful folk, at home in snug burrows, bustling cafés, and the tiniest hidden paths.",
+     "look": "A tiny upright mouse with round ears, bright eyes, whiskers, and a patchwork waistcoat; a teacup or crumb-sized satchel suits them.",
+     "names": [
+      "Pipkin",
+      "Mallow",
+      "Nim",
+      "Poppy"
+     ]
+    },
+    {
+     "name": "Hare",
+     "description": "Long-legged and keen-eyed folk, known as swift messengers, curious wanderers, and reliable friends in a pinch.",
+     "look": "A tall, slim hare with long ears, soft russet fur, a travel cloak, and a little map tucked into a belt pouch.",
+     "names": [
+      "Clover",
+      "Fleet",
+      "Fern",
+      "Wren"
+     ]
+    },
+    {
+     "name": "Squirrel",
+     "description": "Agile folk with sharp senses and a knack for gathering, climbing, crafting, and remembering where everything is stored.",
+     "look": "A small upright squirrel with tufted ears, a full curled tail, warm russet fur, and a belt with seed pouches and climbing cord.",
+     "names": [
+      "Hazelnut",
+      "Scurry",
+      "Acorn",
+      "Juniper"
+     ]
+    },
+    {
+     "name": "Fox",
+     "description": "Clever, sociable folk who make good guides, storytellers, and hosts, and know the forest's quieter ways.",
+     "look": "A graceful upright fox with russet fur, a cream-tipped muzzle and tail, alert ears, and a tidy coat with a bright scarf.",
+     "names": [
+      "Ember",
+      "Reed",
+      "Saffron",
+      "Rowan"
+     ]
+    }
+   ],
+   "slots": {
+    "weapon": "Tool",
+    "offhand": "Pawguard",
+    "armor": [
+     "Coat",
+     "Cap",
+     "Boots"
+    ],
+    "accessories": [
+     "Charm",
+     "Keepsake"
+    ]
+   },
+   "qualities": {
+    "common": "Everyday",
+    "uncommon": "Fine",
+    "rare": "Curious",
+    "epic": "Enchanted",
+    "legendary": "Storied"
+   }
+  },
+  "rulesStatuses": {
+   "statuses": [
+    {
+     "kind": "buff",
+     "effects": [
+      {
+       "increases": "physical_defence"
+      }
+     ],
+     "name": "Burrow-Braced",
+     "color": "#9A7655",
+     "description": "A steady stance and a warm wall at your back make Thumps easier to weather."
+    },
+    {
+     "kind": "buff",
+     "effects": [
+      {
+       "increases": "magic_defence"
+      }
+     ],
+     "name": "Hearthglow",
+     "color": "#F4A460",
+     "description": "A little shared warmth helps turn strange Glimmers aside."
+    },
+    {
+     "kind": "buff",
+     "effects": [
+      {
+       "increases": "movement"
+      }
+     ],
+     "name": "Quickpaw",
+     "color": "#8DBF78",
+     "description": "Light feet find the safest paths through roots, snow, and village lanes."
+    },
+    {
+     "kind": "buff",
+     "effects": [
+      {
+       "increases": "dodge"
+      }
+     ],
+     "name": "Cloverstep",
+     "color": "#7FBF9B",
+     "description": "A lucky, nimble step makes incoming trouble easier to sidestep."
+    },
+    {
+     "kind": "buff",
+     "effects": [
+      {
+       "increases": "crit_chance"
+      }
+     ],
+     "name": "Keen-Eyed",
+     "color": "#D6B85A",
+     "description": "Careful attention reveals just the right moment to land a telling blow."
+    },
+    {
+     "kind": "buff",
+     "effects": [
+      {
+       "increases": "physical_damage"
+      }
+     ],
+     "name": "Strongpaw",
+     "color": "#B77A55",
+     "description": "A good meal and a neighbor's encouragement lend extra force to Thumps."
+    },
+    {
+     "kind": "buff",
+     "effects": [
+      {
+       "increases": "magic_damage"
+      }
+     ],
+     "name": "Kindled",
+     "color": "#F08C52",
+     "description": "A bright Hearthcraft spark makes Glimmers shine a little stronger."
+    },
+    {
+     "kind": "buff",
+     "effects": [
+      "heal_over_time"
+     ],
+     "name": "Honeyed Tea",
+     "color": "#D8A548",
+     "description": "Slow sips of sweet, soothing tea restore Hearts over time."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      {
+       "decreases": "movement"
+      }
+     ],
+     "name": "Frost-Nipped",
+     "color": "#A9D5E8",
+     "description": "Lingering cold stiffens paws and makes every step feel a little longer."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "root"
+     ],
+     "name": "Root-Tangled",
+     "color": "#65834D",
+     "description": "Stubborn roots curl around the target's feet and hold them in place."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "stun"
+     ],
+     "name": "Startled",
+     "color": "#D9C98A",
+     "description": "A sudden rustle leaves the target too surprised to act for a moment."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "silence"
+     ],
+     "name": "Mossy Hush",
+     "color": "#82947A",
+     "description": "Soft, thick moss muffles the target's voice and quiets their Hearthcraft."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "disarm"
+     ],
+     "name": "Paws Full",
+     "color": "#C49A76",
+     "description": "A tumble of leaves and loose things keeps the target's paws too busy to attack."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      {
+       "decreases": "physical_damage"
+      }
+     ],
+     "name": "Heavy-Pawed",
+     "color": "#9C8E83",
+     "description": "Cold and weariness sap strength from the target's Thumps."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      {
+       "decreases": "magic_damage"
+      }
+     ],
+     "name": "Dimmed Spark",
+     "color": "#8B9AA6",
+     "description": "A wavering Hearthcraft spark leaves the target's Glimmers faint."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      {
+       "decreases": "physical_defence"
+      }
+     ],
+     "name": "Loose Guard",
+     "color": "#B58A73",
+     "description": "A jostled stance leaves the target less ready to turn aside Thumps."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      {
+       "decreases": "magic_defence"
+      }
+     ],
+     "name": "Doubtful",
+     "color": "#9A91AA",
+     "description": "A little uncertainty makes the target less able to resist Glimmers."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "physical_damage_over_time"
+     ],
+     "name": "Bramble Prickles",
+     "color": "#8D654F",
+     "description": "Tiny thorns catch at the target, dealing a little Thump damage over time."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "magic_damage_over_time"
+     ],
+     "name": "Chillglow",
+     "color": "#91C9D8",
+     "description": "A lingering wintery shimmer deals a little Glimmer damage over time."
+    }
+   ]
+  },
+  "rulesSkills": {
+   "physical_melee": {
+    "tier_1": [
+     {
+      "name": "Shield-Bump",
+      "description": "Bump one foe with your shield.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage"
+      ]
+     },
+     {
+      "name": "Settle In",
+      "description": "Take a steady stance and brace for Thumps.",
+      "target": "self",
+      "area": "single",
+      "effects": [
+       {
+        "status": "Burrow-Braced",
+        "on": "self"
+       }
+      ]
+     }
+    ],
+    "tier_2": [
+     {
+      "name": "Hedgehog Roll",
+      "description": "Roll into a foe, then keep your footing.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "dash",
+       "damage",
+       {
+        "status": "Burrow-Braced",
+        "on": "self"
+       }
+      ]
+     },
+     {
+      "name": "Sturdy Welcome",
+      "description": "Strike nearby foes and leave them off balance.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "damage",
+       {
+        "status": "Loose Guard",
+        "on": "enemies"
+       }
+      ]
+     }
+    ],
+    "tier_3": [
+     {
+      "name": "Rootwall Rush",
+      "description": "Charge a foe and hold your ground against the next blow.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "dash",
+       "damage",
+       {
+        "status": "Burrow-Braced",
+        "on": "self"
+       }
+      ]
+     }
+    ]
+   },
+   "physical_ranged": {
+    "tier_1": [
+     {
+      "name": "Pinecone Toss",
+      "description": "Toss a pinecone at one foe.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage"
+      ]
+     },
+     {
+      "name": "Watchful Aim",
+      "description": "Take a careful moment to line up your next shot.",
+      "target": "self",
+      "area": "single",
+      "effects": [
+       {
+        "status": "Keen-Eyed",
+        "on": "self"
+       }
+      ]
+     }
+    ],
+    "tier_2": [
+     {
+      "name": "Bramble Sling",
+      "description": "Send prickly seeds at a foe, leaving tiny thorns behind.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage",
+       {
+        "status": "Bramble Prickles",
+        "on": "enemies"
+       }
+      ]
+     },
+     {
+      "name": "Quick Retreat",
+      "description": "Strike a foe, then slip into a safer spot.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage",
+       {
+        "status": "Quickpaw",
+        "on": "self"
+       }
+      ]
+     }
+    ],
+    "tier_3": [
+     {
+      "name": "Acorn Scatter",
+      "description": "Scatter hard acorns across a group of foes.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "damage"
+      ]
+     }
+    ]
+   },
+   "magic_ranged": {
+    "tier_1": [
+     {
+      "name": "Frostseed",
+      "description": "Send a small frost spark at one foe.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage",
+       {
+        "status": "Frost-Nipped",
+        "on": "enemies"
+       }
+      ]
+     },
+     {
+      "name": "Lantern Mote",
+      "description": "Call a warm light to turn aside strange Glimmers.",
+      "target": "self",
+      "area": "single",
+      "effects": [
+       {
+        "status": "Hearthglow",
+        "on": "self"
+       }
+      ]
+     }
+    ],
+    "tier_2": [
+     {
+      "name": "Leafwhirl",
+      "description": "Send a swirl of bright leaves through a small group.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "damage"
+      ]
+     },
+     {
+      "name": "Winter's Thread",
+      "description": "Tie a foe's paws with roots and a cold spark.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage",
+       {
+        "status": "Root-Tangled",
+        "on": "enemies"
+       }
+      ]
+     }
+    ],
+    "tier_3": [
+     {
+      "name": "Glimmerfall",
+      "description": "Let a shower of woodland lights fall on nearby foes.",
+      "target": "enemy",
+      "area": "large",
+      "effects": [
+       "damage",
+       {
+        "status": "Chillglow",
+        "on": "enemies"
+       }
+      ]
+     }
+    ]
+   },
+   "healer": {
+    "tier_1": [
+     {
+      "name": "Herb Cup",
+      "description": "Offer an ally soothing tea that restores Hearts over time.",
+      "target": "ally",
+      "area": "single",
+      "effects": [
+       "heal",
+       {
+        "status": "Honeyed Tea",
+        "on": "allies"
+       }
+      ]
+     },
+     {
+      "name": "Soft Bandage",
+      "description": "Patch up an ally and clear their troubles.",
+      "target": "ally",
+      "area": "single",
+      "effects": [
+       "heal",
+       "removes_statuses"
+      ]
+     }
+    ],
+    "tier_2": [
+     {
+      "name": "Glimmering Poultice",
+      "description": "Mend an ally with a warm, glowing poultice.",
+      "target": "ally",
+      "area": "single",
+      "effects": [
+       "heal",
+       {
+        "status": "Hearthglow",
+        "on": "allies"
+       }
+      ]
+     },
+     {
+      "name": "Careful Thump",
+      "description": "Tap a foe with your remedy satchel.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "physical_damage"
+      ]
+     }
+    ],
+    "tier_3": [
+     {
+      "name": "Village Supper",
+      "description": "Share a hearty meal that restores Hearts and lends strength.",
+      "target": "ally",
+      "area": "small",
+      "effects": [
+       "heal",
+       {
+        "status": "Strongpaw",
+        "on": "allies"
+       }
+      ]
+     }
+    ]
+   },
+   "buff_and_debuff": {
+    "tier_1": [
+     {
+      "name": "Kind Word",
+      "description": "Encourage an ally and help them move with ease.",
+      "target": "ally",
+      "area": "single",
+      "effects": [
+       {
+        "status": "Quickpaw",
+        "on": "allies"
+       }
+      ]
+     },
+     {
+      "name": "Rustle Trick",
+      "description": "Make a sudden noise to startle one foe.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       {
+        "status": "Startled",
+        "on": "enemies"
+       }
+      ]
+     }
+    ],
+    "tier_2": [
+     {
+      "name": "False Trail",
+      "description": "Send nearby foes chasing a trail that goes nowhere.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       {
+        "status": "Paws Full",
+        "on": "enemies"
+       }
+      ]
+     },
+     {
+      "name": "Bright Tale",
+      "description": "Tell a hopeful story that steadies an ally's Hearthcraft.",
+      "target": "ally",
+      "area": "single",
+      "effects": [
+       {
+        "status": "Kindled",
+        "on": "allies"
+       }
+      ]
+     }
+    ],
+    "tier_3": [
+     {
+      "name": "Mossy Misdirection",
+      "description": "Muffle a group of foes and make their Glimmers faint.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       {
+        "status": "Mossy Hush",
+        "on": "enemies"
+       },
+       {
+        "status": "Dimmed Spark",
+        "on": "enemies"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "rulesPassives": {
+   "physical_melee": {
+    "tier_1": [
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Rooted Stance"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Brave Little Heart"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Mossstep"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "physical_defence",
+       "health"
+      ],
+      "name": "Shieldbark"
+     },
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Toolwright's Rhythm"
+     },
+     {
+      "effects": [
+       "crit_chance"
+      ],
+      "name": "Steady Paw"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "physical_defence",
+       "dodge"
+      ],
+      "name": "Old Oak Resolve"
+     },
+     {
+      "effects": [
+       "health",
+       "skill_damage"
+      ],
+      "name": "Burrow-Born Courage"
+     },
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Hearthside Bulwark"
+     }
+    ]
+   },
+   "physical_ranged": {
+    "tier_1": [
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Feathertread"
+     },
+     {
+      "effects": [
+       "crit_chance"
+      ],
+      "name": "Sure-Knot Aim"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Bramblewise"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "skill_damage",
+       "crit_chance"
+      ],
+      "name": "Quick-Eyed Scout"
+     },
+     {
+      "effects": [
+       "dodge",
+       "health"
+      ],
+      "name": "Hollow-Hedge Hops"
+     },
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Tough Little Quiver"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "skill_damage",
+       "dodge"
+      ],
+      "name": "Far-Off Finesse"
+     },
+     {
+      "effects": [
+       "crit_chance",
+       "health"
+      ],
+      "name": "Foxglove Focus"
+     },
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Pine-Sure Hands"
+     }
+    ]
+   },
+   "magic_ranged": {
+    "tier_1": [
+     {
+      "effects": [
+       "magic_defence"
+      ],
+      "name": "Dewdrop Wonder"
+     },
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Lantern-Keeper's Spark"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Soft-Footed Wonder"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "skill_damage",
+       "crit_chance"
+      ],
+      "name": "Frostbud Focus"
+     },
+     {
+      "effects": [
+       "magic_defence",
+       "health"
+      ],
+      "name": "Moss-Cloaked Calm"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Wispwise Step"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "skill_damage",
+       "magic_defence"
+      ],
+      "name": "Old-Grove Resonance"
+     },
+     {
+      "effects": [
+       "crit_chance",
+       "dodge"
+      ],
+      "name": "Starlit Thicket"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Evergreen Heart"
+     }
+    ]
+   },
+   "healer": {
+    "tier_1": [
+     {
+      "effects": [
+       "skill_power"
+      ],
+      "name": "Gentle Hands"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Stubborn Herbkeeper"
+     },
+     {
+      "effects": [
+       "magic_defence"
+      ],
+      "name": "Quiet Reassurance"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "skill_power",
+       "health"
+      ],
+      "name": "Steeping Patience"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Careful Footfall"
+     },
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Wool-Wrapped"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "skill_power",
+       "magic_defence"
+      ],
+      "name": "Hedgewise Remedy"
+     },
+     {
+      "effects": [
+       "skill_power",
+       "health"
+      ],
+      "name": "A Welcome Rest"
+     },
+     {
+      "effects": [
+       "crit_chance"
+      ],
+      "name": "A Pinch of Precision"
+     }
+    ]
+   },
+   "buff_and_debuff": {
+    "tier_1": [
+     {
+      "effects": [
+       "skill_power"
+      ],
+      "name": "Thoughtful Word"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Light on the Path"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Neighborly Spirit"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "skill_power",
+       "crit_chance"
+      ],
+      "name": "Clever Distraction"
+     },
+     {
+      "effects": [
+       "magic_defence",
+       "health"
+      ],
+      "name": "Circle of Trust"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Quick-Witted Step"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "skill_power",
+       "dodge"
+      ],
+      "name": "Many Ways Home"
+     },
+     {
+      "effects": [
+       "skill_power",
+       "health"
+      ],
+      "name": "Kindling Kinship"
+     },
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Village-Built Resilience"
+     }
+    ]
+   }
+  },
+  "rulesGear": {
+   "weapons": {
+    "physical_melee": {
+     "one_handed": {
+      "name": "Badger's Root-Hammer",
+      "description": "A seed-sized forge hammer, balanced for brave paws and careful repairs."
+     },
+     "two_handed": {
+      "name": "Hazelwood Maul",
+      "description": "A stout, two-pawed mallet that can mend a fence or send a snow-mound tumbling."
+     }
+    },
+    "physical_ranged": {
+     "one_handed": {
+      "name": "Sling of Soft Acorns",
+      "description": "A nimble sling with a pouch of polished acorns, pinecones, and other safe surprises."
+     },
+     "two_handed": {
+      "name": "Hawthorn Longbow",
+      "description": "A flexible bow of seasoned hawthorn, strung with braided nettle fiber."
+     }
+    },
+    "magic_ranged": {
+     "one_handed": {
+      "name": "Lanternbud Wand",
+      "description": "A twig wand topped with a glowing seed; it flickers with frost, leaf, and hearthlight."
+     },
+     "two_handed": {
+      "name": "Mossroot Staff",
+      "description": "A walking staff that sends gentle Glimmer dancing along its mossy roots."
+     }
+    },
+    "healer": {
+     "one_handed": {
+      "name": "Hedgehog's Tea Ladle",
+      "description": "A little copper ladle for soothing sips and a surprisingly steady bonk.",
+      "damage": "physical_damage"
+     },
+     "two_handed": {
+      "name": "Herb-Sweet Censer",
+      "description": "A warm, swinging censer whose fragrant Glimmer comforts friends and startles foes.",
+      "damage": "magic_damage"
+     }
+    },
+    "buff_and_debuff": {
+     "one_handed": {
+      "name": "Pathfinder's Whistle",
+      "description": "A rowan whistle calls courage to friends and a distracting trill to troublemakers.",
+      "damage": "magic_damage"
+     },
+     "two_handed": {
+      "name": "Wayfarer's Walking Stick",
+      "description": "A sturdy stick for pointing out safe paths, rallying friends, or thumping a nuisance.",
+      "damage": "physical_damage"
+     }
+    }
+   },
+   "shields": [
+    {
+     "name": "Tortoiseshell Pawguard",
+     "description": "A polished, carefully mended shell that turns aside trouble with a reassuring clack."
+    },
+    {
+     "name": "Hollow-Log Buckler",
+     "description": "A round shield of layered bark, light enough for small paws and stout enough for a snowball."
+    },
+    {
+     "name": "Kettle-Lid Pawguard",
+     "description": "A well-loved brass lid from the village tea room, still faintly scented of honey."
+    }
+   ],
+   "armor": {
+    "balanced": {
+     "name": "Pathkeeper's Wear",
+     "description": "Comfortable layers for muddy tracks, chilly waits, and lending a paw wherever needed.",
+     "pieces": {
+      "Coat": "Moss-Stitched Coat",
+      "Cap": "Acorn-Wool Cap",
+      "Boots": "Softstep Boots"
+     }
+    },
+    "sturdy": {
+     "name": "Forge-Friend Gear",
+     "description": "Badger-forged plates and thick padding, made for guarding neighbors in rough weather.",
+     "pieces": {
+      "Coat": "Barkscale Coat",
+      "Cap": "Ironcap Hood",
+      "Boots": "Stonewarm Boots"
+     }
+    },
+    "nimble": {
+     "name": "Bramble-Dancer Wear",
+     "description": "Light, springy layers that slip through brambles and help quick paws leap clear.",
+     "pieces": {
+      "Coat": "Fernwing Coat",
+      "Cap": "Thistledown Cap",
+      "Boots": "Dewskip Boots"
+     }
+    }
+   },
+   "accessories": {
+    "Charm": [
+     {
+      "name": "First-Shoot Charm",
+      "description": "A tiny green bead saved from the last spring, warm with a patient little hope."
+     },
+     {
+      "name": "Honeycomb Locket",
+      "description": "A dab of honey sealed in amber; its sweetness steadies a worried heart."
+     }
+    ],
+    "Keepsake": [
+     {
+      "name": "Grandma's Thimble",
+      "description": "A familiar, dented thimble that recalls every coat and friendship mended by its owner."
+     },
+     {
+      "name": "Café Crumb Tin",
+      "description": "A tiny tin from the hollow-log café, carrying a crumb for courage and the way home."
+     }
+    ]
+   }
+  },
+  "rulesItems": {
+   "healing": {
+    "name": "Brambleberry Mash",
+    "description": "A warm, tart spoonful that restores Hearts."
+   },
+   "cleansing": {
+    "name": "Hedge-Healer's Broth",
+    "description": "A soothing herb broth that clears harmful statuses."
+   },
+   "buffs": [
+    {
+     "status": "Burrow-Braced",
+     "name": "Badger's Seedcake",
+     "description": "A firm, hearty cake that grants Burrow-Braced."
+    },
+    {
+     "status": "Hearthglow",
+     "name": "Hearthside Honey",
+     "description": "A spoonful of honey shared by the fire grants Hearthglow."
+    },
+    {
+     "status": "Quickpaw",
+     "name": "Mintleaf Drops",
+     "description": "A cool, fresh drop on the tongue grants Quickpaw."
+    },
+    {
+     "status": "Cloverstep",
+     "name": "Lucky Clover Bun",
+     "description": "A soft bun with a clover tucked inside grants Cloverstep."
+    }
+   ],
+   "valuables": [
+    {
+     "name": "Frostglass Bead",
+     "description": "A clear bead found in the snow, though the sun has not warmed it."
+    },
+    {
+     "name": "Old Shrine Bell",
+     "description": "A small bronze bell from a forgotten woodland shrine."
+    },
+    {
+     "name": "Autumn Gold Leaf",
+     "description": "A bright leaf that fell from a bare branch and never turned brown."
+    },
+    {
+     "name": "Mole-King's Button",
+     "description": "A polished button said to have come from a very fine old coat."
+    },
+    {
+     "name": "Honeycomb Shard",
+     "description": "A neat piece of honeycomb, still sweet and smelling of summer."
+    }
+   ],
+   "crafts": {
+    "craft": {
+     "name": "Toolmaking",
+     "description": "Make weapons, armor, and accessories at a workshop."
+    },
+    "brew": {
+     "name": "Hedge-Brewing",
+     "description": "Mix herbs and pantry goods into useful consumables."
+    },
+    "upgrade": {
+     "name": "Gear-Mending",
+     "description": "Make your gear stronger with careful repairs."
+    },
+    "enchant": {
+     "name": "Hearthcraft",
+     "description": "Give gear a new property with a little woodland magic."
+    }
+   },
+   "materials": {
+    "hard": {
+     "name": "Forge Bits",
+     "description": "Sturdy scraps for making and improving weapons and shields."
+    },
+    "soft": {
+     "name": "Softgoods",
+     "description": "Cloth, fluff, and leather for making and improving armor and accessories."
+    },
+    "essence": {
+     "name": "Glimmerdust",
+     "description": "Faintly shining dust used to enchant gear."
+    },
+    "reagent": {
+     "name": "Hedge Herbs",
+     "description": "Leaves and roots used to brew helpful consumables."
+    }
+   }
+  },
+  "fightLooks": {
+   "damageTypes": {
+    "Thump": {
+     "shapes": [
+      "paper",
+      "dust"
+     ],
+     "colors": [
+      "#C99B7F",
+      "#A87358"
+     ],
+     "glow": false,
+     "motion": "burst",
+     "trail": "none"
+    },
+    "Glimmer": {
+     "shapes": [
+      "spark",
+      "shard"
+     ],
+     "colors": [
+      "#C8B8E2",
+      "#9B82C4"
+     ],
+     "glow": true,
+     "motion": "burst",
+     "trail": "motes"
+    }
+   },
+   "moves": {
+    "Thump": {
+     "rush": "dash",
+     "shot": "lob",
+     "blast": "quake"
+    },
+    "Glimmer": {
+     "rush": "streak",
+     "shot": "orb",
+     "blast": "ring"
+    }
+   },
+   "healing": {
+    "shapes": [
+     "petal",
+     "mote"
+    ],
+    "colors": [
+     "#F6D69A",
+     "#D8A548"
+    ],
+    "glow": true,
+    "motion": "rise",
+    "trail": "motes"
+   },
+   "barrier": {
+    "shapes": [
+     "leaf",
+     "bubble"
+    ],
+    "colors": [
+     "#B9D7A0",
+     "#82947A"
+    ],
+    "glow": true,
+    "motion": "swirl",
+    "trail": "motes"
+   },
+   "statuses": {
+    "Burrow-Braced": {
+     "shapes": [
+      "shard",
+      "dust"
+     ],
+     "colors": [
+      "#C4A47C",
+      "#9A7655"
+     ],
+     "glow": false,
+     "motion": "swirl",
+     "trail": "none"
+    },
+    "Hearthglow": {
+     "shapes": [
+      "ember",
+      "spark"
+     ],
+     "colors": [
+      "#FFD09A",
+      "#F4A460"
+     ],
+     "glow": true,
+     "motion": "rise",
+     "trail": "motes"
+    },
+    "Quickpaw": {
+     "shapes": [
+      "leaf",
+      "streak"
+     ],
+     "colors": [
+      "#B8D99E",
+      "#8DBF78"
+     ],
+     "glow": false,
+     "motion": "drift",
+     "trail": "none"
+    },
+    "Cloverstep": {
+     "shapes": [
+      "petal",
+      "leaf"
+     ],
+     "colors": [
+      "#B6DDC8",
+      "#7FBF9B"
+     ],
+     "glow": false,
+     "motion": "swirl",
+     "trail": "motes"
+    },
+    "Keen-Eyed": {
+     "shapes": [
+      "spark",
+      "star"
+     ],
+     "colors": [
+      "#F0D975",
+      "#D6B85A"
+     ],
+     "glow": true,
+     "motion": "drift",
+     "trail": "motes"
+    },
+    "Strongpaw": {
+     "shapes": [
+      "ember",
+      "paper"
+     ],
+     "colors": [
+      "#D39A72",
+      "#B77A55"
+     ],
+     "glow": false,
+     "motion": "burst",
+     "trail": "none"
+    },
+    "Kindled": {
+     "shapes": [
+      "spark",
+      "ember"
+     ],
+     "colors": [
+      "#FFB17B",
+      "#F08C52"
+     ],
+     "glow": true,
+     "motion": "rise",
+     "trail": "sparks"
+    },
+    "Honeyed Tea": {
+     "shapes": [
+      "droplet",
+      "bubble"
+     ],
+     "colors": [
+      "#F1CC78",
+      "#D8A548"
+     ],
+     "glow": false,
+     "motion": "swirl",
+     "trail": "bubbles"
+    },
+    "Frost-Nipped": {
+     "shapes": [
+      "flake",
+      "shard"
+     ],
+     "colors": [
+      "#D8F0F5",
+      "#A9D5E8"
+     ],
+     "glow": false,
+     "motion": "fall",
+     "trail": "motes"
+    },
+    "Root-Tangled": {
+     "shapes": [
+      "leaf",
+      "paper"
+     ],
+     "colors": [
+      "#91A96E",
+      "#65834D"
+     ],
+     "glow": false,
+     "motion": "swirl",
+     "trail": "none"
+    },
+    "Startled": {
+     "shapes": [
+      "flake",
+      "spark"
+     ],
+     "colors": [
+      "#EFE2B2",
+      "#D9C98A"
+     ],
+     "glow": false,
+     "motion": "burst",
+     "trail": "motes"
+    },
+    "Mossy Hush": {
+     "shapes": [
+      "mote",
+      "leaf"
+     ],
+     "colors": [
+      "#B5C0A8",
+      "#82947A"
+     ],
+     "glow": false,
+     "motion": "drift",
+     "trail": "motes"
+    },
+    "Paws Full": {
+     "shapes": [
+      "leaf",
+      "paper"
+     ],
+     "colors": [
+      "#D9B99A",
+      "#C49A76"
+     ],
+     "glow": false,
+     "motion": "swirl",
+     "trail": "none"
+    },
+    "Heavy-Pawed": {
+     "shapes": [
+      "dust",
+      "flake"
+     ],
+     "colors": [
+      "#C4BBB4",
+      "#9C8E83"
+     ],
+     "glow": false,
+     "motion": "fall",
+     "trail": "none"
+    },
+    "Dimmed Spark": {
+     "shapes": [
+      "spark",
+      "smoke"
+     ],
+     "colors": [
+      "#B9C4CA",
+      "#8B9AA6"
+     ],
+     "glow": false,
+     "motion": "drift",
+     "trail": "smoke"
+    },
+    "Loose Guard": {
+     "shapes": [
+      "paper",
+      "dust"
+     ],
+     "colors": [
+      "#D2AE98",
+      "#B58A73"
+     ],
+     "glow": false,
+     "motion": "burst",
+     "trail": "none"
+    },
+    "Doubtful": {
+     "shapes": [
+      "mote",
+      "smoke"
+     ],
+     "colors": [
+      "#C3BED0",
+      "#9A91AA"
+     ],
+     "glow": false,
+     "motion": "drift",
+     "trail": "smoke"
+    },
+    "Bramble Prickles": {
+     "shapes": [
+      "shard",
+      "leaf"
+     ],
+     "colors": [
+      "#B68A70",
+      "#8D654F"
+     ],
+     "glow": false,
+     "motion": "fall",
+     "trail": "none"
+    },
+    "Chillglow": {
+     "shapes": [
+      "flake",
+      "spark"
+     ],
+     "colors": [
+      "#C8E9EF",
+      "#91C9D8"
+     ],
+     "glow": true,
+     "motion": "swirl",
+     "trail": "motes"
+    }
+   }
+  },
+  "art": {
+   "artStyle": "Storybook watercolor and colored-pencil illustration, moss greens and honeyed browns with lingering winter blues, soft lantern glow, gentle cozy mood with quiet seasonal mystery",
+   "palette": {
+    "primary": "#687B55",
+    "secondary": "#D8C49A",
+    "accent": "#B56D4E"
+   },
+   "interface": {
+    "material": "wood",
+    "ornament": "vines",
+    "typeface": "storybook",
+    "tint": "#A7B49A",
+    "mood": "muted"
+   }
+  }
+ }
+}

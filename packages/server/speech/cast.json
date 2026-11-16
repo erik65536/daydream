@@ -1,0 +1,52 @@
+{
+  "_comment": "The bake-off cast: seven characters from four built worlds, chosen for range (a cozy older animal, an elderly man, a tiny bird in place of a child, since no built world has a child, a queen, a corporate executive, a root monster and a mining robot). `voice` is the kind of voice description a world build would write; `delivery` is the per-line acting note the live NPC call would add. Every character speaks the three shared lines and one line of their own.",
+  "shared": [
+    { "id": "greet", "label": "Greeting", "text": "Well, look who finally turned up. I was beginning to think the road had swallowed you whole.", "delivery": "Pleasantly surprised, a little teasing." },
+    { "id": "quest", "label": "Quest", "text": "Three nights ago something took the lantern from the old tower. Bring it back before the frost sets in, and I'll see that you're paid properly.", "delivery": "Serious and direct, giving a task." },
+    { "id": "grief", "label": "Bad news", "text": "No. No, that can't be right. I told her to wait for me. I told her I'd come back.", "delivery": "Shocked, then quietly breaking." }
+  ],
+  "cast": [
+    {
+      "id": "wrenna", "world": "w_f9a22f8b9c", "name": "Wrenna", "kind": "Older mouse, tea-shop keeper",
+      "voice": "An older woman's voice, small and bright, quick and warm, with a cozy country lilt; she talks like she is already pouring the tea.",
+      "own": { "text": "Sit down, sit down, the kettle's just singing. Nobody drinks alone at the Acorn Cup, and that includes you.", "delivery": "Brisk, warm, fussing." },
+      "openai": { "voice": "coral" }, "kokoro": "bf_emma"
+    },
+    {
+      "id": "pell", "world": "w_d6283243c5", "name": "Pell Ansel", "kind": "Elderly boatman",
+      "voice": "A very old man's voice, soft and slightly hoarse, slow and kindly, drifting a little as if his mind wanders mid-sentence.",
+      "own": { "text": "Oh, the dawn bell? Rings on time, it does, even when there's nobody left to eat the feast. My sister used to say that.", "delivery": "Gentle, absent-minded, a touch of sorrow." },
+      "openai": { "voice": "ash" }, "kokoro": "bm_george"
+    },
+    {
+      "id": "juniper", "world": "w_f9a22f8b9c", "name": "Juniper Wisp", "kind": "Tiny wren (stands in for a child)",
+      "voice": "A tiny, high, light voice like a small child's, airy and dreamy, with quick little breaths between phrases.",
+      "own": { "text": "The seed husks say spring is late, but they never promise. A guess is only a guess, even when it's a good one.", "delivery": "Dreamy, earnest." },
+      "openai": { "voice": "shimmer" }, "kokoro": "af_sky"
+    },
+    {
+      "id": "ysabet", "world": "w_d6283243c5", "name": "Ysabet Vael", "kind": "Queen",
+      "voice": "A mature woman's voice, low, cool and regal, measured and precise, with tenderness held tightly under command.",
+      "own": { "text": "Mercy without a plan is only abandonment with kinder words. I will save this shore, whatever it costs me.", "delivery": "Cold resolve with a crack of feeling." },
+      "openai": { "voice": "sage" }, "kokoro": "bf_isabella"
+    },
+    {
+      "id": "graham", "world": "w_d1459e612a", "name": "Graham Sleet", "kind": "Corporate executive",
+      "voice": "A middle-aged American man's voice, smooth, polished and upbeat, the confident cadence of someone always presenting to a board.",
+      "own": { "text": "Let's not call it an outage. Let's call it an opportunity to align on messaging before Friday.", "delivery": "Slick, reassuring, a practiced smile." },
+      "openai": { "voice": "cedar" }, "kokoro": "am_michael"
+    },
+    {
+      "id": "rootknock", "world": "w_f9a22f8b9c", "name": "Rootknock", "kind": "Clay-and-root monster",
+      "voice": "A huge, deep, rumbling creature's voice, slow and gravelly like stones grinding underground, booming but not evil.",
+      "own": { "text": "No rattling past! The roots are listening, and they don't know you yet!", "delivery": "Booming, alarmed, territorial." },
+      "openai": { "voice": "onyx", "realtime": "verse" }, "kokoro": "am_onyx"
+    },
+    {
+      "id": "h9", "world": "w_f7adb684a0", "name": "H9 Foreman Unit", "kind": "Mining robot",
+      "voice": "A flat, clipped, synthetic machine voice, emotionless and procedural, every word evenly spaced like a safety announcement.",
+      "own": { "text": "Work zone restricted. Return to your assigned depth.", "delivery": "Monotone, procedural." },
+      "openai": { "voice": "echo" }, "kokoro": "am_echo"
+    }
+  ]
+}

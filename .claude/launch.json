@@ -1,0 +1,8 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "game", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev"], "port": 5173 },
+    { "name": "game (phones)", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev:lan"], "port": 5173 },
+    { "name": "pipeline editor", "runtimeExecutable": "npm", "runtimeArgs": ["run", "designer"], "port": 5190 }
+  ]
+}

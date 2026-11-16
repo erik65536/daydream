@@ -1,0 +1,932 @@
+/*
+ * Moonlit: the screens before a world is entered (signing in, the world list, making a world, a world's page, starting
+ * an adventure, and a world being dreamed). A painted night behind everything, lantern-lit buttons, glass bubbles
+ * holding each world. Every class here starts with m- so nothing of the game's own interface leaks in or out.
+ */
+@property --spin { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+
+/*
+ * The game's lettering, served by the game itself (public/fonts): these pages' own, and the pairs a world's rules
+ * choose from (ui/theme.ts). Each face is two files, Latin letters and the further Latin ones (-ext: ő, ł, ž), each
+ * with the letters it holds, so a browser fetches a file only when a page shows such a letter in that face. The IM
+ * Fell faces have no further Latin letters. Most files hold every weight between the two named.
+ */
+@font-face { font-family: 'Cinzel'; font-weight: 500 700; font-display: swap; src: url('/fonts/cinzel.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Cinzel'; font-weight: 500 700; font-display: swap; src: url('/fonts/cinzel-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Cormorant Garamond'; font-weight: 400 600; font-display: swap; src: url('/fonts/cormorant-garamond.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Cormorant Garamond'; font-weight: 400 600; font-display: swap; src: url('/fonts/cormorant-garamond-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Cormorant Garamond'; font-style: italic; font-weight: 300 500; font-display: swap; src: url('/fonts/cormorant-garamond-italic.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Cormorant Garamond'; font-style: italic; font-weight: 300 500; font-display: swap; src: url('/fonts/cormorant-garamond-italic-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'EB Garamond'; font-weight: 400 500; font-display: swap; src: url('/fonts/eb-garamond.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'EB Garamond'; font-weight: 400 500; font-display: swap; src: url('/fonts/eb-garamond-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'EB Garamond'; font-style: italic; font-weight: 400; font-display: swap; src: url('/fonts/eb-garamond-italic.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'EB Garamond'; font-style: italic; font-weight: 400; font-display: swap; src: url('/fonts/eb-garamond-italic-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Inter'; font-weight: 400 600; font-display: swap; src: url('/fonts/inter.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Inter'; font-weight: 400 600; font-display: swap; src: url('/fonts/inter-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Exo 2'; font-weight: 500 700; font-display: swap; src: url('/fonts/exo-2.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Exo 2'; font-weight: 500 700; font-display: swap; src: url('/fonts/exo-2-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'IM Fell English'; font-weight: 400; font-display: swap; src: url('/fonts/im-fell-english.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'IM Fell English'; font-style: italic; font-weight: 400; font-display: swap; src: url('/fonts/im-fell-english-italic.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'IM Fell English SC'; font-weight: 400; font-display: swap; src: url('/fonts/im-fell-english-sc.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Fraunces'; font-weight: 500 700; font-display: swap; src: url('/fonts/fraunces.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Fraunces'; font-weight: 500 700; font-display: swap; src: url('/fonts/fraunces-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Lora'; font-weight: 400 500; font-display: swap; src: url('/fonts/lora.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Lora'; font-weight: 400 500; font-display: swap; src: url('/fonts/lora-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Lora'; font-style: italic; font-weight: 400; font-display: swap; src: url('/fonts/lora-italic.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Lora'; font-style: italic; font-weight: 400; font-display: swap; src: url('/fonts/lora-italic-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Oswald'; font-weight: 500 600; font-display: swap; src: url('/fonts/oswald.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Oswald'; font-weight: 500 600; font-display: swap; src: url('/fonts/oswald-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+.m-root {
+  --night: #0b0d24; --ink: #ece8f6; --muted: #a7a2c6; --gold: #f1c27b; --gold-deep: #c9893f; --ember: #ffb35c;
+  --panel: rgba(14, 15, 40, .62); --hair: rgba(241, 194, 123, .32);
+  --serif: 'Cormorant Garamond', Georgia, serif; --sans: Inter, system-ui, sans-serif;
+  --star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 0 C10.6 7 13 9.4 20 10 C13 10.6 10.6 13 10 20 C9.4 13 7 10.6 0 10 C7 9.4 9.4 7 10 0Z' fill='%23f1c27b'/%3E%3C/svg%3E");
+  position: relative; height: 100%; overflow-x: hidden; overflow-y: auto; font: 15px/1.5 var(--sans); color: var(--ink); background: var(--night);
+  -webkit-font-smoothing: antialiased;
+}
+.m-root *, .m-root *::before, .m-root *::after { box-sizing: border-box; }
+/* The night runs to the edge of the screen: a scrollbar would cut a flat strip down its right side, beside the top
+   bar and the scenery alike (its track shows the page's plain background). The page still scrolls by wheel, touch,
+   trackpad and keys. */
+/* A page's drifting things reach past its edge: cut there, they add no width, so nothing can slide the page sideways. */
+.m-root > main { overflow-x: clip; }
+.m-root { scrollbar-width: none; }
+.m-root::-webkit-scrollbar { display: none; }
+:where(.m-root) button { font: inherit; color: inherit; }
+.m-root h1, .m-root h2, .m-root h3, .m-root p { margin: 0; }
+
+/* ---------------------------------------------------------------- the night: painting, mist, stars, lanterns */
+/* Under the painting, a night of its own: deep sky above, a faint lavender glow along the horizon, dark water below.
+   It is what shows while a world's painting is still forming (the page of a world being dreamed fades the scenery in)
+   and if the painting cannot load, so every screen reads as night whatever the painting does. */
+.m-night { position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse 90% 38% at 50% 62%, rgba(118, 108, 190, .2), transparent 70%), linear-gradient(180deg, #060719 0%, #0d1030 46%, #1a1a44 61%, #0a0b22 72%, #05060f 100%); }
+.m-scenery { position: absolute; inset: 0; }
+.m-layer { position: absolute; will-change: transform; }
+.m-plate { inset: -3%; background-size: cover; background-position: center 55%; animation: m-breathe 70s ease-in-out infinite alternate; }
+.m-plate.lake { background-position: center 40%; }
+@keyframes m-breathe { from { scale: 1.03; } to { scale: 1.09; } }
+/* Mist screened over the painting. Its strips fade out above and below, so none of their edge shows over a dark sky. */
+/* A drifting strip (the mist, the clouds in front, a new world's cloud banks) is a 16:3 tile repeated along it, --h
+   tall. It slides by exactly one tile (--tile) and starts again, where the tile looks as it did, so the loop has no
+   seam; it reaches a tile beyond the screen's edge so its end never shows. */
+.m-mist, .m-clouds-front { --tile: calc(var(--h) * 16 / 3); left: -5%; width: calc(110% + var(--tile)); height: var(--h); background-size: var(--tile) 100%; background-repeat: repeat-x;
+  mix-blend-mode: screen; will-change: transform; animation: m-drift linear infinite; }
+@keyframes m-drift { to { transform: translateX(calc(-1 * var(--tile))); } }
+.m-mist { background-image: url(/moon/mist_tile.jpg);
+  -webkit-mask-image: linear-gradient(transparent, #000 32%, #000 68%, transparent); mask-image: linear-gradient(transparent, #000 32%, #000 68%, transparent); }
+.m-mist.one { --h: 30vh; bottom: 14%; opacity: .26; animation-duration: 130s; }
+.m-mist.two { --h: 30vh; bottom: -6%; opacity: .4; animation-duration: 80s; animation-direction: reverse; }
+.m-stars { position: absolute; inset: 0; width: 100%; height: 100%; }
+.m-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 70% at 50% 45%, transparent 40%, rgba(5, 5, 18, .7) 100%); }
+/* Clouds drifting in front of everything, low down, so the worlds float among them. */
+.m-clouds-front { --h: 26vh; position: fixed; bottom: -8%; z-index: 3; pointer-events: none; opacity: .22; background-image: url(/moon/clouds_tile.jpg); animation-duration: 90s; }
+
+/* ---------------------------------------------------------------- pieces */
+.m-wordmark { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: .01em; line-height: 1; color: #f7ecd6; }
+.m-emblem { background: url(/moon/emblem.png) center / contain no-repeat; }
+/* A panel of night sky: a gold hairline with a small star at each corner. */
+.m-panel { position: relative; background: var(--panel); border: 1px solid var(--hair); border-radius: 6px; backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .9), inset 0 1px 0 rgba(255, 255, 255, .05); }
+.m-panel::before, .m-panel::after { content: ''; position: absolute; width: 15px; height: 15px; background: var(--star) center / contain no-repeat; pointer-events: none; }
+.m-panel::before { top: -8px; left: -8px; }
+.m-panel::after { bottom: -8px; right: -8px; }
+.m-panel.pad { padding: 22px 24px; }
+.m-eyebrow { font: 600 11px/1.3 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+label.m-eyebrow, span.m-eyebrow.quiet { display: block; margin-bottom: 8px; color: var(--muted); }
+.m-well { width: 100%; height: 46px; padding: 0 14px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, .08); background: rgba(4, 4, 16, .45); color: var(--ink); font: inherit;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, .5); caret-color: var(--gold); transition: border-color .4s, box-shadow .4s; }
+textarea.m-well { height: auto; padding: 12px 14px; resize: vertical; }
+.m-well::placeholder { color: rgba(200, 192, 230, .45); }
+.m-well:focus { outline: none; border-color: rgba(241, 194, 123, .55); box-shadow: inset 0 2px 8px rgba(0, 0, 0, .5), 0 0 0 4px rgba(241, 194, 123, .1), 0 0 24px -4px rgba(255, 179, 92, .35); }
+/* A lantern of a button: warm light from inside, which breathes, and brightens under the pointer. */
+.m-lantern { position: relative; height: 50px; padding: 0 26px; border: 0; border-radius: 4px; cursor: pointer; color: #2b1a07 !important; font-weight: 600; letter-spacing: .02em; white-space: nowrap;
+  background: radial-gradient(ellipse 70% 120% at 50% 110%, #fff1c9 0%, #ffcf7f 40%, #e9a14c 100%);
+  box-shadow: 0 0 0 1px rgba(255, 220, 150, .5) inset, 0 10px 30px -8px rgba(255, 170, 70, .55), 0 0 60px -20px rgba(255, 170, 70, .8);
+  animation: m-flicker 4.5s ease-in-out infinite; transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), box-shadow .5s, opacity .3s; }
+.m-lantern:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255, 230, 170, .7) inset, 0 12px 28px -10px rgba(255, 170, 70, .7), 0 0 44px -14px rgba(255, 170, 70, .85); }
+.m-lantern:active:not(:disabled) { transform: translateY(0) scale(.98); }
+.m-lantern:disabled { cursor: default; opacity: .45; animation: none; filter: saturate(.6); }
+@keyframes m-flicker { 0%, 100% { filter: brightness(1); } 40% { filter: brightness(1.06); } 55% { filter: brightness(.97); } 70% { filter: brightness(1.04); } }
+.m-quiet { height: 46px; padding: 0 18px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .03); cursor: pointer; white-space: nowrap; transition: border-color .4s, background .4s, color .3s; }
+.m-quiet:hover:not(:disabled) { border-color: var(--hair); background: rgba(241, 194, 123, .06); }
+.m-quiet:disabled { opacity: .45; cursor: default; }
+.m-small { height: 38px; padding: 0 14px; font-size: 13.5px; }
+.m-danger { background: none; border: 0; color: #c98a9a; font-size: 13px; cursor: pointer; padding: 4px 0; opacity: .8; justify-self: start; }
+.m-danger:hover { opacity: 1; text-decoration: underline; }
+.m-error { color: #f2a4a4; font-size: 13.5px; }
+.m-fine { font-size: 12.5px; color: var(--muted); opacity: .85; }
+.m-tag { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 11px; border-radius: 13px; font-size: 12.5px; color: #d9d3ea;
+  border: 1px solid rgba(241, 194, 123, .22); background: rgba(14, 15, 40, .55); backdrop-filter: blur(6px); white-space: nowrap; }
+.m-tag i { width: 8px; height: 8px; background: var(--star) center / contain no-repeat; }
+.m-tag.warn { border-color: rgba(240, 150, 150, .4); color: #f2b4b4; }
+.m-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.m-lede { font-family: var(--serif); font-style: italic; font-size: 20px; line-height: 1.45; color: #ece6f6; text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 18px rgba(5, 5, 20, .9); }
+.m-big { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 6vw, 64px); line-height: 1; text-shadow: 0 2px 30px rgba(0, 0, 0, .6); }
+.m-pool { position: relative; }
+.m-pool::before { content: ''; position: absolute; inset: -20px -10%; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(8, 9, 30, .6), transparent); }
+.m-spinner { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(241, 194, 123, .2); border-top-color: var(--gold); animation: m-turn 1s linear infinite; margin: 40px auto; }
+.m-sigil { width: 20px; height: 20px; stroke: var(--gold); fill: none; stroke-width: 1.4; }
+.m-icon-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+
+/* ---------------------------------------------------------------- questions and notices (ui/ask.tsx) */
+.m-root.m-ask { position: fixed; inset: 0; z-index: 100; height: auto; overflow: auto; display: grid; place-items: center; padding: 16px; background: rgba(4, 4, 16, .62); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); animation: m-ask-in .25s ease-out; }
+.m-ask .m-panel { width: min(440px, 100%); display: grid; gap: 14px; background: rgba(14, 15, 40, .92); animation: m-ask-rise .35s cubic-bezier(.34, 1.4, .64, 1); }
+.m-ask h3 { font-family: var(--serif); font-weight: 500; font-size: 26px; line-height: 1.1; }
+.m-ask p { font-size: 15px; line-height: 1.55; color: #ddd7ee; white-space: pre-line; }
+.m-ask .btns { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.m-ask .btns button { min-width: 110px; }
+.m-ask .m-lantern { height: 46px; }
+/* Yes to losing something: a quiet button in the color of a warning. */
+.m-sure { border-color: rgba(240, 150, 150, .5) !important; color: #ffc9c9 !important; background: rgba(200, 70, 70, .16) !important; }
+.m-sure:hover { border-color: rgba(240, 150, 150, .8) !important; background: rgba(200, 70, 70, .28) !important; }
+@keyframes m-ask-in { from { opacity: 0; } }
+@keyframes m-ask-rise { from { opacity: 0; translate: 0 10px; scale: .98; } }
+@media (max-width: 640px) { .m-ask .btns button { flex: 1 1 0; } }
+
+/* ---------------------------------------------------------------- the top bar */
+.m-top { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; gap: 10px; padding: 14px clamp(16px, 4vw, 44px) 24px; }
+/* The bar's shade fades out at its foot; it is drawn behind the bar, so the fade does not cut off the menu dropping from it. */
+.m-top::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(8, 9, 28, .9) 55%, rgba(8, 9, 28, 0)); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent); mask-image: linear-gradient(180deg, #000 70%, transparent); }
+.m-top .m-wordmark { font-size: 30px; cursor: pointer; }
+.m-top .spacer { flex: 1; }
+.m-top .crumb-sep { color: rgba(255, 255, 255, .22); font-size: 20px; font-weight: 300; margin: 0 -4px 0 4px; }
+.m-top .back { min-width: 0; max-width: 34vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 14px; padding: 6px 10px; border-radius: 4px; background: none; border: 0; cursor: pointer; transition: color .3s, background .3s; }
+.m-top .back:hover { color: var(--gold); background: rgba(241, 194, 123, .06); }
+.m-who { position: relative; display: flex; align-items: center; gap: 10px; font-size: 13.5px; line-height: 20px; color: var(--ink); background: none; border: 0; cursor: pointer; padding: 2px; }
+.m-who .face { width: 32px; height: 32px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff8e6, #e8d6ad 55%, #b59b6d); box-shadow: 0 0 16px rgba(255, 230, 180, .4);
+  display: grid; place-items: center; color: #3a2b10; font-weight: 600; font-size: 13px; }
+/* The mute: a round glass button beside the account; on the signing-in pages, alone in the top corner. */
+.m-mute { flex: none; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border-radius: 50%; cursor: pointer;
+  color: var(--ink); background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .12); transition: color .3s, background .3s, border-color .3s, box-shadow .3s;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.m-mute svg { display: block; }
+.m-mute.off { color: var(--muted); border-style: dashed; }
+.m-mute:focus { outline: none; }
+.m-mute:focus-visible { box-shadow: 0 0 0 2px var(--gold); }
+@media (hover: hover) { .m-mute:hover { color: var(--gold); border-color: var(--hair); background: rgba(241, 194, 123, .08); box-shadow: 0 0 14px rgba(241, 194, 123, .18); } }
+.m-mute:active { background: rgba(241, 194, 123, .14); }
+.m-mute.corner { position: fixed; z-index: 4; top: max(14px, env(safe-area-inset-top)); right: max(clamp(16px, 4vw, 44px), env(safe-area-inset-right)); }
+/* A finger needs a larger target than the drawn circle. */
+@media (pointer: coarse) { .m-mute { width: 40px; height: 40px; } }
+/* The account menu: your own pages, then (for administrators) the administration under its own heading, then signing out. */
+.m-menu { position: absolute; right: clamp(16px, 4vw, 44px); top: calc(100% - 14px); min-width: 210px; padding: 6px; display: grid; z-index: 6;
+  transform-origin: top right; animation: m-menu-in .16s ease-out; }
+.m-menu .group { display: grid; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--hair); }
+.m-menu .label { padding: 4px 12px 2px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.m-menu hr { border: 0; border-top: 1px solid var(--hair); margin: 6px 0; }
+.m-menu .version { padding: 6px 12px 2px; font-size: 11px; color: var(--muted); opacity: .7; }
+.m-menu button { text-align: left; padding: 9px 12px; border-radius: 4px; background: none; border: 0; cursor: pointer; color: var(--ink); font-size: 14px; }
+.m-menu button[aria-current=page] { color: var(--gold); }
+.m-menu button:hover, .m-menu button:focus-visible { background: rgba(241, 194, 123, .08); color: var(--gold); outline: none; }
+@media (pointer: coarse) { .m-menu button { padding: 12px 14px; } }
+@keyframes m-menu-in { from { opacity: 0; scale: .97; translate: 0 -4px; } }
+@media (prefers-reduced-motion: reduce) { .m-menu { animation: none; } }
+
+/* ---------------------------------------------------------------- signing in: the lantern lake */
+/* The title sits on the far shore of the lake. The lake fills the screen at least, and grows and scrolls (in .m-root)
+   when the form is taller than the screen. */
+.m-lake { position: relative; z-index: 1; min-height: 100vh; min-height: 100dvh; display: grid; grid-template-rows: max(8px, calc(41vh - 206px)) auto auto 1fr; justify-items: center; padding: 16px 16px 48px; }
+.m-lake-title { grid-row: 2; text-align: center; position: relative; }
+.m-lake-title .m-emblem { width: 96px; height: 96px; margin: 0 auto 2px; filter: brightness(1.6) drop-shadow(0 0 10px rgba(255, 190, 110, .8)); animation: m-hover 7s ease-in-out infinite alternate; }
+@keyframes m-hover { to { translate: 0 -6px; } }
+.m-lake-title .m-wordmark { font-size: clamp(64px, 13vw, 120px); text-shadow: 0 0 40px rgba(241, 194, 123, .35); }
+/* Its reflection on the water: mirrored, fading, rippling. */
+.m-lake-title .reflection { font-size: clamp(64px, 13vw, 120px); height: 1em; transform-origin: top; transform: translateY(.5em) scaleY(-.5); margin: -6px 0 -.5em; opacity: .42; filter: url(#m-ripple) blur(.5px);
+  -webkit-mask-image: linear-gradient(0deg, #000 15%, transparent 75%); mask-image: linear-gradient(0deg, #000 15%, transparent 75%); pointer-events: none; user-select: none; }
+.m-tagline { position: relative; font-family: var(--serif); font-style: italic; font-size: 21px; color: #e4ddf2; margin-top: -4px; text-shadow: 0 1px 12px rgba(0, 0, 0, .8); }
+.m-tagline::before { content: ''; position: absolute; inset: -10px -40px; z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, rgba(8, 9, 30, .55), transparent); }
+.m-lake .m-panel { grid-row: 3; align-self: start; margin-top: 22px; width: min(380px, 100%); padding: 22px 22px 16px; display: grid; gap: 12px; }
+.m-lake .m-panel.wide { width: min(440px, 100%); }
+.m-lake .m-lantern { width: 100%; margin-top: 2px; }
+.m-lake .foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.m-passkey { background: none; border: 0; color: var(--muted); cursor: pointer; display: flex; gap: 8px; align-items: center; justify-content: center; padding: 6px; transition: color .3s; }
+.m-passkey:hover { color: var(--gold); }
+.m-lake .note { font-size: 13.5px; color: #d9d3ea; line-height: 1.45; }
+/* A field with its line beneath: the rule it keeps, what is wrong, or good news. */
+.m-field { display: grid; gap: 5px; }
+.m-field .m-fine { padding: 0 2px; line-height: 1.4; }
+.m-well[aria-invalid] { border-color: rgba(242, 164, 164, .5); }
+.m-fine.good { color: #b9e4b4; }
+
+/* ---------------------------------------------------------------- the world list: the sky above the clouds */
+.m-lobby { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 44px) 140px; }
+.m-heading { position: relative; text-align: center; padding: clamp(10px, 3vh, 34px) 0 clamp(10px, 3vh, 26px); }
+.m-heading::before { content: ''; position: absolute; inset: -10px -8%; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 50% 58% at 50% 55%, rgba(8, 9, 30, .62), transparent); }
+.m-heading .m-emblem { width: 92px; height: 92px; margin: 0 auto 4px; filter: brightness(1.6) drop-shadow(0 0 10px rgba(255, 190, 110, .8)); animation: m-hover 7s ease-in-out infinite alternate; }
+.m-heading h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(46px, 7vw, 74px); line-height: 1; text-shadow: 0 2px 30px rgba(0, 0, 0, .6); }
+.m-rule { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 10px auto 10px; width: min(360px, 80%); }
+.m-rule::before, .m-rule::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--hair)); }
+.m-rule::after { background: linear-gradient(270deg, transparent, var(--hair)); }
+.m-rule i { width: 12px; height: 12px; background: var(--star) center / contain no-repeat; }
+.m-heading p { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 21px; line-height: 1.45; color: #f1ecfa; max-width: 540px; margin: 0 auto; text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 18px rgba(5, 5, 20, .9); }
+
+/* A world, floating: a dream bubble with its first place inside and some of its people in front. */
+.m-float { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; will-change: transform; }
+.m-bob { animation: m-bob var(--dur, 7s) ease-in-out var(--delay, 0s) infinite alternate; }
+@keyframes m-bob { from { translate: 0 0; } to { translate: 0 -12px; } }
+.m-bubble { --size: 230px; position: relative; width: var(--size); height: var(--size); border-radius: 50%; cursor: pointer; isolation: isolate; display: block; padding: 0; border: 0; background: none;
+  transition: transform .9s cubic-bezier(.34, 1.4, .64, 1); }
+.m-bubble .inside { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--tint, #3c3c82) 60%, #101030), #0c0c26);
+  box-shadow: 0 0 34px -4px rgba(170, 180, 255, .3), 0 0 80px -10px rgba(255, 190, 230, .14), 0 30px 50px -20px rgba(0, 0, 0, .8); }
+.m-bubble .scene { position: absolute; inset: -14%; background-size: cover; background-position: center; filter: blur(.9px) saturate(1.1) brightness(.94);
+  transition: transform 1.2s cubic-bezier(.2, .7, .2, 1), filter 1s; }
+.m-bubble .figs { position: absolute; left: 0; right: 0; bottom: 9%; display: flex; justify-content: center; align-items: flex-end; transition: transform 1.2s cubic-bezier(.2, .7, .2, 1); }
+.m-bubble .figs img { height: calc(var(--size) * .5); margin: 0 -2%; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, .5)); }
+.m-bubble .figs img:nth-child(2) { height: calc(var(--size) * .58); position: relative; z-index: 1; }
+/* Glass: a soft rim of color that slowly turns, light caught at the top, shade at the edge. */
+.m-bubble .rim { position: absolute; inset: -1px; border-radius: 50%; pointer-events: none; z-index: 2;
+  background: conic-gradient(from var(--spin), rgba(255, 196, 235, .9), rgba(170, 215, 255, .9), rgba(190, 255, 225, .8), rgba(255, 238, 170, .9), rgba(255, 196, 235, .9));
+  -webkit-mask: radial-gradient(circle closest-side, transparent 94.5%, #000 98%, #000 99.4%, transparent 100%); mask: radial-gradient(circle closest-side, transparent 94.5%, #000 98%, #000 99.4%, transparent 100%);
+  opacity: .5; animation: m-spin 14s linear infinite; filter: blur(.4px); }
+@keyframes m-spin { to { --spin: 360deg; } }
+.m-bubble .glass { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; z-index: 2;
+  background:
+    radial-gradient(ellipse 34% 20% at 32% 18%, rgba(255, 255, 255, .5), transparent 70%),
+    radial-gradient(circle 4% at 72% 24%, rgba(255, 255, 255, .7), transparent 100%),
+    radial-gradient(ellipse 30% 9% at 66% 88%, rgba(200, 220, 255, .28), transparent 70%),
+    radial-gradient(circle closest-side, transparent 70%, rgba(12, 12, 40, .32) 90%, rgba(12, 12, 40, .5) 97%, transparent 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22), inset 0 -2px 6px rgba(190, 210, 255, .18), 0 0 0 1px rgba(10, 10, 30, .35); }
+.m-bubble:hover { transform: scale(1.06); }
+.m-bubble:hover .scene { filter: blur(0) saturate(1.15) brightness(1.02); }
+.m-bubble:focus-visible { outline: 2px solid var(--gold); outline-offset: 6px; }
+/* The empty bubble: mist turning inside, waiting for a theme. A world still being dreamed fills with light from below. */
+.m-bubble.empty .inside { background: radial-gradient(circle at 50% 60%, rgba(60, 60, 130, .55), rgba(16, 16, 46, .7)); }
+.m-bubble .swirl { position: absolute; inset: -30%; background: url(/moon/mist.jpg) center / cover; mix-blend-mode: screen; opacity: .55; animation: m-turn 40s linear infinite; }
+.m-bubble .swirl.b { animation-duration: 60s; animation-direction: reverse; opacity: .35; scale: 1.3; }
+@keyframes m-turn { to { rotate: 360deg; } }
+.m-bubble .spark { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; }
+.m-bubble .spark span { width: 64px; height: 64px; background: var(--star) center / contain no-repeat; filter: drop-shadow(0 0 14px rgba(255, 200, 120, .9)); animation: m-twinkle 3.5s ease-in-out infinite; }
+@keyframes m-twinkle { 50% { scale: .82; rotate: 12deg; opacity: .8; } }
+.m-bubble .fill { position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--p, 0%) + 30%); background: linear-gradient(0deg, rgba(255, 190, 110, .42), rgba(255, 190, 110, .14) 60%, transparent);
+  mix-blend-mode: screen; animation: m-flicker 5s ease-in-out infinite; transition: height 1s; }
+/* A new world's bubble (NewWorldBubble): a small sky of its own, in the night's colors: a moonlit horizon glows
+   lavender behind two banks of cloud drifting at different speeds (the tile repeats across a strip twice the
+   bubble's width, slid by half), and above them the gold seed of light the world grows from, its only warm color,
+   as the lanterns are the night's. Hover or focus parts the clouds; while a world is being written it brews. */
+.m-seedling .inside { background: radial-gradient(ellipse 120% 90% at 50% 105%, #7d77b8 0%, #48468a 34%, #1d1c4c 68%, #0b0b26 100%);
+  box-shadow: 0 0 40px -4px rgba(190, 180, 255, .34), 0 0 90px -10px rgba(170, 160, 240, .26), 0 30px 50px -20px rgba(0, 0, 0, .8); transition: box-shadow .9s; }
+.m-sky .glow { position: absolute; left: 50%; bottom: 8%; width: 130%; aspect-ratio: 1; translate: -50% 50%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(236, 228, 255, .8), rgba(196, 180, 240, .42) 36%, rgba(150, 130, 210, .16) 64%, transparent);
+  opacity: .7; animation: m-glow 9s ease-in-out infinite alternate; transition: opacity .9s, scale 1.2s cubic-bezier(.2, .7, .2, 1); }
+@keyframes m-glow { to { opacity: .9; scale: 1.06; } }
+/* A bank is as tall as --h of the bubble; its strip holds two tiles (each 16:3) and slides by one (m-drift). The bank
+   is screened over the sky, its black falling away, and tinted to the night's lavender clouds. */
+.m-sky .bank { position: absolute; left: 0; width: 100%; height: calc(var(--size) * var(--h)); overflow: hidden; pointer-events: none; mix-blend-mode: screen;
+  transition: translate 1.4s cubic-bezier(.2, .7, .2, 1); }
+.m-sky .bank i { --tile: calc(var(--size) * var(--h) * 16 / 3); position: absolute; top: 0; left: 0; height: 100%; width: calc(2 * var(--tile)); background: url(/moon/clouds_tile.jpg) left top / 50% 100% repeat-x;
+  will-change: transform; animation: m-drift var(--drift, 60s) linear infinite; }
+.m-sky .bank.far { --h: .2; bottom: 24%; opacity: .42; filter: blur(.8px) sepia(.4) hue-rotate(220deg) saturate(1.2) brightness(.85); }
+.m-sky .bank.far i { --drift: 120s; animation-direction: reverse; }
+.m-sky .bank.near { --h: .34; bottom: -4%; opacity: .9; filter: sepia(.35) hue-rotate(228deg) saturate(1.25); }
+.m-sky .bank.near i { --drift: 55s; }
+.m-sky .seed { position: absolute; left: 50%; top: 40%; width: 0; height: 0; z-index: 1; transition: translate 1.2s cubic-bezier(.34, 1.4, .64, 1); }
+.m-sky .halo { position: absolute; width: calc(var(--size) * .62); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 236, 200, .5), rgba(255, 210, 150, .15) 45%, transparent); animation: m-halo 4.5s ease-in-out infinite; }
+.m-sky .star { position: absolute; width: calc(var(--size) * .26); aspect-ratio: 1; translate: -50% -50%; background: var(--star) center / contain no-repeat;
+  filter: drop-shadow(0 0 10px rgba(255, 214, 150, .95)) brightness(1.15); animation: m-twinkle 4.5s ease-in-out infinite; transition: scale .9s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes m-halo { 50% { scale: 1.18; opacity: .75; } }
+/* Motes: three sparks on circles of their own, each from its own angle (--a), turning a whole turn at its own pace. */
+.m-sky .motes i { position: absolute; width: calc(var(--size) * var(--r, .5)); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; animation: m-orbit var(--t, 16s) linear infinite; }
+@keyframes m-orbit { from { rotate: var(--a, 0deg); } to { rotate: calc(var(--a, 0deg) + 360deg); } }
+.m-sky .motes i::after { content: ''; position: absolute; top: 0; left: 50%; width: 4px; height: 4px; margin: -2px; border-radius: 50%; background: #fff6e2; box-shadow: 0 0 6px 2px rgba(255, 220, 170, .75); }
+.m-sky .motes i:nth-child(2) { --r: .36; --t: 11s; --a: 140deg; animation-direction: reverse; }
+.m-sky .motes i:nth-child(3) { --r: .66; --t: 23s; --a: 260deg; opacity: .7; }
+.m-seedling:is(:hover, :focus-visible) .inside { box-shadow: 0 0 54px -2px rgba(200, 190, 255, .5), 0 0 110px -10px rgba(180, 170, 250, .38), 0 30px 50px -20px rgba(0, 0, 0, .8); }
+.m-seedling:is(:hover, :focus-visible) .glow { opacity: 1; scale: 1.14; animation-play-state: paused; }
+.m-seedling:is(:hover, :focus-visible) .bank.far { translate: 0 10%; }
+.m-seedling:is(:hover, :focus-visible) .bank.near { translate: 0 14%; }
+.m-seedling:is(:hover, :focus-visible) .seed { translate: 0 -6%; }
+.m-seedling:is(:hover, :focus-visible) .star { scale: 1.22; }
+.m-seedling:active { transform: scale(.97); transition-duration: .15s; }
+.m-seedling.still { cursor: default; }
+.m-seedling.still:hover { transform: none; }
+/* Brewing: the clouds part, the horizon brightens and the seed of light beats faster while the world is written. */
+.m-seedling.brewing .inside { box-shadow: 0 0 60px 0 rgba(210, 200, 255, .55), 0 0 120px -6px rgba(255, 210, 150, .3), 0 30px 50px -20px rgba(0, 0, 0, .8); }
+.m-seedling.brewing .glow { opacity: 1; scale: 1.16; animation-duration: 2.4s; }
+.m-seedling.brewing .bank.far { translate: 0 10%; }
+.m-seedling.brewing .bank.near { translate: 0 16%; }
+.m-seedling.brewing .seed { translate: 0 -6%; }
+.m-seedling.brewing .halo { animation-duration: 1.6s; }
+.m-seedling.brewing .star { animation-duration: 1.6s; }
+.m-seedling.brewing .motes i { animation-duration: calc(var(--t, 16s) / 3); }
+@media (prefers-reduced-motion: reduce) { .m-seedling *, .m-seedling *::after { animation: none !important; } }
+
+/* A soft pool of night behind the words, so they read over bright cloud. */
+.m-caption { position: relative; margin-top: 16px; max-width: 260px; cursor: pointer; }
+.m-caption::before { content: ''; position: absolute; inset: -14px -30px; z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, rgba(8, 9, 30, .62), transparent); pointer-events: none; }
+.m-caption h3 { font-family: var(--serif); font-weight: 500; font-size: 24px; line-height: 1.1; text-shadow: 0 2px 14px rgba(0, 0, 0, .9); }
+.m-caption .meta { margin-top: 6px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-shadow: 0 1px 8px rgba(0, 0, 0, .9); }
+.m-caption .mine { color: var(--gold); }
+.m-caption .cta { font-family: var(--serif); font-style: italic; color: var(--gold); font-size: 25px; }
+
+/* The adventure you were last in. */
+.m-resume { display: flex; align-items: center; justify-content: center; gap: clamp(20px, 5vw, 64px); margin: 10px 0 40px; flex-wrap: wrap; }
+.m-resume .m-bubble { --size: clamp(250px, 30vw, 340px); }
+.m-resume .m-panel { width: min(420px, 100%); padding: 28px 28px 26px; display: grid; gap: 10px; }
+.m-resume h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(30px, 3.6vw, 40px); line-height: 1.05; }
+.m-resume .who { color: var(--muted); font-size: 14px; }
+.m-resume .note { font-family: var(--serif); font-style: italic; font-size: 18px; color: #d6cfe8; }
+.m-resume .btns { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+.m-resume .btns .m-lantern { flex: 1.3; }
+.m-resume .btns .m-quiet { flex: 1; height: 50px; }
+
+.m-section { display: flex; align-items: center; gap: 14px; margin: 50px 0 26px; }
+.m-section h2 { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: 30px; white-space: nowrap; text-shadow: 0 2px 14px rgba(0, 0, 0, .8); }
+.m-section::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--hair), transparent); }
+/* Worlds drift at different heights, like things adrift. */
+.m-sky-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px clamp(24px, 4vw, 56px); }
+.m-sky-grid .m-float:nth-child(3n + 2) { margin-top: 56px; }
+.m-sky-grid .m-float:nth-child(3n) { margin-top: 18px; }
+
+/* ---------------------------------------------------------------- pages after the world list */
+.m-page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 44px) 120px; }
+.m-page.narrow { max-width: 920px; }
+.m-head-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+.m-head-row h2 { font-family: var(--serif); font-weight: 400; font-style: italic; font-size: 30px; text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 18px rgba(5, 5, 20, .95); }
+.m-head-row .spacer { flex: 1; }
+
+/* ---------------------------------------------------------------- creating a world */
+.m-create-top { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 14px 0 26px; }
+.m-create-top .m-bubble { --size: 150px; cursor: default; }
+.m-create-top .m-bubble:hover { transform: none; }
+.m-create-top .m-lede { max-width: 640px; }
+.m-dream-input { width: 100%; min-height: 150px; resize: vertical; padding: 18px 20px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, .08); background: rgba(4, 4, 16, .45);
+  color: var(--ink); font: italic 400 22px/1.45 var(--serif); caret-color: var(--gold); box-shadow: inset 0 2px 10px rgba(0, 0, 0, .5); transition: border-color .4s, box-shadow .4s; }
+.m-dream-input::placeholder { color: rgba(200, 192, 230, .4); }
+.m-dream-input:focus { outline: none; border-color: rgba(241, 194, 123, .5); box-shadow: inset 0 2px 10px rgba(0, 0, 0, .5), 0 0 0 4px rgba(241, 194, 123, .08), 0 0 30px -6px rgba(255, 179, 92, .3); }
+.m-seeds { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; }
+.m-seeds .m-eyebrow { color: var(--muted); margin-right: 4px; }
+/* A seed of a world: a small bubble of a button. */
+.m-seed { height: 32px; padding: 0 14px 0 10px; border-radius: 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font: italic 500 16px var(--serif) !important; color: #e9e2f5 !important;
+  border: 1px solid rgba(190, 200, 255, .22); background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .1), rgba(30, 32, 80, .4)); transition: border-color .4s, transform .5s cubic-bezier(.34, 1.56, .64, 1), box-shadow .4s; }
+.m-seed::before { content: ''; width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, rgba(200, 210, 255, .5) 40%, rgba(120, 130, 220, .2)); box-shadow: 0 0 8px rgba(190, 200, 255, .5); }
+.m-seed:hover { border-color: rgba(241, 194, 123, .5); transform: translateY(-2px); box-shadow: 0 6px 18px -8px rgba(255, 180, 100, .5); }
+.m-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.m-topic { height: 30px; padding: 0 12px; border-radius: 4px; border: 1px dashed rgba(255, 255, 255, .18); background: none; color: var(--muted) !important; font-size: 13px; cursor: pointer; transition: color .3s, border-color .3s; }
+.m-topic:hover { color: var(--gold) !important; border-color: var(--hair); }
+.m-prompt-row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: start; margin-top: 12px; }
+.m-prompt-row .topic-name { height: 46px; display: grid; place-items: center; padding: 0 14px; border-radius: 4px; background: rgba(241, 194, 123, .08); border: 1px solid var(--hair); color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing: .04em; white-space: nowrap; }
+/* Text boxes grow with what is written in them. */
+.m-prompt-row textarea { min-height: 70px; max-height: 260px; field-sizing: content; }
+.m-dream-input { field-sizing: content; max-height: 420px; }
+.m-x { width: 46px; height: 46px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, .1); background: none; color: var(--muted) !important; cursor: pointer; font-size: 18px; display: grid; place-items: center; transition: color .3s, border-color .3s; }
+.m-x:hover { color: #f0a0a0 !important; border-color: rgba(240, 160, 160, .4); }
+.m-choices { display: grid; gap: 22px; }
+.m-picks { display: grid; gap: 10px; grid-template-columns: repeat(var(--n, 3), 1fr); }
+/* A choice: a small night panel with a drawing; the chosen one is lit from inside. */
+.m-pick { position: relative; border-radius: 6px; padding: 14px 14px 12px; cursor: pointer; text-align: left; color: var(--ink); border: 1px solid rgba(255, 255, 255, .09); background: rgba(4, 4, 16, .35);
+  backdrop-filter: blur(8px); transition: border-color .4s, background .4s, transform .5s cubic-bezier(.34, 1.56, .64, 1), box-shadow .5s; display: grid; gap: 6px; align-content: start; }
+@media (hover: hover) { .m-pick:hover { border-color: rgba(241, 194, 123, .3); transform: translateY(-2px); } }
+.m-pick.on { border-color: rgba(241, 194, 123, .75); background: radial-gradient(ellipse 100% 90% at 50% 0%, rgba(255, 190, 110, .26), rgba(40, 30, 50, .6)); box-shadow: 0 0 30px -10px rgba(255, 180, 90, .6), inset 0 1px 0 rgba(255, 230, 180, .15); }
+.m-pick.on::after { content: ''; position: absolute; top: -7px; right: -7px; width: 14px; height: 14px; background: var(--star) center / contain no-repeat; filter: drop-shadow(0 0 6px rgba(255, 200, 120, .9)); }
+.m-pick .pic { height: 54px; display: flex; align-items: center; }
+.m-pick .t { font-family: var(--serif); font-size: 21px; font-weight: 500; line-height: 1.1; }
+.m-pick .d { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+.m-pick.small { padding: 10px 12px; }
+.m-pick.small .t { font-size: 18px; }
+/* Where the owner is: describing the world, reviewing its concept and rules, dreaming it. */
+.m-steps { display: flex; gap: 6px; align-items: center; list-style: none; margin: 4px 0 0; padding: 0; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.m-steps li { display: flex; align-items: center; gap: 8px; }
+.m-steps li + li::before { content: ''; width: clamp(14px, 4vw, 36px); height: 1px; margin-right: 2px; background: linear-gradient(90deg, transparent, var(--hair), transparent); }
+.m-steps .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; border: 1px solid rgba(255, 255, 255, .18); }
+.m-steps .now { color: var(--gold); }
+.m-steps .now .n { border-color: var(--gold); background: rgba(241, 194, 123, .14); box-shadow: 0 0 14px rgba(255, 190, 110, .45); }
+.m-steps .done .n { border-color: rgba(241, 194, 123, .5); color: var(--gold); }
+@media (max-width: 640px) { .m-steps .t { display: none; } .m-steps .now .t { display: inline; } }
+/* The creation page: its panels, the notes under the description, a size's time and cost, what went wrong. */
+.m-create > .m-panel + .m-panel { margin-top: 16px; }
+.m-create h1 { animation: m-reveal .8s ease-out both; }
+.m-notes { margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, .07); }
+.m-pick .note { display: grid; margin-top: 6px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, .07); font-size: 12px; line-height: 1.5; color: var(--muted); }
+.m-pick .note b { font-weight: 500; color: var(--gold); }
+.m-said { margin-top: 16px; text-align: right; }
+/* Something written appears: it rises a little out of the dark. */
+.m-reveal { animation: m-reveal .7s ease-out both; }
+@keyframes m-reveal { from { opacity: 0; translate: 0 8px; } }
+@media (prefers-reduced-motion: reduce) { .m-reveal, .m-create h1 { animation: none; } }
+
+/* The review: the world's concept, then its rules in groups, each a switch or a choice of a few ways. */
+.m-review { display: grid; gap: 16px; }
+.m-failed { display: flex; gap: 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 16px; }
+.m-concept, .m-concept .m-reveal { display: grid; gap: 12px; }
+.m-concept .m-reveal { gap: 14px; }
+.m-concept .tone { font-family: var(--serif); font-style: italic; font-size: 20px; line-height: 1.4; color: #efe8f8; }
+.m-concept .setting { max-width: 70ch; font-size: 15px; line-height: 1.65; color: #d9d3ea; white-space: pre-line; }
+.m-systems-head { display: grid; gap: 6px; margin-bottom: 14px; }
+/* The groups flow down two balanced columns (one on a phone), none split between them. */
+.m-system-groups { columns: 2 300px; column-gap: 28px; }
+.m-system-group { display: grid; gap: 6px; align-content: start; break-inside: avoid; margin-bottom: 22px; }
+.m-system-group h3 { font-family: var(--serif); font-weight: 500; font-size: 22px; color: #f3ecfa; margin: 0 0 4px; }
+.m-toggle { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; width: 100%; padding: 9px 12px; border-radius: 6px; text-align: left; cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, .06); background: rgba(4, 4, 16, .3); color: var(--ink); transition: border-color .3s, background .3s; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) { .m-toggle:hover { border-color: rgba(241, 194, 123, .3); } .m-rule-choice .ways button:hover { color: var(--ink); border-color: var(--hair); } }
+.m-toggle:focus-visible, .m-rule-choice button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.m-toggle .text { display: grid; gap: 2px; }
+.m-toggle b, .m-rule-choice b { font-weight: 500; font-size: 14.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.m-toggle .text > span { font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+.m-toggle:not(.on) b { color: #b9b2cc; }
+.mine { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); padding: 1px 7px; border-radius: 8px; border: 1px solid var(--hair); }
+.m-toggle .knob { position: relative; width: 42px; height: 24px; border-radius: 12px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .16); transition: background .3s, border-color .3s, box-shadow .3s; }
+.m-toggle .knob i { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #9a93b5; transition: translate .35s cubic-bezier(.34, 1.56, .64, 1), background .3s, box-shadow .3s; }
+.m-toggle.on .knob { background: rgba(241, 194, 123, .3); border-color: rgba(241, 194, 123, .7); box-shadow: 0 0 14px -2px rgba(255, 190, 110, .55); }
+.m-toggle.on .knob i { translate: 18px 0; background: radial-gradient(circle at 35% 35%, #fff8e6, #f1c27b); box-shadow: 0 0 8px rgba(255, 210, 150, .9); }
+.m-rule-choice { display: grid; gap: 8px; padding: 10px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, .06); background: rgba(4, 4, 16, .3); }
+.m-rule-choice .ways { display: flex; flex-wrap: wrap; gap: 6px; }
+.m-rule-choice .ways button { height: 32px; padding: 0 12px; border-radius: 16px; cursor: pointer; font-size: 13px; color: var(--muted); border: 1px solid rgba(255, 255, 255, .14); background: none; transition: color .3s, border-color .3s, background .3s; }
+.m-rule-choice .ways button.on { color: #ffe6c0; border-color: rgba(241, 194, 123, .75); background: rgba(241, 194, 123, .16); }
+.m-rule-choice .d { font-size: 12.5px; color: var(--muted); }
+@media (pointer: coarse) { .m-toggle { padding: 12px 14px; } .m-rule-choice .ways button { height: 40px; padding: 0 16px; } }
+/* A choice that stands alone (animations, on the review and a world's page): the panel is the switch. */
+.m-motion { padding: 0; }
+.m-motion .m-toggle { padding: 16px 24px; border: 0; background: none; border-radius: inherit; }
+.m-motion-progress { padding: 14px 24px 16px; display: grid; gap: 8px; text-align: left; }
+.m-motion .m-toggle + .m-motion-progress { padding-top: 0; }
+@media (hover: hover) { .m-motion .m-toggle:hover { background: rgba(241, 194, 123, .04); } }
+/* Text being written: what is happening, and lines of light passing over gray bars. */
+.m-lines { display: grid; gap: 10px; padding: 4px 0; }
+.m-lines .what { font-family: var(--serif); font-style: italic; font-size: 19px; color: #e6def5; margin-bottom: 4px; }
+.m-lines i { height: 12px; border-radius: 6px; background: linear-gradient(90deg, rgba(255, 255, 255, .05) 30%, rgba(241, 194, 123, .22) 50%, rgba(255, 255, 255, .05) 70%) 0 0 / 300% 100%; animation: m-shimmer 2.2s linear infinite; }
+.m-lines i:nth-of-type(2) { width: 92%; } .m-lines i:nth-of-type(3) { width: 80%; } .m-lines i:nth-of-type(4) { width: 55%; }
+@keyframes m-shimmer { from { background-position: 100% 0; } to { background-position: -50% 0; } }
+@media (prefers-reduced-motion: reduce) { .m-lines i { animation: none; } }
+.m-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+.m-actions .m-lantern { min-width: 150px; }
+/* The last step's actions, with what building the world takes beside them. */
+.m-final { margin-top: 6px; }
+.m-summary { flex: 1 1 300px; display: flex; gap: 12px; align-items: center; font-size: 14px; color: #ddd8ee; line-height: 1.45; text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 14px rgba(5, 5, 20, .9); }
+.m-summary svg { flex: none; }
+.m-summary b { font-weight: 600; color: #f3ecfa; }
+.m-summary span { display: block; font-size: 12.5px; color: var(--muted); }
+
+/* ---------------------------------------------------------------- the world page */
+.m-world-hero { display: grid; grid-template-columns: auto 1fr; gap: clamp(24px, 4vw, 56px); align-items: center; padding: 18px 0 36px; }
+.m-world-hero .m-bubble { --size: clamp(240px, 28vw, 330px); cursor: default; }
+.m-world-hero .m-eyebrow { margin-bottom: 10px; }
+.m-world-hero h1 { margin-bottom: 14px; }
+.m-world-hero .m-lede { margin: 16px 0 22px; max-width: 560px; }
+.m-world-hero .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.m-world-hero .btns .m-lantern { min-width: 230px; }
+.m-world-hero .m-motion { margin-top: 18px; max-width: 560px; }
+.m-world-cols { display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
+.m-advs { display: grid; gap: 12px; }
+.m-empty { font-family: var(--serif); font-style: italic; font-size: 19px; color: #d6cfe8; padding: 22px 24px; }
+/* An adventure: its party as small portraits in moonlit rings. */
+.m-adv { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; padding: 14px 16px; }
+.m-rings { display: flex; }
+.m-ring { width: 54px; height: 54px; border-radius: 50%; overflow: hidden; margin-left: -12px; flex: none; border: 1.5px solid rgba(241, 194, 123, .55); box-shadow: 0 0 0 3px rgba(10, 10, 30, .9), 0 0 14px rgba(255, 190, 110, .25);
+  background: radial-gradient(circle at 50% 30%, #3a3c78, #15163a); display: grid; place-items: center; font-family: var(--serif); font-size: 22px; color: var(--gold); }
+.m-ring:first-child { margin-left: 0; }
+.m-ring img { width: 100%; height: 160%; object-fit: cover; object-position: 50% 0; align-self: start; }
+.m-adv h3 { font-family: var(--serif); font-weight: 500; font-size: 22px; line-height: 1.1; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.m-adv .sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.m-adv .bad { font-size: 12.5px; color: #f2b4b4; margin-top: 3px; }
+.m-adv .side { display: flex; gap: 8px; align-items: center; }
+.m-icon-btn { width: 38px; height: 38px; border-radius: 4px; border: 1px solid rgba(255, 255, 255, .1); background: none; color: var(--muted) !important; cursor: pointer; display: grid; place-items: center; transition: color .3s, border-color .3s; flex: none; }
+.m-icon-btn:hover { color: #f0a0a0 !important; border-color: rgba(240, 160, 160, .4); }
+.m-chip { font: 600 10.5px var(--sans); letter-spacing: .12em; text-transform: uppercase; color: #b9c4ff; border: 1px solid rgba(185, 196, 255, .35); padding: 2px 7px; border-radius: 3px; }
+.m-side-col { display: grid; gap: 18px; }
+.m-side-col h3 { font-family: var(--serif); font-weight: 500; font-size: 24px; margin-bottom: 8px; }
+.m-side-col p { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.m-side-col .intro { font-family: var(--serif); font-style: italic; font-size: 16.5px; color: #d6cfe8; }
+.m-side-col .m-tags { margin: 12px 0 14px; }
+.m-side-col .btns { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.m-bad { color: #f2a4a4; }
+.m-meter { height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .08); overflow: hidden; margin: 6px 0 4px; }
+.m-meter div { height: 100%; background: linear-gradient(90deg, var(--gold-deep), #ffe2a8); box-shadow: 0 0 10px rgba(255, 200, 120, .7); transition: width 1s; }
+.m-others { margin-top: 18px; font-size: 13.5px; }
+.m-others summary { width: fit-content; padding: 4px 10px; border-radius: 4px; color: var(--text); background: rgba(10, 10, 30, .45); text-shadow: 0 1px 3px rgba(0, 0, 0, .8); cursor: pointer; }
+.m-others .row { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 8px 12px; border: 1px dashed rgba(255, 255, 255, .12); border-radius: 4px; margin-top: 6px; }
+.m-others .row small { display: block; color: var(--muted); }
+
+/* A dialog over the page (the codex, the balance report): the game's own window, in a dimmed night. */
+.m-modal-wrap { position: fixed; inset: 0; z-index: 20; background: rgba(4, 4, 16, .7); display: grid; place-items: center; padding: 20px; backdrop-filter: blur(4px); }
+
+/* The window itself: the codex or the balance report, in the same glass as the page, its pieces in the page's type. */
+.m-window { width: min(980px, 100%); height: min(760px, calc(100dvh - 40px)); display: flex; flex-direction: column; background: rgba(12, 13, 40, .88); }
+.m-window-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px 12px 24px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.m-window-head h3 { flex: 1; font-family: var(--serif); font-weight: 500; font-size: 26px; }
+.m-window-head h3 span { color: var(--muted); font-style: italic; font-weight: 400; }
+.m-window .display, .m-window .quest .qt, .m-window .codex-entry .ce-title { font-family: var(--serif); letter-spacing: 0; font-weight: 500; }
+.m-window .display.gold { color: var(--ink); font-size: 30px !important; }
+.m-window .quest .qt { color: #d9d3ea; font-size: 17px; }
+.m-window .quest { border-radius: 4px; padding: 7px 12px; }
+.m-window .quest:hover { background: rgba(241, 194, 123, .05); }
+.m-window .quest.on { border-color: var(--hair); background: rgba(241, 194, 123, .1); }
+.m-window .quest.on .qt { color: var(--gold); }
+.m-window .codex-nav { border-right-color: rgba(255, 255, 255, .07); padding: 14px 10px; }
+.m-window .codex-entry { border-color: rgba(255, 255, 255, .08); border-left-color: var(--ec, rgba(255, 255, 255, .2)); background: rgba(4, 4, 16, .3); border-radius: 4px; }
+.m-window .codex-entry .ce-title { color: #ffe6c0; font-size: 18px; }
+.m-window .codex-entry .ce-text { color: #cfc8e2; }
+.m-window .codex-entry .ce-line { color: #ddd6ec; }
+.m-window .serif { font-family: var(--serif); }
+.m-window .input { border-radius: 4px; border: 1px solid rgba(255, 255, 255, .08); background: rgba(4, 4, 16, .45); color: var(--ink); }
+.m-window .input:focus { border-color: rgba(241, 194, 123, .5); box-shadow: 0 0 0 3px rgba(241, 194, 123, .08); }
+.m-window .panel-body { padding: 18px 24px; }
+.m-window .table th { border-bottom-color: rgba(255, 255, 255, .1); }
+.m-window .table td { border-bottom-color: rgba(255, 255, 255, .05); }
+.m-window .label { font: 600 11px/1.3 var(--sans); letter-spacing: .16em; color: var(--muted); }
+.m-window, .m-window .grow { min-width: 0; }
+@media (max-width: 640px) {
+  .m-modal-wrap { padding: 8px; }
+  .m-window-head { padding-left: 16px; }
+  .m-window-head h3 { font-size: 22px; }
+  .m-window-head h3 span { display: none; }
+  /* The sections become one row of chips above the rules, scrolled sideways, so the rules have the full width. */
+  .m-window > .row { flex-direction: column; }
+  .m-window .codex-nav { width: auto; flex-direction: row; align-items: center; gap: 6px; padding: 10px 12px; overflow: auto hidden; scrollbar-width: none;
+    border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, .07);
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); }
+  .m-window .codex-nav::-webkit-scrollbar { display: none; }
+  .m-window .codex-nav .input { flex: none; width: 112px; min-width: 0; margin: 0; height: 34px; }
+  .m-window .codex-nav .quest:last-child { margin-right: 30px; }
+  .m-window .quest { flex: none; padding: 5px 12px; white-space: nowrap; border: 1px solid rgba(255, 255, 255, .1); border-radius: 17px; }
+  .m-window .quest .qt { font-size: 15px; }
+  .m-window .display.gold { font-size: 26px !important; }
+  .m-window .codex-grid { grid-template-columns: minmax(0, 1fr); }
+  .m-window .panel-body { padding: 14px; }
+}
+
+/* ---------------------------------------------------------------- starting an adventure */
+.m-new-top { text-align: center; padding: 12px 0 22px; }
+.m-new-top .m-lede { max-width: 680px; margin: 12px auto 0; }
+.m-heroes { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 0 0 18px; }
+.m-herotab-wrap { position: relative; display: flex; }
+.m-herotab { display: flex; gap: 12px; align-items: center; padding: 6px 14px 6px 6px; border-radius: 40px; background: rgba(8, 9, 30, .55); backdrop-filter: blur(6px); border: 1px solid rgba(255, 255, 255, .06); text-align: left; cursor: pointer; color: var(--ink); transition: border-color .3s, background .3s; }
+.m-herotab .m-ring { margin: 0; width: 60px; height: 60px; }
+.m-herotab b { font-family: var(--serif); font-size: 19px; font-weight: 500; display: block; line-height: 1.1; text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 14px rgba(5, 5, 20, .95); }
+.m-herotab span { font-size: 12px; color: var(--muted); }
+.m-herotab.on { border-color: rgba(241, 194, 123, .65); background: rgba(241, 194, 123, .12); }
+/* The name in full light (the line under it is quieter); the chosen hero's in gold. */
+.m-herotab b { color: var(--ink); }
+.m-herotab.on b { color: #ffe6c0; }
+.m-herotab.on span span { color: #d8ccb4; }
+.m-herotab.add { border: 1px dashed rgba(241, 194, 123, .6); background: rgba(241, 194, 123, .07); transition: border-color .3s, background .3s, transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.m-herotab.add:hover { border-color: var(--gold); background: rgba(241, 194, 123, .14); transform: translateY(-2px); }
+.m-herotab.add .m-ring { display: grid; place-items: center; border-color: rgba(255, 220, 160, .9); background: radial-gradient(circle at 40% 35%, #fff1c9, #f1c27b 60%, #c9893f); box-shadow: 0 0 0 3px rgba(10, 10, 30, .9), 0 0 24px rgba(255, 190, 110, .6); animation: m-flicker 4.5s ease-in-out infinite; }
+.m-herotab.add .m-ring svg { width: 26px; height: 26px; stroke: #3a2408; stroke-width: 2.4; fill: none; }
+.m-herotab.add b { color: var(--gold); }
+.m-herotab-x { position: absolute; top: -4px; right: -4px; width: 24px; height: 24px; padding: 5px; display: grid; place-items: center; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .15); background: rgba(8, 9, 30, .9); color: var(--muted); cursor: pointer; }
+.m-herotab-x svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2; }
+.m-herotab-x:hover { color: var(--ink); border-color: rgba(241, 194, 123, .65); }
+.m-plain { color: inherit; text-decoration: none; }
+.m-plain:hover { text-decoration: underline; text-decoration-color: rgba(241, 194, 123, .5); }
+.m-friends { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.m-friend { cursor: pointer; color: var(--muted); }
+.m-friend.on { color: var(--ink); border-color: rgba(241, 194, 123, .65); background: rgba(241, 194, 123, .14); }
+/* An adventure's page. Your heroes stand in a row of lantern-lit cards: lit when they come along, in shadow while they
+   wait; the star marks who leads. The last card makes another hero. */
+.m-hero-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.m-hero-card { position: relative; }
+.m-hero-card .body, .m-hero-card.add { width: 100%; height: 100%; display: grid; justify-items: center; align-content: start; gap: 3px; padding: 12px 10px 14px; border-radius: 8px; cursor: pointer; color: var(--ink); text-align: center;
+  border: 1px solid rgba(255, 255, 255, .1); background: rgba(8, 9, 30, .55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: border-color .4s, background .5s, transform .5s cubic-bezier(.34, 1.56, .64, 1), box-shadow .5s; }
+.m-hero-card .body:hover:not(:disabled), .m-hero-card.add:hover:not(:disabled) { transform: translateY(-3px); border-color: rgba(241, 194, 123, .45); }
+.m-hero-card .body:disabled { cursor: default; }
+.m-hero-card .figure { position: relative; width: 100%; height: 150px; display: grid; place-items: end center; margin-bottom: 6px; }
+.m-hero-card .figure::before { content: ''; position: absolute; left: 50%; bottom: -4px; width: 110px; height: 26px; translate: -50% 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 255, 255, .12), transparent); transition: background .5s; }
+.m-hero-card .figure img { position: relative; height: 150px; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .6)) grayscale(.75) brightness(.55); transition: filter .6s; }
+.m-hero-card .initial { font: 400 56px var(--serif); color: var(--muted); }
+.m-hero-card b { font-family: var(--serif); font-weight: 500; font-size: 21px; line-height: 1.1; }
+.m-hero-card .sub { font-size: 12px; color: var(--muted); }
+.m-hero-card .state { margin-top: 6px; font: 600 10.5px var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.m-hero-card.on .body { border-color: rgba(241, 194, 123, .6); background: radial-gradient(ellipse 90% 70% at 50% 35%, rgba(255, 190, 110, .22), rgba(30, 24, 52, .65)); box-shadow: 0 0 34px -12px rgba(255, 180, 90, .7), inset 0 1px 0 rgba(255, 230, 180, .12); }
+.m-hero-card.on .figure::before { background: radial-gradient(closest-side, rgba(255, 220, 160, .55), rgba(255, 190, 110, .12) 70%, transparent); }
+.m-hero-card.on .figure img { filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .6)); }
+.m-hero-card.on .state { color: var(--gold); }
+/* The star (who leads) and the cross (let a waiting hero go) sit in the card's top corners. */
+.m-hero-card .corner { position: absolute; top: 8px; width: 32px; height: 32px; padding: 7px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255, 255, 255, .14); background: rgba(8, 9, 30, .7); color: var(--muted);
+  transition: color .3s, border-color .3s, background .3s; }
+.m-hero-card .corner svg { display: block; width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.6; }
+.m-hero-card .lead { left: 8px; }
+.m-hero-card .lead:hover:not(:disabled) { color: var(--gold); border-color: var(--hair); }
+.m-hero-card .lead.on { cursor: default; color: #3a2408; border-color: rgba(255, 220, 160, .9); background: radial-gradient(circle at 40% 35%, #fff1c9, #f1c27b 60%, #c9893f); box-shadow: 0 0 14px rgba(255, 190, 110, .6); }
+.m-hero-card .lead.on svg { fill: currentColor; }
+.m-hero-card .drop { right: 8px; }
+.m-hero-card .drop:hover:not(:disabled) { color: #f0a0a0; border-color: rgba(240, 160, 160, .4); }
+.m-hero-card.add { border-style: dashed; border-color: rgba(241, 194, 123, .45); background: rgba(241, 194, 123, .05); }
+.m-hero-card.add .figure { place-items: center; }
+.m-hero-card.add .figure::before { display: none; }
+.m-hero-card.add .figure svg { width: 64px; height: 64px; padding: 16px; border-radius: 50%; stroke: #3a2408; stroke-width: 2.2; fill: none;
+  background: radial-gradient(circle at 40% 35%, #fff1c9, #f1c27b 60%, #c9893f); box-shadow: 0 0 30px rgba(255, 190, 110, .55); animation: m-flicker 4.5s ease-in-out infinite; }
+.m-hero-card.add b { color: var(--gold); }
+.m-hero-help { margin-top: 14px; max-width: 640px; }
+/* Small words over the painted sky read only with a shadow behind them. */
+.m-head-row .m-fine, .m-hero-help { opacity: 1; color: #cfc9e4; text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 14px rgba(5, 5, 20, .95); }
+/* Heroes on the left, playing and players beside them; on a phone, Play comes first. */
+.m-adv-cols { display: grid; grid-template-columns: minmax(0, 1fr) 340px; grid-template-areas: 'heroes play' 'heroes players'; grid-template-rows: auto 1fr; gap: 18px 22px; align-items: start; }
+.m-adv-cols .heroes { grid-area: heroes; }
+.m-adv-cols .m-play { grid-area: play; }
+.m-adv-cols .m-players { grid-area: players; }
+.m-play { display: grid; gap: 10px; }
+.m-play .m-lantern { width: 100%; }
+/* Who plays: a dot for who is in the game now, and each player's heroes. */
+.m-players h3 { font-family: var(--serif); font-weight: 500; font-size: 24px; margin-bottom: 4px; }
+.m-players ul { list-style: none; padding: 0; margin: 4px 0 16px; }
+.m-players li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid rgba(255, 255, 255, .07); }
+.m-players li:first-child { border-top: 0; }
+.m-players .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, .2); }
+.m-players .dot.on { background: #8fe3a2; box-shadow: 0 0 8px rgba(143, 227, 162, .7); }
+.m-players .who b { display: block; font-family: var(--serif); font-weight: 500; font-size: 18px; line-height: 1.15; }
+.m-players .who em { font-style: italic; font-weight: 400; color: var(--muted); }
+.m-players .who small { display: block; font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m-players .faces { display: flex; }
+.m-players .faces .m-ring { width: 30px; height: 30px; margin-left: -8px; font-size: 14px; box-shadow: 0 0 0 2px rgba(10, 10, 30, .9); }
+.m-players .faces .m-ring:first-child { margin-left: 0; }
+.m-invite { position: relative; margin-bottom: 12px; }
+.m-invite .m-fine { margin-top: 6px; }
+.m-matches { display: grid; margin-top: 6px; border: 1px solid rgba(255, 255, 255, .08); border-radius: 4px; background: rgba(4, 4, 16, .55); overflow: hidden; }
+.m-matches button { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 0; border-top: 1px solid rgba(255, 255, 255, .05); background: none; color: var(--ink); text-align: left; cursor: pointer; transition: background .3s, color .3s; }
+.m-matches button:first-child { border-top: 0; }
+.m-matches button:hover:not(:disabled) { background: rgba(241, 194, 123, .08); color: var(--gold); }
+.m-matches svg { width: 16px; height: 16px; stroke: var(--gold); fill: none; stroke-width: 1.8; flex: none; }
+.m-matches small { margin-left: auto; color: var(--muted); font-size: 12px; }
+.m-copy { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; }
+.m-copy svg { width: 16px; height: 16px; stroke: var(--gold); fill: none; stroke-width: 1.8; }
+.m-players .m-danger { margin-top: 10px; }
+.m-fine.bad { color: #f2b4b4; }
+.m-maker { display: grid; grid-template-columns: minmax(240px, 300px) minmax(0, 1fr) minmax(250px, 290px); grid-template-areas: 'stage classes stats'; gap: 22px; align-items: start; }
+.m-maker > .m-stage-hero { grid-area: stage; }
+.m-maker > .m-choose { grid-area: classes; }
+.m-maker > .m-stats { grid-area: stats; }
+/* Not wide enough for three: the numbers go under the hero. */
+@media (max-width: 1080px) and (min-width: 901px) {
+  .m-maker { grid-template-columns: 280px minmax(0, 1fr); grid-template-areas: 'stage classes' 'stats classes'; }
+}
+/* Your hero stands in a pool of lantern light. */
+.m-stage-hero { display: grid; justify-items: center; padding: 22px 20px 20px; }
+.m-stage-hero .light { position: absolute; left: 50%; top: 40px; width: 250px; height: 260px; translate: -50% 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 196, 120, .3), transparent); filter: blur(6px); animation: m-flicker 5s ease-in-out infinite; }
+.m-stage-hero .disc { position: absolute; left: 50%; top: 246px; width: 190px; height: 44px; translate: -50% 0; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 220, 160, .55), rgba(255, 190, 110, .12) 70%, transparent); box-shadow: 0 0 40px rgba(255, 190, 110, .3); }
+.m-stage-hero .disc::after { content: ''; position: absolute; inset: 6px 14px; border-radius: 50%; border: 1px solid rgba(255, 220, 160, .45); }
+.m-stage-hero .hero { position: relative; height: 250px; display: grid; place-items: end center; }
+.m-stage-hero .hero img { height: 250px; filter: drop-shadow(0 10px 12px rgba(0, 0, 0, .6)); animation: m-hover 5s ease-in-out infinite alternate; }
+.m-stage-hero .who { font-size: 13px; color: var(--muted); margin-top: 6px; }
+/* The name: a dashed line and a pencil say it can be changed; a die suggests one. */
+.m-name { position: relative; width: 100%; margin-top: 26px; }
+.m-name input { width: 100%; text-align: center; background: none; border: 0; border-bottom: 1px dashed var(--hair); color: #f7ecd6; font: italic 400 30px var(--serif); padding: 4px 44px 6px; caret-color: var(--gold); cursor: text; transition: border-color .3s, background .3s; }
+.m-name input:hover { background: rgba(241, 194, 123, .05); border-bottom-color: var(--gold); }
+.m-name input:focus { outline: none; border-bottom-color: var(--gold); }
+.m-name input::placeholder { color: rgba(247, 236, 214, .35); }
+.m-name .pen { position: absolute; left: 8px; top: 50%; translate: 0 -50%; width: 18px; height: 18px; opacity: .6; pointer-events: none; }
+.m-name svg { display: block; width: 100%; height: 100%; stroke: var(--gold); fill: none; stroke-width: 1.5; }
+.m-name .dice { position: absolute; right: 2px; top: 50%; translate: 0 -50%; width: 34px; height: 34px; padding: 7px; border-radius: 50%; border: 1px solid rgba(241, 194, 123, .3); background: rgba(4, 4, 16, .4); cursor: pointer; transition: transform .5s cubic-bezier(.34, 1.56, .64, 1), border-color .3s; }
+.m-name .dice:hover { transform: rotate(90deg); border-color: var(--gold); }
+.m-stage-hero .m-eyebrow { margin-top: 8px; color: var(--muted); }
+.m-classes { display: grid; gap: 10px; }
+.m-cls { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.m-cls .head { display: flex; gap: 8px; align-items: center; }
+.m-cls .role { font: 600 10px var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); border: 1px solid rgba(255, 255, 255, .12); padding: 2px 6px; border-radius: 3px; }
+.m-cls .skills { display: flex; gap: 4px; margin-top: 2px; }
+.m-kins { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+/* Each kin shows the chosen class painted as that kin. */
+.m-kin { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px 0 4px; border-radius: 22px; cursor: pointer; border: 1px solid rgba(255, 255, 255, .12); background: rgba(14, 15, 40, .55); color: var(--ink); font-size: 13.5px; transition: border-color .3s, background .3s; }
+.m-kin .face { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; flex: none; border: 1px solid rgba(255, 255, 255, .15); background: radial-gradient(circle at 50% 30%, #3a3c78, #15163a); }
+.m-kin .face img { width: 100%; height: 170%; object-fit: cover; object-position: 50% 0; }
+.m-kin.on { border-color: rgba(241, 194, 123, .65); background: rgba(241, 194, 123, .12); color: #ffe6c0; }
+.m-kin.on .face { border-color: var(--gold); box-shadow: 0 0 10px rgba(255, 190, 110, .5); }
+.m-kin-note { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+.m-stats { display: grid; gap: 14px; }
+.m-vitals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.m-vital { padding: 10px 12px; border-radius: 4px; background: rgba(4, 4, 16, .4); border: 1px solid rgba(255, 255, 255, .06); }
+.m-vital b { font-family: var(--serif); font-size: 26px; font-weight: 500; display: block; line-height: 1; }
+.m-vital span { font-size: 11.5px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.m-kv { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-size: 13px; color: var(--muted); }
+.m-kv b { color: var(--ink); font-weight: 500; text-align: right; }
+/* Difficulty: five stars, each in a round seat on a thread. The seat lights under the pointer; the chosen one fills with gold. */
+.m-stars-pick { display: flex; align-items: flex-start; position: relative; padding-top: 4px; }
+.m-stars-pick::before { content: ''; position: absolute; left: 10%; right: 10%; top: 31px; height: 1px; background: linear-gradient(90deg, var(--hair), rgba(241, 194, 123, .12)); }
+.m-stars-pick button { flex: 1; background: none; border: 0; cursor: pointer; display: grid; justify-items: center; gap: 6px; color: var(--muted) !important; position: relative; padding: 0; }
+.m-stars-pick .seat { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 40% 30%, rgba(255, 255, 255, .07), rgba(10, 10, 32, .9));
+  border: 1px solid rgba(255, 255, 255, .18); box-shadow: inset 0 2px 6px rgba(0, 0, 0, .5); transition: border-color .35s, box-shadow .45s, background .45s, transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.m-stars-pick i { width: 24px; height: 24px; background: var(--star) center / contain no-repeat; opacity: .35; transition: opacity .4s, transform .5s cubic-bezier(.34, 1.56, .64, 1), filter .4s; }
+.m-stars-pick button:hover .seat { border-color: rgba(241, 194, 123, .6); box-shadow: inset 0 2px 6px rgba(0, 0, 0, .5), 0 0 18px -2px rgba(255, 190, 110, .45); transform: translateY(-2px); }
+.m-stars-pick button:hover i { opacity: .85; }
+.m-stars-pick button.lit i { opacity: .75; }
+.m-stars-pick button.on .seat { border-color: rgba(255, 220, 160, .9); background: radial-gradient(circle at 45% 35%, #fff1c9, #f2b764 55%, #b8762f); box-shadow: 0 0 26px rgba(255, 190, 110, .7), inset 0 -3px 6px rgba(120, 60, 10, .4); }
+.m-stars-pick button.on i { opacity: 1; filter: brightness(.25) sepia(1) saturate(3); transform: scale(1.1); }
+.m-stars-pick button.on { color: var(--gold) !important; }
+.m-stars-pick b { font-family: var(--serif); font-size: 18px; font-weight: 500; }
+.m-stars-pick small { font-size: 11.5px; margin-top: -4px; text-align: center; }
+.m-begin { display: grid; grid-template-columns: 1fr auto; gap: 22px 14px; align-items: end; margin-top: 24px; padding: 20px 24px; }
+.m-begin .diff { grid-column: 1 / -1; }
+.m-begin .diff .m-eyebrow { margin-bottom: 10px; }
+.m-begin .m-lantern { height: 54px; min-width: 240px; font-size: 16px; grid-column: -2 / -1; }
+.m-begin .m-error { grid-column: 1 / -1; }
+
+/* ---------------------------------------------------------------- a world being dreamed: the whole night forms as it is made */
+.m-dreaming { position: relative; z-index: 1; height: calc(100vh - 62px); height: calc(100dvh - 62px); display: grid; grid-template-rows: auto 1fr auto; justify-items: center; padding: 0 16px 16px; overflow: hidden; }
+/* Northern lights in the world's own colors, arriving with its rules and story. */
+.m-aurora { position: fixed; inset: -10% -20% auto; height: 70%; z-index: 0; pointer-events: none; filter: blur(46px); opacity: 0; transition: opacity 2s; }
+.m-aurora i { position: absolute; left: 0; right: 0; height: 30%; border-radius: 50%; animation: m-sway 18s ease-in-out infinite alternate; }
+.m-aurora i:nth-child(1) { top: 18%; background: linear-gradient(90deg, transparent, var(--c1), var(--c2), transparent); transform: rotate(-8deg); }
+.m-aurora i:nth-child(2) { top: 34%; background: linear-gradient(90deg, transparent, var(--c3), var(--c1), transparent); transform: rotate(5deg); animation-duration: 26s; animation-delay: -9s; opacity: .7; }
+.m-aurora i:nth-child(3) { top: 8%; background: linear-gradient(90deg, transparent, var(--c2), var(--c4), transparent); transform: rotate(-3deg); animation-duration: 33s; opacity: .5; }
+@keyframes m-sway { from { translate: -6% 0; scale: 1 .8; } to { translate: 6% 4%; scale: 1.1 1.2; } }
+.m-dream-head { text-align: center; padding-top: clamp(14px, 4vh, 34px); padding-bottom: 6px; position: relative; z-index: 4; }
+.m-dream-head h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 5vw, 58px); line-height: 1.05; margin-top: 8px; text-shadow: 0 2px 30px rgba(0, 0, 0, .7); }
+.m-dream-line { margin-top: 8px; font: italic 19px/1.3 var(--serif); color: #e8e1f4; text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 16px rgba(5, 5, 20, .95); }
+
+/* The dream: the bubble the owner pressed Dream on (the shared sky, ui/night.tsx DreamSky), grown large. Its night
+   takes on the world's colors as it forms and the clouds sink as it grows; nothing of the world shows until it is
+   ready, when they fall away on the world itself. */
+.m-dream-wrap { position: relative; align-self: stretch; justify-self: stretch; min-height: 0; container-type: size; display: grid; place-items: center; }
+.m-dream-core { position: relative; width: var(--orb); height: var(--orb); --orb: min(82cqh, 340px, 64cqw); }
+.m-dream-core.galaxy { --orb: min(60cqh, 230px, 46cqw); }
+.m-orb-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; }
+.m-orb-canvas.back { z-index: 0; }
+.m-orb-canvas.front { z-index: 3; }
+.m-orb { --size: var(--orb); position: absolute; inset: 0; z-index: 2; border-radius: 50%; cursor: pointer; }
+.m-orb .inside { position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
+  background: radial-gradient(ellipse 120% 90% at 50% 105%, color-mix(in srgb, var(--c2) calc(var(--p) * 45%), #7d77b8) 0%, color-mix(in srgb, var(--c1) calc(var(--p) * 25%), #48468a) 34%, #1d1c4c 68%, #0b0b26 100%);
+  box-shadow: 0 0 calc(34px + var(--p) * 80px) calc(var(--p) * 16px) color-mix(in srgb, var(--c1) calc(var(--p) * 40%), rgba(190, 180, 255, .3)), 0 40px 60px -30px rgba(0, 0, 0, .9); transition: box-shadow 2s; }
+/* Layers: the night and its horizon, then the clouds and the seed of light. */
+.m-orb .glow { opacity: calc(.55 + var(--p) * .4); }
+.m-orb .bank, .m-orb .seed { z-index: 2; }
+.m-orb .bank.far { translate: 0 calc(var(--p) * 30%); }
+.m-orb .bank.near { translate: 0 calc(var(--p) * 22%); }
+.m-orb .seed { translate: calc(var(--mx, 0) * 6px) calc(-6% - var(--p) * 8% + var(--my, 0) * 5px); }
+.m-orb .inside::after { content: ''; position: absolute; inset: 0; border-radius: 50%; z-index: 3; pointer-events: none; background: radial-gradient(circle at 50% 50%, transparent 58%, rgba(6, 6, 24, .6) 100%); }
+.m-orb .glass { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; z-index: 2;
+  background: radial-gradient(ellipse 34% 20% at 32% 18%, rgba(255, 255, 255, .4), transparent 70%), radial-gradient(circle 4% at 72% 24%, rgba(255, 255, 255, .6), transparent 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22), inset 0 -2px 6px rgba(190, 210, 255, .18); }
+/* When the world is ready, the clouds and the seed of light fall away and the world can be seen. */
+.m-orb .clear { position: absolute; inset: 0; z-index: 2; opacity: 0; transition: opacity 3s 1s; }
+.m-orb .clear .scene { position: absolute; inset: -14%; background-size: cover; background-position: center; filter: blur(.9px); }
+.m-orb .clear .figs { position: absolute; left: 0; right: 0; bottom: 9%; display: flex; justify-content: center; align-items: flex-end; }
+.m-orb .clear .figs img { height: calc(var(--orb) * .48); margin: 0 -2%; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, .5)); }
+.m-orb .clear .figs img:nth-child(2) { height: calc(var(--orb) * .56); position: relative; z-index: 1; }
+.m-dreaming.ready .m-orb .clear { opacity: 1; }
+.m-dreaming.ready .m-orb :is(.bank, .seed, .glow) { opacity: 0 !important; transition: opacity 3s; }
+.m-dreaming.ready .m-orb .bank { translate: 0 60%; transition: opacity 3s, translate 4s cubic-bezier(.4, 0, .2, 1); }
+.m-orb .flash { position: absolute; inset: -6%; border-radius: 50%; border: 2px solid rgba(255, 236, 200, .9); opacity: 0; pointer-events: none; }
+.m-dreaming.ready .m-orb .flash { animation: m-flash 2.4s ease-out forwards; }
+@keyframes m-flash { 0% { opacity: 1; scale: .9; box-shadow: 0 0 60px rgba(255, 230, 180, .9); } 100% { opacity: 0; scale: 1.8; box-shadow: 0 0 0 rgba(255, 230, 180, 0); } }
+
+/* What the build just did, rising softly from under the dream. */
+.m-whispers { position: relative; height: 26px; pointer-events: none; }
+.m-whisper { position: absolute; inset: 0; text-align: center; font: italic 18px/26px var(--serif); color: rgba(240, 234, 252, .92); text-shadow: 0 0 12px rgba(5, 5, 20, 1), 0 1px 2px rgba(0, 0, 0, .9); animation: m-rise 3.2s ease-out forwards; }
+@keyframes m-rise { 0% { opacity: 0; translate: 0 10px; } 18% { opacity: 1; translate: 0 0; } 80% { opacity: .9; translate: 0 -3px; } 100% { opacity: 0; translate: 0 -12px; } }
+
+/* The ledger: what the build makes, part by part, each lit while it works and starred when it is done. */
+.m-dream-foot { position: relative; z-index: 4; width: min(900px, 100%); display: grid; gap: 10px; padding-top: 8px; }
+.m-ledger { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.m-ledger-card { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; padding: 10px 12px 11px; border-radius: 6px;
+  background: rgba(10, 10, 32, .62); border: 1px solid rgba(255, 255, 255, .07); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: border-color .8s, background .8s, box-shadow .8s, opacity .8s; }
+.m-ledger-card .m-sigil { margin-top: 1px; color: rgba(200, 195, 225, .5); stroke: currentColor; transition: color .8s, filter .8s; }
+.m-ledger-card .top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.m-ledger-card b { font-weight: 600; font-size: 13.5px; color: #c9c3dd; }
+.m-ledger-card .count { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.m-ledger-card .note { margin-top: 2px; font-size: 11.5px; line-height: 1.35; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-ledger-card .bar { margin-top: 7px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, .07); overflow: hidden; }
+.m-ledger-card .bar i { display: block; height: 100%; width: 100%; transform-origin: left; scale: var(--f) 1; background: linear-gradient(90deg, var(--gold-deep), #ffe2a8); transition: scale 1.4s cubic-bezier(.2, .7, .2, 1); }
+.m-ledger-card.pending { opacity: .62; }
+.m-ledger-card.pending .bar i { background: rgba(255, 255, 255, .2); }
+.m-ledger-card.active { border-color: rgba(241, 194, 123, .7); background: radial-gradient(ellipse 90% 120% at 50% 0%, rgba(255, 190, 110, .16), rgba(30, 24, 52, .7)); box-shadow: 0 0 26px -6px rgba(255, 190, 110, .55); }
+.m-ledger-card.active .m-sigil { color: var(--gold); filter: drop-shadow(0 0 6px rgba(255, 200, 120, .8)); }
+.m-ledger-card.active b, .m-ledger-card.active .count { color: #ffe9c7; }
+/* A count that just changed glints (it is drawn anew with each new value). */
+.m-ledger-card.active .count { animation: m-tick 1.2s ease-out; }
+@keyframes m-tick { from { color: #fff; text-shadow: 0 0 10px rgba(255, 220, 160, .95); } }
+/* A working bar has a light passing along it, so it shows that work goes on between counts. */
+.m-ledger-card.active .bar { background: linear-gradient(90deg, rgba(255, 255, 255, .06) 30%, rgba(255, 220, 160, .28) 50%, rgba(255, 255, 255, .06) 70%) 0 0 / 300% 100%; animation: m-shimmer 2.4s linear infinite; }
+.m-ledger-card.done { border-color: rgba(241, 194, 123, .18); }
+.m-ledger-card.done .count { color: #d9d3ea; }
+.m-ledger-card.done .m-sigil { color: rgba(241, 194, 123, .85); }
+.m-ledger-card.done b { color: #e6dff3; }
+.m-ledger-card.done::after { content: ''; position: absolute; top: -6px; right: -6px; width: 13px; height: 13px; background: var(--star) center / contain no-repeat; filter: drop-shadow(0 0 5px rgba(255, 200, 120, .9)); animation: m-appear .8s both; }
+.m-dream-stats { text-align: center; font-size: 12px; letter-spacing: .03em; color: var(--muted); font-variant-numeric: tabular-nums; text-shadow: 0 1px 6px rgba(0, 0, 0, .9); }
+.m-dream-actions { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; }
+.m-dream-actions .m-fine { text-shadow: 0 1px 6px rgba(0, 0, 0, .9); }
+.m-dreaming.ready .m-dream-actions .m-lantern { animation: m-appear 1.5s 2.5s both, m-flicker 4.5s ease-in-out 4s infinite; }
+@keyframes m-appear { from { opacity: 0; translate: 0 10px; } }
+@media (prefers-reduced-motion: reduce) { .m-ledger-card.active .bar, .m-whisper { animation: none; } }
+/* The preview's controls (screens/DreamPreview.tsx, administrators only). */
+.m-dream-preview { position: fixed; left: 12px; top: 70px; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 12px; font-size: 13px; max-width: calc(100vw - 24px); }
+.m-dream-preview input[type=range] { width: 160px; }
+.m-dream-preview select { background: rgba(4, 4, 16, .6); color: var(--ink); border: 1px solid rgba(255, 255, 255, .14); border-radius: 4px; height: 32px; }
+
+/* ---------------------------------------------------------------- working pages
+   Your account, users, models, the GPU and the world viewer keep the game's own pieces (panels, buttons, fields,
+   tables), dressed here to sit in the night with the rest. */
+/* Clipped sideways: the glow behind the title reaches past the page's edges, which focus could otherwise scroll to. */
+.m-tools { padding-top: 14px; overflow-x: clip; }
+/* A soft shadow of night behind the page's title and intro, so they read over the bright parts of the painting. */
+.m-tools::before { content: ''; position: absolute; inset: -30px -6% auto; height: 300px; z-index: -1; pointer-events: none; background: radial-gradient(closest-side at 40% 50%, rgba(8, 9, 30, .65), transparent); }
+.m-tools .h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 4.5vw, 46px); letter-spacing: 0; color: var(--ink); text-shadow: 0 2px 24px rgba(0, 0, 0, .7); margin-bottom: 8px; }
+.m-tools .h2 { font-family: var(--serif); font-weight: 500; font-size: 24px; letter-spacing: 0; color: var(--ink); }
+.m-tools .lede { font-family: var(--serif); font-style: italic; font-size: 18px; color: #ddd6ec; text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 18px rgba(5, 5, 20, .9); }
+.m-tools .panel { position: relative; background: var(--panel); border: 1px solid var(--hair); border-radius: 6px; box-shadow: 0 20px 50px -20px rgba(0, 0, 0, .8);
+  backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); }
+.m-tools .panel-head { border-bottom: 1px solid rgba(255, 255, 255, .07); padding: 14px 18px; }
+.m-tools .panel-head h2, .m-tools .panel-head h3 { font-family: var(--serif); font-weight: 500; font-size: 22px; letter-spacing: 0; text-transform: none; color: var(--ink); }
+.m-tools .panel-body { padding: 16px 18px; }
+.m-tools .btn { border-radius: 4px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(8, 9, 30, .55); backdrop-filter: blur(6px); color: var(--ink); box-shadow: none; transition: border-color .3s, background .3s; }
+.m-tools .btn:hover:not(:disabled) { border-color: var(--hair); background: rgba(241, 194, 123, .06); box-shadow: none; }
+.m-tools .btn.primary { border: 0; color: #2a1606; font-weight: 600; text-shadow: none; background: linear-gradient(180deg, #ffe2a8, #f1c27b 45%, #d9984a);
+  box-shadow: 0 0 0 1px rgba(255, 230, 180, .5) inset, 0 6px 22px -6px rgba(255, 170, 80, .55); }
+.m-tools .btn.primary:hover:not(:disabled) { filter: brightness(1.06); background: linear-gradient(180deg, #ffe2a8, #f1c27b 45%, #d9984a); }
+.m-tools .btn.ghost { border-color: transparent; background: none; }
+.m-tools .btn.danger { background: none; border-color: rgba(240, 150, 150, .35); color: #f2b4b4; }
+.m-tools .btn.danger:hover:not(:disabled) { background: rgba(240, 150, 150, .08); border-color: rgba(240, 150, 150, .6); }
+.m-tools .input { border-radius: 4px; border: 1px solid rgba(255, 255, 255, .08); background: rgba(4, 4, 16, .45); color: var(--ink); box-shadow: inset 0 2px 8px rgba(0, 0, 0, .4); }
+.m-tools .input:focus { border-color: rgba(241, 194, 123, .5); box-shadow: inset 0 2px 8px rgba(0, 0, 0, .4), 0 0 0 3px rgba(241, 194, 123, .08); }
+.m-tools .label, .m-tools .field label { font: 600 11px/1.3 var(--sans); letter-spacing: .16em; color: var(--muted); }
+.m-tools .badge { background: rgba(241, 194, 123, .1); border-color: rgba(241, 194, 123, .3); color: #ffe6c0; }
+.m-tools .badge.gray { background: rgba(255, 255, 255, .05); border-color: rgba(255, 255, 255, .12); color: var(--muted); }
+.m-tools .table th { border-bottom-color: rgba(255, 255, 255, .1); color: var(--muted); }
+.m-tools .table td { border-bottom-color: rgba(255, 255, 255, .05); }
+.m-tools .hint, .m-tools .dim { color: rgba(200, 192, 230, .55); }
+.m-tools .gold { color: var(--gold); }
+.m-tools .error-text { color: #f2a4a4; }
+.m-tools .spinner { border-color: rgba(241, 194, 123, .2); border-top-color: var(--gold); }
+.m-tools .tabs { border-bottom-color: rgba(255, 255, 255, .08); }
+/* More tabs than a phone's width: the row scrolls sideways, not the page. */
+.m-tools .tabs { overflow-x: auto; scrollbar-width: none; }
+.m-tools .tabs::-webkit-scrollbar { display: none; }
+.m-tools .tabs .tab { flex: none; white-space: nowrap; }
+.m-tools .seg { border-radius: 4px; border-color: rgba(255, 255, 255, .08); background: rgba(4, 4, 16, .4); }
+.m-tools code { font-size: .92em; color: #ffe6c0; }
+
+/* ---------------------------------------------------------------- phones */
+@media (max-width: 900px) {
+  .m-world-hero { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .m-world-hero .btns, .m-world-hero .m-tags { justify-content: center; }
+  .m-world-cols { grid-template-columns: 1fr; }
+  .m-maker { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'stage' 'classes' 'stats'; }
+  .m-adv-cols { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'play' 'heroes' 'players'; grid-template-rows: none; }
+  .m-begin { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .m-top .back { max-width: 40vw; }
+  .m-who > span { display: none; }
+  .m-heading p { font-size: 18px; }
+  .m-resume .m-bubble { --size: 250px; }
+  .m-resume .btns > * { flex: 1 1 100%; }
+  .m-sky-grid { gap: 18px 14px; }
+  .m-sky-grid .m-float { width: calc(50% - 7px); }
+  .m-sky-grid .m-float .m-bubble { --size: min(150px, 40vw); }
+  .m-sky-grid .m-float:nth-child(3n + 2), .m-sky-grid .m-float:nth-child(3n) { margin-top: 0; }
+  .m-sky-grid .m-float:nth-child(2n) { margin-top: 40px; }
+  .m-caption h3 { font-size: 19px; }
+  .m-caption .meta { font-size: 10.5px; }
+  .m-caption .cta { font-size: 20px; }
+  .m-bubble .spark span { width: 44px; height: 44px; }
+  .m-picks { grid-template-columns: 1fr 1fr; }
+  .m-picks.odd > :first-child { grid-column: span 2; }
+  .m-stars-pick small { display: none; }
+  .m-adv { grid-template-columns: auto 1fr; }
+  .m-adv .side { grid-column: 1 / -1; }
+  .m-adv .side .m-lantern { flex: 1; }
+  .m-actions .m-lantern, .m-actions .m-quiet, .m-begin .m-lantern { flex: 1 1 0; }
+  .m-actions .m-lantern { flex-grow: 2; }
+  .m-summary { flex-basis: 100%; margin-bottom: 4px; }
+  .m-prompt-row { grid-template-columns: 1fr auto; }
+  .m-prompt-row .topic-name { grid-column: 1 / -1; justify-self: start; height: 30px; }
+  .m-hero-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .m-hero-card .figure, .m-hero-card .figure img { height: 120px; }
+  .m-herotab { flex-direction: column; text-align: center; gap: 6px; padding: 8px 4px; border-radius: 8px; }
+  .m-herotab b { font-size: 15px; }
+  .m-herotab span { font-size: 10.5px; }
+  .m-ring { width: 42px; height: 42px; }
+  .m-herotab .m-ring { width: 50px; height: 50px; }
+  .m-dream-core { --orb: min(84cqh, 72cqw); }
+  .m-dream-head h1 { font-size: 32px; }
+  .m-dream-line { font-size: 16px; }
+  .m-ledger { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .m-ledger-card { grid-template-columns: minmax(0, 1fr); padding: 8px 10px 9px; }
+  .m-ledger-card .m-sigil, .m-ledger-card .note { display: none; }
+  .m-whisper { font-size: 15px; }
+}
+/* A short window (a laptop's browser): a smaller title, so the form starts higher. */
+@media (max-height: 760px) {
+  .m-lake { grid-template-rows: 8px auto auto 1fr; }
+  .m-lake-title .m-emblem { width: 64px; height: 64px; }
+  .m-lake-title .m-wordmark, .m-lake-title .reflection { font-size: clamp(56px, 11vw, 88px); }
+}
+/*
+ * A short, wide screen (a phone on its side): the title on the left, the form beside it. Wide enough for two columns
+ * only: an upright phone with its keyboard up is short and "landscape" too, and is handled below.
+ */
+@media (max-height: 560px) and (orientation: landscape) and (min-width: 600px) {
+  .m-lake { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; align-items: center; gap: 24px; padding: 12px 64px 12px 24px; }
+  /* The title stays in the middle of the screen while a long form scrolls beside it (the right padding clears the sound button). */
+  .m-lake-title { grid-row: 1; grid-column: 1; position: sticky; top: 12px; align-self: start; height: calc(100dvh - 24px); display: grid; align-content: center; }
+  .m-lake-title .m-wordmark { font-size: 64px; }
+  .m-lake-title .m-emblem { width: 52px; height: 52px; }
+  .m-lake .m-panel { grid-row: 1; grid-column: 2; margin: 0; align-self: center; }
+}
+/* An upright phone with its keyboard up: a small title above the form. */
+@media (max-height: 560px) and (max-width: 599px) {
+  .m-lake { grid-template-rows: auto auto 1fr; padding: 10px 16px 16px; }
+  .m-lake-title { grid-row: 1; }
+  .m-lake-title .m-emblem, .m-lake-title .reflection, .m-lake-title .m-tagline { display: none; }
+  .m-lake-title .m-wordmark { font-size: 36px; }
+  .m-lake .m-panel { grid-row: 2; margin-top: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-root *, .m-root *::before, .m-root *::after { animation: none !important; transition: none !important; }
+}

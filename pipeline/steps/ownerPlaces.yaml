@@ -1,0 +1,21 @@
+# The places the owner's prompts mention, so the place plan makes them without seeing the story itself (given the
+# story prompt, the place plan solved its mysteries in the descriptions).
+purpose: world.design
+maxTokens: 3000
+when: input.prompts[topic=story|places|people|monsters|rules]
+system: '{{> system}}'
+user: |
+  THE OWNER'S PROMPTS:
+  {{#input.prompts[topic=story|places|people|monsters|rules]}}
+  - about {{about}}: {{text}}
+  {{/input.prompts[topic=story|places|people|monsters|rules]}}
+
+  List the places these prompts mention.
+schema:
+  type: object
+  properties:
+    places:
+      type: array
+      maxItems: 20
+      description: Each particular place these prompts mention, quoted exactly as written
+      items: { type: string, maxLength: 120 }

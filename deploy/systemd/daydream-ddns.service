@@ -1,0 +1,18 @@
+# Points the game's host name at this home's current public address (Namecheap dynamic DNS).
+[Unit]
+Description=Update the game's host name to the current public IP
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+DynamicUser=yes
+StateDirectory=daydream-ddns
+# Your own host and domain: these two make daydream.example.com.
+Environment=DDNS_HOST=daydream DDNS_DOMAIN=example.com
+LoadCredentialEncrypted=namecheap-ddns
+ExecStart=/opt/daydream/deploy/ddns-namecheap.sh
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes

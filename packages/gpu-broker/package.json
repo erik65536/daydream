@@ -1,0 +1,14 @@
+{
+  "name": "@daydream/gpu-broker",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/main.ts"
+  },
+  "dependencies": {
+    "@daydream/shared": "1.0.0",
+    "ws": "^8.22.0"
+  }
+}

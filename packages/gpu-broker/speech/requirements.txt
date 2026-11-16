@@ -1,0 +1,12 @@
+# The GPU speech service's environment (speech_service.py: the VoxCPM2 runner and the VoiceDesign designer), made in
+# speech/.venv beside this file with Python 3.14 (docs/hosting.md, "The GPU PC"):
+#   uv venv --python 3.14 .venv
+#   uv pip install --python .venv/Scripts/python.exe -r requirements.txt --index-strategy unsafe-best-match
+--extra-index-url https://download.pytorch.org/whl/cu134
+torch==2.15.0+cu134
+numpy==2.5.4
+safetensors==0.8.0
+soundfile==0.14.0
+soxr==1.1.0
+tokenizers==0.23.3
+huggingface_hub==2.4.0

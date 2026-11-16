@@ -1,0 +1,20 @@
+node_modules/
+dist/
+data/
+models/
+config/genai.json
+config/broker.json
+config/dev-test-account.json
+*.log
+.env
+coverage/
+data-test/
+*.worldpack
+
+# Each session's own checkout and settings
+.claude/worktrees/
+.claude/settings.local.json
+
+# Python
+__pycache__/
+.venv/

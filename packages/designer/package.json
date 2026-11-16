@@ -1,0 +1,16 @@
+{
+  "name": "@daydream/designer",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "description": "The build pipeline's editor (docs/build-pipeline.md): a local tool, apart from the game server",
+  "scripts": {
+    "start": "node --watch --watch-preserve-output src/server/main.ts"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "yaml": "2.9.1"
+  }
+}

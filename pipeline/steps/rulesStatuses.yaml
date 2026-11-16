@@ -1,0 +1,103 @@
+# The statuses this world's skills can put on a target, designed by Luna from the world's terms (Health, each kind of
+# damage and its defense, its magic) and its skill types. Each says first whether it is a buff (for allies) or a
+# debuff (for enemies), then its effects, chosen freely so that a buff may carry a cost (silence only with magic), then
+# its name and description, so that the words follow what it does. Thorns and life steal are effects too, where
+# the world has them, so a buff can grant them as gear does. Which skills put which statuses on a target is left
+# to the skills step, and the balance simulation prices them. Earlier versions left the side unsaid, and a description
+# led by flavor could hide it; separate lists of buffs and debuffs each filled up to their own cap. Before that,
+# statuses were sorted into fixed kinds, grouped by class (each class made its own root) or named their classes.
+purpose: world.design
+maxTokens: 6000
+system: '{{> system}}'
+user: |
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=rules].length}}
+  THE OWNER'S PROMPT ABOUT THE RULES:
+  {{#input.prompts[topic=rules]}}
+  {{text}}
+  {{/input.prompts[topic=rules]}}
+  {{/input.prompts[topic=rules].length}}
+
+  TERMINOLOGY:
+  {{> terminology}}
+
+  SKILL TYPES:
+  {{#rulesCore.classes.physical.melee}}- {{rulesCore.classes.physical.damage.name}} attacks up close
+  {{/rulesCore.classes.physical.melee}}
+  {{#rulesCore.classes.physical.ranged}}- {{rulesCore.classes.physical.damage.name}} attacks from a distance
+  {{/rulesCore.classes.physical.ranged}}
+  {{#rulesCore.classes.magical.melee}}- {{rulesCore.classes.magical.damage.name}} attacks up close
+  {{/rulesCore.classes.magical.melee}}
+  {{#rulesCore.classes.magical.ranged}}- {{rulesCore.classes.magical.damage.name}} attacks from a distance
+  {{/rulesCore.classes.magical.ranged}}
+  {{#rulesCore.classes.healer}}- Healers
+  {{/rulesCore.classes.healer}}
+  {{#rulesCore.classes.buff_and_debuff}}- Buffs and debuffs
+  {{/rulesCore.classes.buff_and_debuff}}
+
+  Design the statuses this world's skills can put on a target.
+names:
+  - 'rulesCore.classes[*].name'
+  - 'rulesCore.classes[*][*].name'
+  - 'rulesStatuses.statuses[*].name'
+schema:
+  type: object
+  properties:
+    statuses:
+      type: array
+      maxItems: 20
+      items:
+        anyOf:
+          - type: object
+            properties:
+              kind: { const: buff }
+              effects:
+                type: array
+                minItems: 1
+                maxItems: 4
+                items:
+                  anyOf:
+                    - &increases
+                      type: object
+                      properties:
+                        increases:
+                          anyOf: &stats
+                            - { const: physical_damage, description: 'The {{rulesCore.classes.physical.damage.name}} damage the target deals' }
+                            - { const: magic_damage, when: rulesCore.classes.magical.damage, description: 'The {{rulesCore.classes.magical.damage.name}} damage the target deals' }
+                            - { const: physical_defence, description: "The target's {{rulesCore.classes.physical.damage.defence}}" }
+                            - { const: magic_defence, when: rulesCore.classes.magical.damage, description: "The target's {{rulesCore.classes.magical.damage.defence}}" }
+                            - { const: movement }
+                            - { const: dodge, when: rulesSystems.dodge, description: "The target's chance to dodge attacks" }
+                            - { const: crit_chance, when: rulesSystems.crit, description: "The target's chance to land critical hits" }
+                    - &decreases
+                      type: object
+                      properties:
+                        decreases: { anyOf: *stats }
+                    - &physicalDot { const: physical_damage_over_time, description: '{{rulesCore.classes.physical.damage.name}} damage' }
+                    - &magicDot { const: magic_damage_over_time, when: rulesCore.classes.magical.damage, description: '{{rulesCore.classes.magical.damage.name}} damage' }
+                    - &hot { const: heal_over_time, when: [ rulesSystems.healing, rulesSystems.regeneration ] }
+                    - &stun { const: stun, when: rulesSystems.control }
+                    - &root { const: root, when: rulesSystems.control }
+                    - &silence { const: silence, when: 'rulesSystems.control & rulesSystems.magic' }
+                    - &disarm { const: disarm, when: rulesSystems.control }
+                    - { const: thorns, when: rulesSystems.thorns, description: 'Hurts whoever hits the target' }
+                    - { const: life_steal, when: rulesSystems.lifeSteal, description: "Restores the target's {{rulesCore.words.health}} by part of the damage it deals" }
+              name: &statusName { type: string, maxLength: 24 }
+              color: &statusColor { type: string, pattern: '^#[0-9a-fA-F]{6}$' }
+              description: &statusDescription { type: string, maxLength: 140 }
+          - type: object
+            properties:
+              kind: { const: debuff }
+              effects:
+                type: array
+                minItems: 1
+                maxItems: 4
+                items:
+                  anyOf: [ *increases, *decreases, *physicalDot, *magicDot, *hot, *stun, *root, *silence, *disarm ]
+              name: *statusName
+              color: *statusColor
+              description: *statusDescription

@@ -1,0 +1,164 @@
+/* =====================================================================================================
+   Touch, phones and tablets. `:root.touch` is set while the player uses a finger (input/pointer.ts):
+   there is no hover then, so targets grow, keyboard hints give way and long-presses show what hover would.
+   Screen size is handled apart from touch: a small window with a mouse gets the compact layout too.
+   ===================================================================================================== */
+
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { overscroll-behavior: none; }
+/* Buttons answer at once (no double-tap-to-zoom wait); the game view takes every gesture itself. */
+button, .btn, .slot, .item, .tab, .chip, .pf-hero, .pf-mini, .replies li, .quest, .tnode, .loot-row { touch-action: manipulation; }
+.game, .game canvas.view { touch-action: none; -webkit-touch-callout: none; -webkit-user-select: none; }
+.game .window, .game .dialog .msgs, .game .panel-body { touch-action: pan-y; }
+
+/* The game sits inside the visible part of the screen (less while an on-screen keyboard is up, see platform.ts), and
+   the HUD inside the safe area clear of notches, rounded corners and the home indicator. */
+.game { height: var(--vvh, 100%); bottom: auto; }
+.hud { top: env(safe-area-inset-top); right: env(safe-area-inset-right); bottom: env(safe-area-inset-bottom); left: env(safe-area-inset-left); }
+.narration-wrap, .connection { position: fixed; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+.narration { max-height: calc(100% - 32px); overflow-y: auto; overscroll-behavior: contain; }
+
+/* --------------------------------------------------------------------------- aiming and notes */
+.aim-banner { position: absolute; left: 50%; bottom: 132px; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; padding: 4px 4px 4px 14px;
+  border-radius: 999px; background: rgba(12, 11, 15, 0.86); border: 1px solid var(--line-strong); box-shadow: var(--shadow); font-size: 12.5px; white-space: nowrap; backdrop-filter: blur(4px); z-index: 6; animation: toastIn .2s ease-out; }
+.aim-banner b { color: var(--gold-2); font-weight: 600; }
+.aim-banner .aim-how { color: var(--muted); font-size: 11.5px; }
+.aim-banner .btn { border-radius: 999px; }
+.cursor-note.above { transform: translate(-50%, calc(-100% - 46px)); text-align: center; }
+.cursor-note .confirm { display: block; font-size: 10.5px; font-weight: 500; color: var(--muted); margin-top: 1px; }
+
+/* --------------------------------------------------------------------------- tooltips held by a finger */
+.tooltip.held { animation: fadeIn .12s; max-width: min(320px, calc(100vw - 16px)); }
+
+/* --------------------------------------------------------------------------- chat */
+.chatline { display: flex; gap: 6px; }
+.chatline .input { flex: 1; min-width: 0; }
+.chatline .icon-btn { width: 40px; height: 40px; flex: none; }
+
+/* --------------------------------------------------------------------------- touch targets */
+:root.touch .slot .key, :root.touch .key-hint { display: none; }
+:root.touch .actionbar .slot.empty { display: none; }
+:root.touch .slot { width: 50px; height: 50px; }
+:root.touch .systembar .btn { width: 42px; height: 42px; }
+:root.touch .btn.sm { min-height: 36px; padding: 6px 12px; }
+:root.touch .tracker .tr-x { opacity: .7; padding: 4px 6px; }
+/* Folding is a thumb's job: a full-size target over the corner, its chevron drawn small. */
+.tracker .tr-fold { opacity: .85; display: grid; place-items: center; min-width: 32px; min-height: 28px; margin: -6px -6px -6px 0; padding: 0; color: var(--text); }
+:root.touch .replies li { padding: 7px 8px; }
+:root.touch .tab { padding: 11px 12px; }
+:root.touch .chip { padding: 7px 12px; }
+:root.touch .close-x { min-width: 40px; min-height: 40px; }
+
+/* --------------------------------------------------------------------------- tablets and phones, upright */
+/* In a fight the turn order runs across the top (too little room beside the party and the map); they step down under it. */
+@media (max-width: 900px) and (min-height: 501px) {
+  .turnbar { top: 6px; left: 8px; right: 8px; max-width: none; transform: none; overflow-x: auto; scrollbar-width: none; padding: 2px 4px 18px; }
+  .game.in-combat .party, .game.in-combat .topright { top: 88px; }
+  .game.in-combat .tracker { display: none; }
+}
+
+/* --------------------------------------------------------------------------- phones, upright */
+@media (max-width: 640px) {
+  .topright { right: 8px; top: 8px; }
+  .minimap { width: 96px; height: 96px; }
+  .tracker { width: 160px; margin-right: 0; margin-top: 4px; padding: 6px 8px; }
+  .tracker .tr-step { font-size: 11.5px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* The menus line the bottom edge; the skills sit above them, the log above the skills. */
+  .bottomrow { padding: 0 8px 6px; grid-template: 1fr auto auto auto / minmax(0, 1fr); row-gap: 6px; }
+  .bottomrow > .log { grid-area: 2 / 1; justify-self: start; width: calc(100% - 104px); max-height: 66px; margin: 0; font-size: 11px; }
+  .bottomrow > .actionbar { grid-area: 3 / 1; justify-self: center; max-width: 100%; }
+  .bottomrow > .systembar { grid-area: 4 / 1; justify-self: stretch; position: static; flex-direction: row; justify-content: space-between; gap: 2px; }
+  .systembar .btn { flex: 1 1 0; max-width: 46px; height: 42px; width: auto; }
+  .systembar .sb-codex { display: none; }
+  .slots { flex-wrap: wrap; justify-content: center; }
+  .slot { width: 46px; height: 46px; max-width: none; max-height: none; }
+  .slot canvas { width: 36px; height: 36px; }
+  :root:not(.touch) .slot { width: calc((100vw - 16px - 45px) / 10); height: calc((100vw - 16px - 45px) / 10); }
+  .slot .key, .slot .ap { --badge: 12px; padding: 0 2px; font-size: 8px; }
+  .scene-invites { bottom: 120px; left: 8px; right: 8px; transform: none; }
+  .scene-invite { justify-content: space-between; }
+  .aim-banner { bottom: 172px; max-width: calc(100% - 16px); }
+  .aim-banner .aim-how { display: none; }
+  .chatline { left: 8px; right: 8px; bottom: 6px; width: auto; }
+  .toasts { top: 120px; left: 12px; right: 12px; transform: none; }
+  .toast { max-width: 100%; }
+
+  .turnbar { padding: 2px 4px 17px; gap: 5px; }
+  .turnbar .tp-face { width: 30px; height: 30px; }
+  .turnbar .tp.lead .tp-face { width: 38px; height: 38px; }
+  .turnbar .tb-round b { font-size: 17px; }
+  .game.in-combat .party, .game.in-combat .topright { top: 76px; }
+  .ap-row { padding: 5px 9px; }
+}
+
+/* --------------------------------------------------------------------------- windows become sheets on small screens */
+@media (max-width: 640px), (max-height: 500px) {
+  .game .window { position: fixed; inset: 0 !important; width: auto !important; height: auto !important; max-height: none; transform: none !important;
+    border-radius: 0 !important; border: 0; box-shadow: none; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    animation: sheetIn .2s cubic-bezier(.2, .8, .3, 1); z-index: 45; }
+  .game .window > .corner { display: none; }
+  .game .window .panel-head { padding: 6px 6px 6px 16px; min-height: 50px; flex: none; }
+  .game .window .panel-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+  .game .window .panel-body.row, .game .window > .row { flex-direction: column; align-items: stretch !important; }
+  .game .window .panel-body.row > *, .game .window > .row > * { width: auto !important; max-width: none !important; flex: none; }
+  .game .window > .row { overflow-y: auto; }
+  .game .window .tabs { overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; flex: none; }
+  .game .window .tab { white-space: nowrap; }
+  .items.pack { max-height: none; }
+  .items { grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); }
+  .items .item { width: auto; height: auto; aspect-ratio: 1; }
+  .equip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  /* A counter (wares or storage) above, your pack below, both in view. */
+  .game .window.counter { bottom: 50% !important; padding-bottom: 0; border-bottom: 1px solid var(--line-strong); }
+  .game .window.pack-beside { top: 50% !important; padding-top: 0; }
+  .game .window.pack-beside .inv-side, .game .window.pack-beside .tabs { display: none; }
+
+  /* A conversation: who is speaking along the top, the words, then the field (above the keyboard when it is up). */
+  .game .dialog { flex-direction: column; }
+  .dialog .dlg-side { width: auto; flex-direction: row; align-items: center; gap: 10px; padding: 8px 8px 8px 12px; border-right: 0; border-bottom: 1px solid var(--line); flex: none; }
+  .dialog .dlg-portrait { width: 48px; height: 48px; border-radius: 50%; flex: none; }
+  .dialog .dlg-portrait canvas { width: 100% !important; height: 100% !important; transform: scale(1.9); transform-origin: 50% 12%; }
+  .dialog .dlg-who { min-width: 0; }
+  .dialog .dlg-name { margin: 0; text-align: left; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dialog .dlg-title { text-align: left; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dialog .dlg-side .btn { width: auto; }
+  .dialog .msgs { padding: 22px 14px 14px; }
+  /* (The bar across the top already has Leave.) */
+  .dialog .dlg-close { display: none; }
+  .msg.npc { font-size: 16.5px; }
+  .dialog .compose { padding: 8px 8px 10px; }
+  .dialog .say .offer { max-width: 96px; padding-left: 6px; padding-right: 6px; }
+  .dialog .attach { flex-wrap: wrap; }
+  .dialog .attach select { max-width: none; flex: 1 1 140px; }
+  .replies { padding-left: 18px; max-height: 34vh; overflow-y: auto; }
+}
+@keyframes sheetIn { from { opacity: 0; translate: 0 24px; } to { opacity: 1; translate: 0 0; } }
+
+/* --------------------------------------------------------------------------- phones on their side, short windows */
+@media (max-height: 500px) and (min-width: 520px) {
+  .topright { right: 60px; top: 6px; gap: 2px; }
+  .minimap { width: 84px; height: 84px; }
+  .tracker { width: 170px; margin-top: 2px; padding: 4px 8px; }
+  .tracker .tr-where { display: none; }
+  .tracker .tr-step { font-size: 11px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .bottomrow { padding: 6px 8px; }
+  .bottomrow > .systembar { position: absolute; grid-area: auto; top: 6px; bottom: 6px; right: 8px; flex-direction: column; justify-content: center; }
+  .systembar .btn, :root.touch .systembar .btn { width: 40px; height: auto; flex: 1 1 0; max-height: 42px; min-height: 32px; }
+  .slot, :root.touch .slot { width: 44px; height: 44px; }
+  .slot canvas { width: 34px; height: 34px; }
+  .bottomrow > .log { grid-area: 2 / 1; justify-self: stretch; width: auto; max-width: 220px; max-height: 52px; margin: 0; font-size: 10.5px; }
+  .aim-banner { bottom: 60px; }
+  .game.in-combat .aim-banner { bottom: 108px; }
+  .turnbar { top: 4px; padding: 0 0 15px; gap: 5px; }
+  .turnbar .tp-face { width: 28px; height: 28px; }
+  .turnbar .tp.lead .tp-face { width: 34px; height: 34px; }
+  .turnbar .tb-round b { font-size: 16px; }
+  .toasts { top: 44px; }
+  .scene-invites { bottom: 60px; }
+  .narration { padding: 18px 24px 16px; }
+  .narration h2 { font-size: 20px; margin-bottom: 8px; }
+  .narration p { font-size: 17px; margin-bottom: 12px; }
+}
+.actionbar .btn { white-space: nowrap; }

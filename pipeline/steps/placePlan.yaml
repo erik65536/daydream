@@ -1,0 +1,52 @@
+# Every place of the map, named and described, with the size of its map: one of the sizes the engine offers for its
+# kind of place, which the engine then fits to the tiles all places share (pipeline/world.ts, placeTiles). No routes,
+# roles, or lore: the story chooses from these places.
+purpose: world.design
+maxTokens: 8000
+system: '{{> system}}'
+user: |
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=places].length}}
+  THE OWNER'S PROMPT ABOUT THE PLACES:
+  {{#input.prompts[topic=places]}}
+  {{text}}
+  {{/input.prompts[topic=places]}}
+  {{/input.prompts[topic=places].length}}
+
+  {{#ownerPlaces.places.length}}
+  PLACES THE OWNER'S PROMPTS MENTION, to be part of this world:
+  {{#ownerPlaces.places}}
+  - {{.}}
+  {{/ownerPlaces.places}}
+  {{/ownerPlaces.places.length}}
+
+  THE MAP, in the order the places are reached, from first to last:
+  {{#map.places}}
+  - {{id}}: {{label}}{{#off}}, off {{id}}{{/off}}
+  {{/map.places}}
+
+  Each place's map is made of square tiles about 25 m across. All places together have {{input.mapTiles}} tiles to share.
+
+  Plan the places of this world.
+# The story, the creatures, and the people choose places by name, so no two share one.
+names:
+  - 'placePlan.places[*].name'
+schema:
+  type: object
+  properties:
+    places:
+      keys: { from: 'map.places[*].id' }
+      each:
+        type: object
+        properties:
+          name: { type: string, maxLength: 60 }
+          description: { type: string, minLength: 10, maxLength: 500, description: What this place is and what it is like to be here }
+          indoor: { type: boolean }
+          size: { enum: { from: '$.sizes[*]' }, description: "Its map in tiles, columns x rows: large where the story lingers and for open country, small for a single lair or a cramped hideout" }

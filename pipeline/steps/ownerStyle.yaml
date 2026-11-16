@@ -1,0 +1,22 @@
+# How the owner wants people in the world to talk, if they said, in their own words. Every step's system prompt and
+# every conversation use it in place of the default (plain, everyday words), so an owner's wish about speech reaches
+# only speech: putting the owner's whole prompt about people into each conversation changed more than how people talk.
+purpose: world.design
+maxTokens: 600
+system: "You help set up a role-playing game world from what its owner wrote."
+user: |
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  {{#input.prompts.length}}
+  THE OWNER'S PROMPTS:
+  {{#input.prompts}}
+  - about {{about}}: {{text}}
+  {{/input.prompts}}
+  {{/input.prompts.length}}
+
+  Did the owner say how people in this world should talk, or how the game's text should read? If they did, write it down in their words. If they didn't, leave it empty.
+schema:
+  type: object
+  properties:
+    speech: { type: string, nullable: true, maxLength: 300, description: "How the owner wants people to talk, in their words; null if they didn't say" }

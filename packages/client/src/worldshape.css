@@ -1,0 +1,67 @@
+/* =====================================================================================================
+   The game's controls take their shape from the world (theme.ts sets data-material from the rules, and the
+   colors from the world's palette): skill slots, menu buttons, the turn order and the windows share one corner
+   radius, backing and edge per material, so a cozy woodland reads soft and round and a steel world hard-edged.
+   ===================================================================================================== */
+
+:root {
+  --r-ui: 8px;
+  --r-win: 8px;
+  --hud-bg: color-mix(in srgb, var(--panel-solid, #121116) 76%, transparent);
+  --hud-edge: color-mix(in srgb, var(--gold) 16%, rgba(255, 255, 255, .06));
+  --hud-glow: none;
+}
+:root[data-material='parchment'], :root[data-material='paper'] { --r-ui: 6px; --r-win: 6px; }
+:root[data-material='wood'] { --r-ui: 7px; --r-win: 8px; --hud-edge: color-mix(in srgb, var(--gold) 26%, transparent); }
+:root[data-material='organic'] { --r-ui: 16px; --r-win: 20px; --hud-edge: color-mix(in srgb, var(--gold) 28%, transparent); }
+:root[data-material='stone'] { --r-ui: 3px; --r-win: 4px; --hud-edge: rgba(255, 255, 255, .12); }
+:root[data-material='metal'] { --r-ui: 3px; --r-win: 4px; --hud-edge: rgba(255, 255, 255, .2); --hud-glow: inset 0 1px 0 rgba(255, 255, 255, .12); }
+:root[data-material='glass'] { --r-ui: 12px; --r-win: 14px; --hud-bg: color-mix(in srgb, var(--panel-solid, #121116) 52%, transparent); --hud-edge: rgba(255, 255, 255, .2); }
+:root[data-material='neon'] { --r-ui: 4px; --r-win: 4px; --hud-edge: color-mix(in srgb, var(--accent) 70%, transparent); --hud-glow: 0 0 10px var(--accent-glow, transparent); }
+
+.hud .slot, .systembar .btn, .ap-row, .aim-banner, .scene-invite, .friend {
+  background: var(--hud-bg); border: 1px solid var(--hud-edge); border-radius: var(--r-ui); box-shadow: var(--hud-glow), 0 2px 10px rgba(0, 0, 0, .5);
+}
+.systembar .btn:hover, .hud .slot:hover { border-color: var(--line-strong); background: color-mix(in srgb, var(--panel-solid, #121116) 90%, transparent); }
+.hud .slot.on { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 0 16px color-mix(in srgb, var(--gold) 35%, transparent); }
+/* The minimal layer in styles.css squares every panel and button with `:root[data-material]`; these come after it at
+   the same weight, so the world's shape wins. */
+:root[data-material] .game .panel, :root[data-material] .ctx.panel, :root[data-material] .tooltip, :root[data-material] .toast { border-radius: var(--r-win); }
+:root[data-material] .ctx.sheet { border-radius: var(--r-win) var(--r-win) 0 0; }
+:root[data-material] .btn { border-radius: min(var(--r-ui), 10px); }
+:root[data-material='organic'] .btn { border-radius: 999px; }
+
+/* =====================================================================================================
+   Ornaments: the world's chosen ornament as one small hairline mark in the corners of its windows and in the middle of
+   its dividers, in the world's own color. Drawn here, never painted, so each stays small, crisp and quiet.
+   The corners are mirrored per side (styles.css), so each mark is drawn once, for the top left.
+   ===================================================================================================== */
+:root { --orn: color-mix(in srgb, var(--gold) 55%, transparent); }
+:root[data-ornament='vines'] { --orn: color-mix(in srgb, var(--good, #8fc98a) 55%, transparent); }
+:root[data-ornament='circuit'] { --orn: color-mix(in srgb, var(--accent) 70%, transparent); }
+
+/* A rounded window's corner is cut away: the marks sit on its curve (at 45°, 0.29 of the radius in from each edge). */
+:root[data-ornament] .ornate > .corner.tl { left: calc(var(--r-win) * .29 - 1px); top: calc(var(--r-win) * .29 - 1px); }
+:root[data-ornament] .ornate > .corner.tr { right: calc(var(--r-win) * .29 - 1px); top: calc(var(--r-win) * .29 - 1px); }
+:root[data-ornament] .ornate > .corner.bl { left: calc(var(--r-win) * .29 - 1px); bottom: calc(var(--r-win) * .29 - 1px); }
+:root[data-ornament] .ornate > .corner.br { right: calc(var(--r-win) * .29 - 1px); bottom: calc(var(--r-win) * .29 - 1px); }
+:root[data-ornament='none'] .ornate > .corner { display: none; }
+:root[data-ornament='filigree'] .ornate > .corner { width: 12px; height: 12px; border-color: var(--orn); border-top-left-radius: 10px; }
+:root[data-ornament='filigree'] .ornate > .corner::after { content: ''; display: block; position: absolute; left: 3px; top: 3px; width: 3px; height: 3px; border-radius: 50%; background: var(--orn); }
+:root[data-ornament='runes'] .ornate > .corner { border: 0; width: 9px; height: 9px; margin: -4px; }
+:root[data-ornament='runes'] .ornate > .corner::after { content: ''; display: block; position: absolute; inset: 1px; transform: rotate(45deg); border: 1px solid var(--orn); background: var(--panel-solid, #121116); }
+:root[data-ornament='rivets'] .ornate > .corner { border: 0; }
+:root[data-ornament='rivets'] .ornate > .corner::after { content: ''; display: block; position: absolute; left: 5px; top: 5px; width: 4px; height: 4px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, .7), var(--orn) 70%); box-shadow: 0 1px 1px rgba(0, 0, 0, .6); }
+:root[data-ornament='circuit'] .ornate > .corner { width: 16px; height: 7px; border-color: var(--orn); }
+:root[data-ornament='circuit'] .ornate > .corner::after { content: ''; display: block; position: absolute; right: -3px; top: -2px; width: 3px; height: 3px; border-radius: 50%; border: 1px solid var(--orn); background: var(--panel-solid, #121116); }
+:root[data-ornament='vines'] .ornate > .corner { width: 13px; height: 13px; border-color: var(--orn); border-top-left-radius: 13px; }
+:root[data-ornament='vines'] .ornate > .corner::after { content: ''; display: block; position: absolute; left: 9px; top: -3px; width: 6px; height: 4px; border-radius: 6px 0; background: var(--orn); transform: rotate(-18deg); }
+
+.ornament { position: relative; overflow: visible; }
+:root[data-ornament] .ornament::after { content: ''; position: absolute; left: 50%; top: 50%; translate: -50% -50%; }
+:root[data-ornament='filigree'] .ornament::after { width: 5px; height: 5px; rotate: 45deg; background: var(--orn); box-shadow: 0 0 0 3px var(--panel-solid, #121116); }
+:root[data-ornament='runes'] .ornament::after { width: 6px; height: 6px; rotate: 45deg; border: 1px solid var(--orn); background: var(--panel-solid, #121116); box-shadow: 0 0 0 3px var(--panel-solid, #121116); }
+:root[data-ornament='rivets'] .ornament::after { width: 27px; height: 4px; background: radial-gradient(circle, var(--orn) 1.6px, transparent 2px) 0 0 / 9px 4px repeat-x; box-shadow: 0 0 0 3px var(--panel-solid, #121116); background-color: var(--panel-solid, #121116); }
+:root[data-ornament='circuit'] .ornament::after { width: 5px; height: 5px; border-radius: 50%; border: 1px solid var(--orn); background: var(--panel-solid, #121116); box-shadow: 0 0 0 3px var(--panel-solid, #121116); }
+:root[data-ornament='vines'] .ornament::after { width: 9px; height: 5px; border-radius: 9px 0; rotate: -18deg; background: var(--orn); box-shadow: 0 0 0 3px var(--panel-solid, #121116); }

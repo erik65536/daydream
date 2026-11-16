@@ -1,0 +1,10 @@
+theme: A once-great coastal kingdom slowly sinking into a warm, glowing sea. Bell towers poke out of tide
+  pools, fishermen pole flat boats over flooded market squares, and the old royal family rules from a
+  cathedral on stilts. Melancholy, beautiful, a little haunted.
+prompts:
+  - topic: story
+    text: The sea is rising because something beneath it is waking. The royal family knows and has been bargaining
+      with it for generations.
+size: medium
+length: short
+communication: 2

@@ -1,0 +1,174 @@
+# Each town's people and what goes on there, one call per town. Every person fills a slot the engine made: the
+# story's people of this town (named by the story, given their looks, voice, and past here) and the other residents,
+# each with the part they play for visitors (a merchant and what they sell, or someone who lives here). So every town has the people it
+# needs and nobody is the story's people twice, by construction (the old build checked for both afterwards and
+# asked again). Side quests are keyed by the engine's slots too, and choose every person, place, and foe from what
+# exists, as the main quests do.
+purpose: world.content
+maxTokens: 12000
+forEach: map.towns
+system: '{{> system}}'
+user: |
+  THE OWNER'S THEME:
+  {{input.theme}}
+
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=people|places].length}}
+  THE OWNER'S PROMPTS:
+  {{#input.prompts[topic=people|places]}}
+  - about {{about}}: {{text}}
+  {{/input.prompts[topic=people|places]}}
+  {{/input.prompts[topic=people|places].length}}
+
+  THE TOWN: {{$.placePlan.name}}{{#$.placePlan.indoor}} (indoors){{/$.placePlan.indoor}}: {{$.placePlan.description}}
+  Paths lead from here to: {{#$.links}}{{placePlan.name}} ({{label}}){{^$last}}, {{/$last}}{{/$.links}}.
+
+  THE PEOPLE OF THE STORY WHO LIVE HERE:
+  {{#$.cast}}
+  - {{id}}: {{story.name}}: {{story.who}}
+  {{/$.cast}}
+
+  THE MAIN STORY:
+  {{#map.arcs}}
+  {{n}}. {{story.title}}: {{#story.quests}}{{title}}{{^$last}}; {{/$last}}{{/story.quests}}
+  {{/map.arcs}}
+
+  THE OTHER RESIDENTS, each with the part they play for visitors (give them titles and trades that fit this world):
+  {{#$.residents}}
+  - {{id}}: {{label}}
+  {{/$.residents}}
+
+  THE CREATURES AND FOES:
+  {{#map.families}}
+  - {{creatures.name}}, living in {{#creatures.lives}}{{.}}{{^$last}}, {{/$last}}{{/creatures.lives}}
+  {{/map.families}}
+
+  {{constants.questSense}}
+
+  Bring this town to life: its people of the story as they are at home, its other residents, the buildings people visit, the sign at its entrance, and its side quests: this town's own troubles, human and specific. They are apart from the main story above, which its people are already part of: no side quest retells or repeats a main quest. People are named by their ids above wherever a person is chosen.
+# A named foe is met under its own name, apart from the story's bosses and foes (each town is written on its own, so
+# two towns' foes are not held apart: a foe is known by where its quest fights it, not by its name).
+names:
+  - 'story.arcs[*].quests[*].steps[*].name'
+  - 'story.arcs[*].quests[*].steps[*].fight[*].name'
+  - 'towns.quests[*].steps[*].name'
+  - 'towns.quests[*].steps[*].fight[*].name'
+schema:
+  type: object
+  properties:
+    cast:
+      keys: { from: '$.cast[*].id' }
+      description: The people of the story who live here, as they are at home
+      each:
+        type: object
+        properties:
+          title: { type: string, maxLength: 80, description: Their trade or standing here }
+          pronouns: { type: string, maxLength: 20 }
+          personality: { type: string, maxLength: 300 }
+          appearance: { type: string, maxLength: 300, description: 'What they look like, used to draw them' }
+          backstory: { type: string, maxLength: 500 }
+          voice: { type: string, minLength: 10, maxLength: 240, description: '{{constants.voice}}' }
+    residents:
+      keys: { from: '$.residents[*].id' }
+      each:
+        type: object
+        description: '{{$.label}}'
+        properties:
+          name: { type: string, maxLength: 60, description: Different from everyone else's name }
+          title: { type: string, maxLength: 80, description: Their trade or standing here }
+          pronouns: { type: string, maxLength: 20 }
+          personality: { type: string, maxLength: 300 }
+          appearance: { type: string, maxLength: 300, description: 'What they look like, used to draw them' }
+          backstory: { type: string, maxLength: 500, description: "Who they are, tied to this town and its troubles; what they want, know, and say is written later" }
+          voice: { type: string, minLength: 10, maxLength: 240, description: '{{constants.voice}}' }
+    buildings:
+      type: array
+      maxItems: 12
+      description: 'The buildings people visit: the inn, shops, workshops, homes'
+      items:
+        type: object
+        properties:
+          name: { type: string, maxLength: 60 }
+          purpose: { type: string, maxLength: 80 }
+          keeper:
+            description: Who works or lives there
+            nullable: true
+            anyOf:
+              - enum: { from: '$.residents[*].id' }
+              - enum: { from: '$.cast[*].id' }
+    sign: { type: string, maxLength: 300, description: The words on the sign at the town's entrance }
+    quests:
+      keys: { from: '$.quests[*].id' }
+      description: The town's side quests
+      each:
+        type: object
+        properties:
+          title: { type: string, maxLength: 80 }
+          giver:
+            description: The person who asks
+            anyOf:
+              - enum: { from: '$.town.residents[*].id' }
+              - enum: { from: '$.town.cast[*].id' }
+          steps:
+            type: array
+            minItems: 1
+            maxItems: 4
+            items:
+              anyOf:
+                - &persuade
+                  type: object
+                  properties:
+                    kind: { const: persuade }
+                    person: &person
+                      anyOf:
+                        - enum: { from: '$.town.residents[*].id' }
+                        - enum: { from: '$.town.cast[*].id' }
+                    to: { type: string, maxLength: 120, description: 'What they come to agree to, as words that follow "Persuade them to"' }
+                - &bring
+                  type: object
+                  properties:
+                    kind: { const: bring }
+                    item: { type: string, maxLength: 80, description: 'As it is said in a sentence: "Find ___"' }
+                    from: { enum: { from: '$.town.links[*].placePlan.name' }, description: Where it is found }
+                    to:
+                      description: 'Who it is taken to, or no one when it is kept'
+                      nullable: true
+                      anyOf:
+                        - enum: { from: '$.town.residents[*].id' }
+                        - enum: { from: '$.town.cast[*].id' }
+                - &fight
+                  type: object
+                  properties:
+                    kind: { const: fight }
+                    where: { enum: { from: '$.town.links[kind=wilderness|dungeon].placePlan.name' } }
+                    foes: { enum: { from: 'map.families[*].creatures.name' }, description: The family fought there }
+                - &foe
+                  type: object
+                  properties:
+                    kind: { const: foe }
+                    name: { type: string, maxLength: 60, description: 'Its own name' }
+                    who: { type: string, maxLength: 200 }
+                    member: { enum: { from: 'map.families[*].creatures.members[*].name' }, description: The kind of creature it is }
+                    where: { enum: { from: '$.town.links[kind=wilderness|dungeon].placePlan.name' } }
+                    taunt: { type: string, maxLength: 160, description: What it says as the fight begins }
+                    voice: { type: string, maxLength: 240, description: '{{constants.voice}}' }
+                - type: object
+                  description: 'A choice: fight, or a clever way to get the same done without fighting'
+                  properties:
+                    kind: { const: either }
+                    fight:
+                      type: array
+                      minItems: 1
+                      maxItems: 2
+                      description: 'The way that fights: the fight, and what it wins when the clever way does without that'
+                      items:
+                        anyOf:
+                          - *fight
+                          - *foe
+                          - *bring
+                    otherwise: *persuade
+          background: { type: string, maxLength: 300, description: 'What is wrong, and the steps above as they would ask them of someone who just arrived: the same people, places, and things' }

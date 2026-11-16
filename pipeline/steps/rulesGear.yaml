@@ -1,0 +1,126 @@
+# What a hero wields and wears. Every class has its own weapons, the healer and buff and debuff classes included: a
+# hero starts with their class's, and a weapon gives the basic attack (a class's skills reach and deal damage as the
+# class does, whatever is in hand), so a weapon carries offense only and its reach follows its class (and its damage
+# too, but for a healer or buff and debuff class's weapon, which says its kind). Without shields a class has one weapon.
+# With them a class has a one-handed weapon, a two-handed one, or both, as fits it (a bow takes two hands, a wand one):
+# a one-handed weapon leaves room for a shield, and a two-handed one hits harder (and is still used beside a shield, at
+# a cost to its offense). Armor comes in one to three kinds, each with its own lean (balanced always, sturdy and
+# nimble where they fit the world), and a piece of each kind for every armor slot; nothing else has a lean. Gear is
+# an empty vessel: what makes one piece better than another is the random effects it gets where it is found or made.
+# The engine and the balance simulation set every amount. Consumables, materials, and races go to their own steps.
+purpose: world.design
+maxTokens: 6000
+system: '{{> system}}'
+user: |
+  THE WORLD:
+  {{concept.title}} ({{concept.genre}})
+  {{concept.setting}}
+  Tone: {{concept.tone}}
+
+  {{#input.prompts[topic=rules].length}}
+  THE OWNER'S PROMPT ABOUT THE RULES:
+  {{#input.prompts[topic=rules]}}
+  {{text}}
+  {{/input.prompts[topic=rules]}}
+  {{/input.prompts[topic=rules].length}}
+
+  TERMINOLOGY:
+  {{> terminology}}
+
+  CLASSES:
+  {{> classes}}
+
+  EQUIPMENT SLOTS:
+  - Weapon: {{rulesCore.slots.weapon}}
+  {{#rulesCore.slots.offhand}}- Shield: {{.}}
+  {{/rulesCore.slots.offhand}}
+  - Armor: {{#rulesCore.slots.armor}}{{.}}{{^$last}}, {{/$last}}{{/rulesCore.slots.armor}}
+  {{#rulesCore.slots.accessories.length}}- Accessories: {{#rulesCore.slots.accessories}}{{.}}{{^$last}}, {{/$last}}{{/rulesCore.slots.accessories}}
+  {{/rulesCore.slots.accessories.length}}
+
+  Design this world's equipment.
+names:
+  - 'rulesCore.classes[*].name'
+  - 'rulesCore.classes[*][*].name'
+  - 'rulesStatuses.statuses[*].name'
+  - 'rulesSkills[*][*][*].name'
+  - 'rulesPassives[*][*][*].name'
+  - 'rulesGear.weapons[*][*].name'
+  - 'rulesGear.shields[*].name'
+  - 'rulesGear.armor[*].pieces[*]'
+  - 'rulesGear.accessories[*][*].name'
+schema:
+  type: object
+  properties:
+    weapons:
+      type: object
+      description: The weapon of each class
+      properties:
+        physical_melee:
+          when: rulesCore.classes.physical.melee
+          description: '{{rulesCore.classes.physical.melee.name}}'
+          anyOf: &weapons
+            - { when: rulesSystems.shields=false, type: object, properties: { weapon: { type: object, properties: &weapon { name: &name { type: string, maxLength: 32 }, description: &description { type: string, maxLength: 140 } } } } }
+            - { when: rulesSystems.shields, type: object, properties: { one_handed: &oneHanded { type: object, properties: *weapon } } }
+            - { when: rulesSystems.shields, type: object, properties: { two_handed: &twoHanded { type: object, properties: *weapon } } }
+            - { when: rulesSystems.shields, type: object, properties: { one_handed: *oneHanded, two_handed: *twoHanded } }
+        physical_ranged:
+          when: rulesCore.classes.physical.ranged
+          description: '{{rulesCore.classes.physical.ranged.name}}'
+          anyOf: *weapons
+        magic_melee:
+          when: rulesCore.classes.magical.melee
+          description: '{{rulesCore.classes.magical.melee.name}}'
+          anyOf: *weapons
+        magic_ranged:
+          when: rulesCore.classes.magical.ranged
+          description: '{{rulesCore.classes.magical.ranged.name}}'
+          anyOf: *weapons
+        healer:
+          when: rulesCore.classes.healer
+          description: '{{rulesCore.classes.healer.name}}'
+          anyOf: &supportWeapons
+            - { when: rulesSystems.shields=false, type: object, properties: { weapon: { type: object, properties: &supportWeapon { name: *name, description: *description, damage: { anyOf: [ { const: physical_damage, description: '{{rulesCore.classes.physical.damage.name}} damage' }, { const: magic_damage, when: rulesCore.classes.magical.damage, description: '{{rulesCore.classes.magical.damage.name}} damage' } ] } } } } }
+            - { when: rulesSystems.shields, type: object, properties: { one_handed: &oneHandedSupport { type: object, properties: *supportWeapon } } }
+            - { when: rulesSystems.shields, type: object, properties: { two_handed: &twoHandedSupport { type: object, properties: *supportWeapon } } }
+            - { when: rulesSystems.shields, type: object, properties: { one_handed: *oneHandedSupport, two_handed: *twoHandedSupport } }
+        buff_and_debuff:
+          when: rulesCore.classes.buff_and_debuff
+          description: '{{rulesCore.classes.buff_and_debuff.name}}'
+          anyOf: *supportWeapons
+    shields:
+      when: rulesSystems.shields
+      type: array
+      minItems: 1
+      maxItems: 3
+      items: { type: object, properties: { name: *name, description: *description } }
+    armor:
+      type: object
+      description: The kinds of armor
+      properties:
+        balanced:
+          type: object
+          description: Armor for most characters
+          properties: &armorFields
+            description: *description
+            pieces:
+              keys: { from: 'rulesCore.slots.armor[*]' }
+              each: *name
+        sturdy:
+          type: object
+          nullable: true
+          description: 'Heavier armor: more {{rulesCore.words.health}} and defense, less damage{{#rulesSystems.dodge}} and dodging{{/rulesSystems.dodge}}. Null if this world has none'
+          properties: *armorFields
+        nimble:
+          type: object
+          nullable: true
+          description: 'Lighter armor: more damage{{#rulesSystems.dodge}} and dodging{{/rulesSystems.dodge}}, less {{rulesCore.words.health}} and defense. Null if this world has none'
+          properties: *armorFields
+    accessories:
+      when: rulesCore.slots.accessories
+      keys: { from: 'rulesCore.slots.accessories[*]' }
+      each:
+        type: array
+        minItems: 1
+        maxItems: 2
+        items: { type: object, properties: { name: *name, description: *description } }

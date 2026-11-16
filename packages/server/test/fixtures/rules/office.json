@@ -1,0 +1,1798 @@
+{
+ "length": "long",
+ "records": {
+  "rulesSystems": {
+   "magic": true,
+   "crafting": true,
+   "upgrades": true,
+   "enchanting": true,
+   "control": true,
+   "crit": true,
+   "dodge": true,
+   "fastTravel": false,
+   "storage": "shared",
+   "lifeSteal": false,
+   "thorns": false,
+   "regeneration": true,
+   "healing": true,
+   "shields": true,
+   "revive": "special",
+   "defeat": {
+    "loseExperience": false,
+    "loseMoney": false,
+    "recoverBody": false
+   },
+   "potions": {
+    "healing": true,
+    "cleansing": true,
+    "buffs": true,
+    "debuffs": true,
+    "bombs": true
+   },
+   "swing": "medium"
+  },
+  "rulesCore": {
+   "name": "The Ticket Is Still Open",
+   "words": {
+    "health": "Health",
+    "experience": "XP",
+    "level": "Level",
+    "money": "Budget",
+    "party": "Team",
+    "quest": "Ticket",
+    "town": "Office",
+    "wilds": "Hallways",
+    "dungeon": "Server Room",
+    "race": "Archetype",
+    "class": "Role",
+    "talent_point": "Skill Point",
+    "talent_points": "Skill Points",
+    "magic": "Hacking"
+   },
+   "healthColor": "#39A96B",
+   "numbers": "medium",
+   "classes": {
+    "physical": {
+     "damage": {
+      "name": "Office",
+      "color": "#D18B47",
+      "defence": "Risk Management"
+     },
+     "melee": {
+      "name": "Supply Wrangler",
+      "description": "Gets up close with staplers, coffee mugs, rubber bands, and whatever the printer has jammed this time."
+     },
+     "ranged": {
+      "name": "Comms Specialist",
+      "description": "Deals damage from a safe distance with sarcastic emails, weaponized politeness, and corporate jargon."
+     }
+    },
+    "magical": {
+     "damage": {
+      "name": "Cyber",
+      "color": "#4B8DCE",
+      "defence": "Access Control"
+     },
+     "melee": null,
+     "ranged": {
+      "name": "Systems Hacker",
+      "description": "Uses scripts, exploits, automation, and questionable fixes to bend company systems to the team's needs."
+     }
+    },
+    "healer": {
+     "name": "Help Desk",
+     "description": "Restores the team's health with troubleshooting, coffee, patient explanations, and the occasional reboot.",
+     "reach": "ranged"
+    },
+    "buff_and_debuff": {
+     "name": "Project Manager",
+     "description": "Shifts calendars, delegates strategically, and turns impossible deadlines into someone else's action item.",
+     "reach": "ranged"
+    }
+   },
+   "races": [
+    {
+     "name": "Developer",
+     "description": "Builds and repairs the systems everyone depends on, often while insisting the bug is impossible to reproduce.",
+     "look": "A tired office worker in a hoodie, badge, and jeans, with a laptop tucked under one arm and a coffee mug in hand. Their expression suggests they have spotted a bug nobody else can see.",
+     "names": [
+      "Alex",
+      "Morgan",
+      "Sam"
+     ]
+    },
+    {
+     "name": "Business Analyst",
+     "description": "Translates what people ask for into what they might actually need, ideally before the requirements change again.",
+     "look": "A neatly dressed office worker with a notebook, badge, and color-coded documents. They hold a marker poised over a diagram, wearing the focused look of someone clarifying a vague request.",
+     "names": [
+      "Jordan",
+      "Casey",
+      "Taylor"
+     ]
+    },
+    {
+     "name": "Deadline Wrangler",
+     "description": "Keeps meetings, deadlines, and stakeholders moving, even when nobody agrees on what the project is.",
+     "look": "A business-casual worker with a badge, tablet, and packed calendar. They point toward a conference room while balancing a coffee and maintaining an encouraging, slightly strained smile.",
+     "names": [
+      "Riley",
+      "Jamie",
+      "Drew"
+     ]
+    },
+    {
+     "name": "Help-Desk Veteran",
+     "description": "Can calm an angry user, recognize a familiar outage, and ask whether the computer has been restarted without losing composure.",
+     "look": "A seasoned office worker wearing a headset and badge, with a practical sweater and a well-used mug. One hand gestures toward a monitor while the other reaches for a notepad.",
+     "names": [
+      "Pat",
+      "Chris",
+      "Robin"
+     ]
+    },
+    {
+     "name": "Intern",
+     "description": "Has little authority, boundless energy, and a surprising habit of finding the one setting nobody thought to check.",
+     "look": "A young office worker with a fresh badge, slightly oversized business-casual clothes, and a laptop covered in simple stickers. They look alert and curious, holding a notebook full of questions.",
+     "names": [
+      "Avery",
+      "Quinn",
+      "Lee"
+     ]
+    },
+    {
+     "name": "Executive",
+     "description": "Arrives with ambitious visions, limited implementation details, and complete confidence that IT can deliver by Friday.",
+     "look": "A polished executive in a tailored suit and badge, holding a sleek tablet and gesturing toward an unseen presentation. Their confident smile suggests the project is already considered a success.",
+     "names": [
+      "Blake",
+      "Reese",
+      "Cameron"
+     ]
+    }
+   ],
+   "slots": {
+    "weapon": "Work Tool",
+    "offhand": "Desk Item",
+    "armor": [
+     "Badge",
+     "Shirt",
+     "Trousers",
+     "Shoes"
+    ],
+    "accessories": [
+     "Lanyard",
+     "Mug",
+     "Headset"
+    ]
+   },
+   "qualities": {
+    "common": "Standard",
+    "uncommon": "Approved",
+    "rare": "Escalated",
+    "epic": "Executive",
+    "legendary": "Mission-Critical"
+   }
+  },
+  "rulesStatuses": {
+   "statuses": [
+    {
+     "kind": "buff",
+     "effects": [
+      {
+       "increases": "physical_damage"
+      },
+      {
+       "increases": "movement"
+      },
+      {
+       "increases": "crit_chance"
+      }
+     ],
+     "name": "Coffee-Fueled",
+     "color": "#8B5A2B",
+     "description": "Break-room coffee turns routine effort into alarming productivity. The mug is technically company property."
+    },
+    {
+     "kind": "buff",
+     "effects": [
+      {
+       "increases": "magic_damage"
+      },
+      {
+       "increases": "magic_defence"
+      }
+     ],
+     "name": "Clean Build",
+     "color": "#36A66A",
+     "description": "A tested script and a passing review make the team more effective—and harder to surprise."
+    },
+    {
+     "kind": "buff",
+     "effects": [
+      {
+       "increases": "physical_defence"
+      },
+      {
+       "increases": "dodge"
+      }
+     ],
+     "name": "Strategic Delegation",
+     "color": "#537DA5",
+     "description": "Someone else owns the action items now. You have time to get out of the way."
+    },
+    {
+     "kind": "buff",
+     "effects": [
+      "heal_over_time"
+     ],
+     "name": "Snack Break",
+     "color": "#E8B84A",
+     "description": "A granola bar and five uninterrupted minutes restore stamina. The meeting can wait."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      {
+       "decreases": "movement"
+      },
+      {
+       "decreases": "dodge"
+      }
+     ],
+     "name": "Meeting Creep",
+     "color": "#8877A8",
+     "description": "One agenda item becomes six. Leaving the conference room is somehow still on the agenda."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "magic_damage_over_time"
+     ],
+     "name": "Reply-All Storm",
+     "color": "#D26B5E",
+     "description": "Every response adds another notification, another misunderstanding, and another thing to investigate."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      {
+       "decreases": "physical_defence"
+      },
+      {
+       "decreases": "magic_defence"
+      }
+     ],
+     "name": "Scope Creep",
+     "color": "#C47D45",
+     "description": "Requirements keep changing, leaving every plan exposed to one more executive suggestion."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "stun"
+     ],
+     "name": "Printer Jam",
+     "color": "#777777",
+     "description": "The printer makes a new sound. Everyone stops to look, including the person who knows how to fix it."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "root"
+     ],
+     "name": "Calendar Hold",
+     "color": "#557F9A",
+     "description": "A recurring invitation has claimed this time slot and refuses to acknowledge the conflict."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "silence"
+     ],
+     "name": "Corporate Mumble",
+     "color": "#AA8D7D",
+     "description": "A dense fog of alignment and strategic synergy makes clear communication temporarily impossible."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "disarm"
+     ],
+     "name": "Lost Badge",
+     "color": "#A95656",
+     "description": "The target cannot reach the supply closet, the server room, or the stapler they were absolutely about to use."
+    },
+    {
+     "kind": "debuff",
+     "effects": [
+      "physical_damage_over_time"
+     ],
+     "name": "Paper Cut",
+     "color": "#C94141",
+     "description": "A tiny injury with an outsized effect on typing, morale, and willingness to handle loose forms."
+    }
+   ]
+  },
+  "rulesSkills": {
+   "physical_melee": {
+    "tier_1": [
+     {
+      "name": "Stapler Calibration",
+      "description": "A firm, practiced staple to the nearest problem. The stapler was working yesterday.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage"
+      ]
+     },
+     {
+      "name": "Coffee Mug Lunge",
+      "description": "Close the distance with a company mug and the confidence of someone who knows where the spare mugs are.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "dash",
+       "damage"
+      ]
+     }
+    ],
+    "tier_2": [
+     {
+      "name": "Rubber Band Volley",
+      "description": "An economical attack with excellent range and a concerning amount of prep time.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "damage"
+      ]
+     },
+     {
+      "name": "Break-Room Refill",
+      "description": "The coffee is burnt, but it is available. Productivity resumes under protest.",
+      "target": "self",
+      "area": "single",
+      "effects": [
+       {
+        "status": "Coffee-Fueled",
+        "on": "self"
+       }
+      ]
+     }
+    ],
+    "tier_3": [
+     {
+      "name": "Printer Tray Slam",
+      "description": "Strike the printer at exactly the angle that makes the jam somebody else's problem.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "damage",
+       {
+        "status": "Printer Jam",
+        "on": "enemies"
+       }
+      ]
+     },
+     {
+      "name": "Rolling Chair Charge",
+      "description": "Roll into the fray, ignoring the posted warning and the one wheel that keeps catching.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "dash",
+       "damage"
+      ]
+     }
+    ],
+    "tier_4": [
+     {
+      "name": "Office Supply Incident",
+      "description": "Deploy a stapler, two mugs, and a rubber band of undocumented provenance against nearby threats.",
+      "target": "enemy",
+      "area": "large",
+      "effects": [
+       "damage",
+       {
+        "status": "Paper Cut",
+        "on": "enemies"
+       }
+      ]
+     }
+    ]
+   },
+   "physical_ranged": {
+    "tier_1": [
+     {
+      "name": "Polite Follow-Up",
+      "description": "A courteous message that makes it clear the deadline was in the original email.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage"
+      ]
+     },
+     {
+      "name": "Per My Last Email",
+      "description": "Quote the thread in full. No one is sure who started this, but everyone feels worse.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage",
+       {
+        "status": "Reply-All Storm",
+        "on": "enemies"
+       }
+      ]
+     }
+    ],
+    "tier_2": [
+     {
+      "name": "Executive Summary",
+      "description": "Condense the issue into jargon so impenetrable that the enemy loses track of its own objection.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "damage",
+       {
+        "status": "Corporate Mumble",
+        "on": "enemies"
+       }
+      ]
+     },
+     {
+      "name": "Softly, Firmly",
+      "description": "A very polite correction that leaves no room for a useful interpretation.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage"
+      ]
+     }
+    ],
+    "tier_3": [
+     {
+      "name": "CC the Director",
+      "description": "Add the director to the thread. The sudden attention does wonders for compliance.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "damage",
+       {
+        "status": "Calendar Hold",
+        "on": "enemies"
+       }
+      ]
+     },
+     {
+      "name": "Stakeholder Alignment",
+      "description": "Align everyone on the fact that the request is still changing. This somehow makes it worse.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "damage",
+       {
+        "status": "Scope Creep",
+        "on": "enemies"
+       }
+      ]
+     }
+    ],
+    "tier_4": [
+     {
+      "name": "Reply-All Autopsy",
+      "description": "Reconstruct the entire thread, assigning responsibility with the calm precision of a forensic accountant.",
+      "target": "enemy",
+      "area": "large",
+      "effects": [
+       "damage",
+       {
+        "status": "Reply-All Storm",
+        "on": "enemies"
+       }
+      ]
+     }
+    ]
+   },
+   "magic_ranged": {
+    "tier_1": [
+     {
+      "name": "Quick Script",
+      "description": "Run a short script against the problem. It has been tested on something similar, probably.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage"
+      ]
+     },
+     {
+      "name": "Credential Guess",
+      "description": "Try the password the department uses for everything. The audit can wait until after the outage.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage"
+      ]
+     }
+    ],
+    "tier_2": [
+     {
+      "name": "Dependency Audit",
+      "description": "Find the one package update nobody remembers approving and make it everyone's problem.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "damage",
+       {
+        "status": "Scope Creep",
+        "on": "enemies"
+       }
+      ]
+     },
+     {
+      "name": "Rollback Routine",
+      "description": "Restore the last known working version. It was three versions ago, but it worked.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       "damage"
+      ]
+     }
+    ],
+    "tier_3": [
+     {
+      "name": "Automated Triage",
+      "description": "Sort the incoming chaos into queues. The queues are also on fire, but now they are labeled.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "damage",
+       {
+        "status": "Meeting Creep",
+        "on": "enemies"
+       }
+      ]
+     },
+     {
+      "name": "Passing Build",
+      "description": "A clean test run gives the team a rare moment of confidence and a slightly safer script.",
+      "target": "self",
+      "area": "single",
+      "effects": [
+       {
+        "status": "Clean Build",
+        "on": "self"
+       }
+      ]
+     }
+    ],
+    "tier_4": [
+     {
+      "name": "Production Hotfix",
+      "description": "Patch the live system with a fix that works immediately and will be explained in the postmortem.",
+      "target": "enemy",
+      "area": "large",
+      "effects": [
+       "damage",
+       {
+        "status": "Printer Jam",
+        "on": "enemies"
+       }
+      ]
+     }
+    ]
+   },
+   "healer": {
+    "tier_1": [
+     {
+      "name": "Have You Rebooted",
+      "description": "A patient reboot resolves more crises than the company is prepared to acknowledge.",
+      "target": "ally",
+      "area": "single",
+      "effects": [
+       "heal"
+      ]
+     },
+     {
+      "name": "Troubleshooting Steps",
+      "description": "Walk an ally through the fix one step at a time. It is not their fault the instructions are outdated.",
+      "target": "ally",
+      "area": "single",
+      "effects": [
+       "heal"
+      ]
+     }
+    ],
+    "tier_2": [
+     {
+      "name": "Water-Cooler Triage",
+      "description": "A brief check-in, a glass of water, and permission to stop staring at the error message.",
+      "target": "ally",
+      "area": "small",
+      "effects": [
+       "heal",
+       {
+        "status": "Snack Break",
+        "on": "allies"
+       }
+      ]
+     },
+     {
+      "name": "Unstick the Queue",
+      "description": "Clear the team's accumulated little problems before they become a very large spreadsheet.",
+      "target": "ally",
+      "area": "small",
+      "effects": [
+       "removes_statuses"
+      ]
+     }
+    ],
+    "tier_3": [
+     {
+      "name": "Emergency Reimage",
+      "description": "Restore an ally's system state from backup. Their desktop wallpaper is gone, but they are back.",
+      "target": "ally",
+      "area": "single",
+      "effects": [
+       "revive",
+       "heal"
+      ]
+     },
+     {
+      "name": "Coffee and Reassurance",
+      "description": "The coffee is terrible. The reassurance is sincere. Both are covered by the support contract.",
+      "target": "ally",
+      "area": "small",
+      "effects": [
+       "heal",
+       {
+        "status": "Coffee-Fueled",
+        "on": "allies"
+       }
+      ]
+     }
+    ],
+    "tier_4": [
+     {
+      "name": "All-Hands Recovery",
+      "description": "Restore the team's health, clear lingering problems, and avoid mentioning the outage's original cause.",
+      "target": "ally",
+      "area": "large",
+      "effects": [
+       "heal",
+       "removes_statuses"
+      ]
+     }
+    ]
+   },
+   "buff_and_debuff": {
+    "tier_1": [
+     {
+      "name": "Action Item Transfer",
+      "description": "Assign the awkward task to someone with a full calendar and a surprisingly reliable work ethic.",
+      "target": "ally",
+      "area": "single",
+      "effects": [
+       {
+        "status": "Strategic Delegation",
+        "on": "allies"
+       }
+      ]
+     },
+     {
+      "name": "Move the Check-In",
+      "description": "Reschedule the meeting to a time when the problem is, ideally, somebody else's.",
+      "target": "enemy",
+      "area": "single",
+      "effects": [
+       {
+        "status": "Calendar Hold",
+        "on": "enemies"
+       }
+      ]
+     }
+    ],
+    "tier_2": [
+     {
+      "name": "Revised Timeline",
+      "description": "Add a discovery phase, a review phase, and an ominous amount of red to the project plan.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       {
+        "status": "Meeting Creep",
+        "on": "enemies"
+       }
+      ]
+     },
+     {
+      "name": "Motivational Slide",
+      "description": "Show a graph trending upward. No one checks what it measures, and morale improves slightly.",
+      "target": "ally",
+      "area": "small",
+      "effects": [
+       {
+        "status": "Coffee-Fueled",
+        "on": "allies"
+       }
+      ]
+     }
+    ],
+    "tier_3": [
+     {
+      "name": "Requirements Workshop",
+      "description": "Ask what success looks like until the request acquires three new requirements and no owner.",
+      "target": "enemy",
+      "area": "small",
+      "effects": [
+       "physical_damage",
+       {
+        "status": "Scope Creep",
+        "on": "enemies"
+       }
+      ]
+     },
+     {
+      "name": "No-Meeting Block",
+      "description": "Reserve focus time. The invitation is declined, then recreated by someone who did not read the title.",
+      "target": "ally",
+      "area": "small",
+      "effects": [
+       {
+        "status": "Strategic Delegation",
+        "on": "allies"
+       }
+      ]
+     }
+    ],
+    "tier_4": [
+     {
+      "name": "Friday Commitment",
+      "description": "Convert the deadline into an action item, then assign it to the person who suggested Friday.",
+      "target": "enemy",
+      "area": "large",
+      "effects": [
+       "magic_damage",
+       {
+        "status": "Corporate Mumble",
+        "on": "enemies"
+       },
+       {
+        "status": "Meeting Creep",
+        "on": "enemies"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "rulesPassives": {
+   "physical_melee": {
+    "tier_1": [
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Staple-Safe Grip"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Supply Closet Snacks"
+     },
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Close-Range Troubleshooting"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "physical_defence",
+       "health"
+      ],
+      "name": "Reinforced Desk Posture"
+     },
+     {
+      "effects": [
+       "crit_chance"
+      ],
+      "name": "Perfectly Timed Swing"
+     },
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Improvised Leverage"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Beige Carpet Footwork"
+     },
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Mug-Shield Technique"
+     },
+     {
+      "effects": [
+       "skill_damage",
+       "health"
+      ],
+      "name": "Supply-Room Veteran"
+     }
+    ],
+    "tier_4": [
+     {
+      "effects": [
+       "skill_damage",
+       "crit_chance"
+      ],
+      "name": "Desk-Side Dominance"
+     },
+     {
+      "effects": [
+       "health",
+       "physical_defence"
+      ],
+      "name": "Unscheduled Resilience"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Stapler-Quick Reflexes"
+     }
+    ]
+   },
+   "physical_ranged": {
+    "tier_1": [
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Carefully Worded Reply"
+     },
+     {
+      "effects": [
+       "crit_chance"
+      ],
+      "name": "Pointed Subject Line"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Stakeholder Patience"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "skill_damage",
+       "crit_chance"
+      ],
+      "name": "Politeness with Teeth"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "CC the Right Person"
+     },
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Meeting-Room Composure"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Strategic Jargon Reserve"
+     },
+     {
+      "effects": [
+       "health",
+       "physical_defence"
+      ],
+      "name": "Unflappable Facilitator"
+     },
+     {
+      "effects": [
+       "crit_chance"
+      ],
+      "name": "Buried in the Thread"
+     }
+    ],
+    "tier_4": [
+     {
+      "effects": [
+       "skill_damage",
+       "crit_chance"
+      ],
+      "name": "Consensus by Reply-All"
+     },
+     {
+      "effects": [
+       "dodge",
+       "physical_defence"
+      ],
+      "name": "Plausible Deniability"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Executive-Ready Poise"
+     }
+    ]
+   },
+   "magic_melee": {
+    "tier_1": [
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Keyboard-Adjacent Fix"
+     },
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Rubber-Duck Shielding"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Test Environment Confidence"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "skill_damage",
+       "crit_chance"
+      ],
+      "name": "One-Line Workaround"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Avoid the Change Board"
+     },
+     {
+      "effects": [
+       "magic_defence"
+      ],
+      "name": "Sanitized Input"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Production Proximity"
+     },
+     {
+      "effects": [
+       "health",
+       "magic_defence"
+      ],
+      "name": "Rollback Readiness"
+     },
+     {
+      "effects": [
+       "crit_chance"
+      ],
+      "name": "Lucky Stack Trace"
+     }
+    ],
+    "tier_4": [
+     {
+      "effects": [
+       "skill_damage",
+       "crit_chance"
+      ],
+      "name": "Surgical Hot Path"
+     },
+     {
+      "effects": [
+       "physical_defence",
+       "magic_defence"
+      ],
+      "name": "Incident-Grade Nerves"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Still Has a Local Copy"
+     }
+    ]
+   },
+   "magic_ranged": {
+    "tier_1": [
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Quiet Background Job"
+     },
+     {
+      "effects": [
+       "magic_defence"
+      ],
+      "name": "Least-Privilege Habit"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Not My Service"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "skill_damage",
+       "crit_chance"
+      ],
+      "name": "Regex with Intent"
+     },
+     {
+      "effects": [
+       "magic_defence",
+       "physical_defence"
+      ],
+      "name": "Network Segmentation"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Documented Workaround"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "skill_damage"
+      ],
+      "name": "Distributed Initiative"
+     },
+     {
+      "effects": [
+       "dodge",
+       "magic_defence"
+      ],
+      "name": "Credential Rotation"
+     },
+     {
+      "effects": [
+       "crit_chance"
+      ],
+      "name": "Dry-Run Success"
+     }
+    ],
+    "tier_4": [
+     {
+      "effects": [
+       "skill_damage",
+       "crit_chance"
+      ],
+      "name": "Unattended Excellence"
+     },
+     {
+      "effects": [
+       "magic_defence",
+       "health"
+      ],
+      "name": "Redundant Job Runner"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Scheduled for After Hours"
+     }
+    ]
+   },
+   "healer": {
+    "tier_1": [
+     {
+      "effects": [
+       "skill_power"
+      ],
+      "name": "Coffee with Follow-Up"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Snack Drawer Reserve"
+     },
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Quiet Corner Advocacy"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "skill_power",
+       "crit_chance"
+      ],
+      "name": "Reads the Room"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Break-Before-Burnout"
+     },
+     {
+      "effects": [
+       "magic_defence"
+      ],
+      "name": "Gentle Triage"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "skill_power"
+      ],
+      "name": "Hydration Reminder"
+     },
+     {
+      "effects": [
+       "health",
+       "physical_defence"
+      ],
+      "name": "Steady Cup, Steady Hand"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Knows When to Step Away"
+     }
+    ],
+    "tier_4": [
+     {
+      "effects": [
+       "skill_power",
+       "health"
+      ],
+      "name": "Break-Room Lifeline"
+     },
+     {
+      "effects": [
+       "magic_defence",
+       "physical_defence"
+      ],
+      "name": "Compassionate Boundaries"
+     },
+     {
+      "effects": [
+       "crit_chance"
+      ],
+      "name": "Exactly the Right Snack"
+     }
+    ]
+   },
+   "buff_and_debuff": {
+    "tier_1": [
+     {
+      "effects": [
+       "skill_power"
+      ],
+      "name": "Agenda Discipline"
+     },
+     {
+      "effects": [
+       "physical_defence"
+      ],
+      "name": "Scope Creep Buffer"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Calendar Margin"
+     }
+    ],
+    "tier_2": [
+     {
+      "effects": [
+       "skill_power",
+       "crit_chance"
+      ],
+      "name": "Status Update Timing"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Optional Attendance"
+     },
+     {
+      "effects": [
+       "magic_defence"
+      ],
+      "name": "Approval Chain Literacy"
+     }
+    ],
+    "tier_3": [
+     {
+      "effects": [
+       "skill_power"
+      ],
+      "name": "Delegation with Context"
+     },
+     {
+      "effects": [
+       "health",
+       "physical_defence"
+      ],
+      "name": "Capacity Buffer"
+     },
+     {
+      "effects": [
+       "dodge"
+      ],
+      "name": "Calendar Tetris"
+     }
+    ],
+    "tier_4": [
+     {
+      "effects": [
+       "skill_power",
+       "crit_chance"
+      ],
+      "name": "Friday Feasibility"
+     },
+     {
+      "effects": [
+       "magic_defence",
+       "physical_defence"
+      ],
+      "name": "Governance Fluency"
+     },
+     {
+      "effects": [
+       "health"
+      ],
+      "name": "Plan B Has a Plan"
+     }
+    ]
+   }
+  },
+  "rulesGear": {
+   "weapons": {
+    "physical_melee": {
+     "one_handed": {
+      "name": "Heavy-Duty Stapler",
+      "description": "A reliable close-range persuader. Its staple tray is empty, but the threat remains fully loaded."
+     },
+     "two_handed": {
+      "name": "Jam-Prone Printer",
+      "description": "A hulking office printer wielded by its paper tray. Every swing comes with a fresh error message."
+     }
+    },
+    "physical_ranged": {
+     "one_handed": {
+      "name": "Reply-All Email",
+      "description": "A concise, devastatingly polite message that reaches the whole distribution list."
+     },
+     "two_handed": {
+      "name": "Quarterly Slide Deck",
+      "description": "A polished barrage of charts, jargon, and carefully worded implications, delivered from across the room."
+     }
+    },
+    "magic_melee": {
+     "one_handed": {
+      "name": "Hotfix USB",
+      "description": "A thumb drive full of quick fixes. Plugging it in is the fastest way to get dangerously close to the problem."
+     },
+     "two_handed": {
+      "name": "Live Patch Console",
+      "description": "A portable terminal for hands-on exploits and urgent edits. The rollback plan is mostly optimism."
+     }
+    },
+    "magic_ranged": {
+     "one_handed": {
+      "name": "Cron Job Launcher",
+      "description": "Schedules a small script to quietly disrupt a threat at a professionally reasonable distance."
+     },
+     "two_handed": {
+      "name": "Distributed Botnet",
+      "description": "A fleet of questionable automations that floods the network with fixes and a few duplicate tickets."
+     }
+    },
+    "healer": {
+     "one_handed": {
+      "name": "Break-Room Thermos",
+      "description": "Pours restorative coffee and delivers a sharp little caffeine jolt to whoever needs it.",
+      "damage": "physical_damage"
+     },
+     "two_handed": {
+      "name": "Snack Cart",
+      "description": "A rolling supply of coffee, granola bars, and practical check-ins. Also blocks a hallway at range.",
+      "damage": "physical_damage"
+     }
+    },
+    "buff_and_debuff": {
+     "one_handed": {
+      "name": "Status-Update Clicker",
+      "description": "Rallies allies with clear priorities or pins foes beneath a fresh list of action items.",
+      "damage": "magic_damage"
+     },
+     "two_handed": {
+      "name": "Master Project Calendar",
+      "description": "Moves deadlines, delegates strategically, and somehow schedules the enemy into back-to-back meetings.",
+      "damage": "magic_damage"
+     }
+    }
+   },
+   "shields": [
+    {
+     "name": "Oversized Coffee",
+     "description": "A sturdy mug of break-room coffee. Blocks trouble; contents may be older than the ticket."
+    },
+    {
+     "name": "Insulated Travel Mug",
+     "description": "Keeps caffeine hot and incoming problems at arm's length through even the longest status meeting."
+    },
+    {
+     "name": "Approved Expense Thermos",
+     "description": "A premium coffee vessel protected by procurement paperwork and a surprisingly strict reimbursement policy."
+    }
+   ],
+   "armor": {
+    "balanced": {
+     "name": "Business Casual",
+     "description": "Standard office attire: presentable enough for leadership, comfortable enough for a long incident.",
+     "pieces": {
+      "Shirt": "Button-Down Shirt",
+      "Trousers": "Khaki Slacks",
+      "Shoes": "Comfortable Loafers",
+      "Badge": "Photo ID Badge"
+     }
+    },
+    "sturdy": {
+     "name": "Data Center Gear",
+     "description": "Layered, practical protection for server rooms and printer incidents. Heavy, warm, and not meeting-ready.",
+     "pieces": {
+      "Shirt": "Padded Server Vest",
+      "Trousers": "Cargo Slacks",
+      "Shoes": "Steel-Toe Work Shoes",
+      "Badge": "Reinforced Access Badge"
+     }
+    },
+    "nimble": {
+     "name": "Friday Casual",
+     "description": "Light, flexible clothes for dodging calendar invites and sprinting to the only working conference room.",
+     "pieces": {
+      "Shirt": "Soft Team T-Shirt",
+      "Trousers": "Stretch Chinos",
+      "Shoes": "Quiet Sneakers",
+      "Badge": "Clip-On ID Badge"
+     }
+    }
+   },
+   "accessories": {
+    "Headset": [
+     {
+      "name": "Noise-Canceling Headset",
+      "description": "Filters out open-office chatter and makes it easier to hear the one useful detail in a support call."
+     },
+     {
+      "name": "Help-Desk Headset",
+      "description": "Always on, faintly crackling, and somehow still connected to the user who closed the ticket."
+     }
+    ],
+    "Mug": [
+     {
+      "name": "World's Okayest Mug",
+      "description": "A chipped morale artifact that holds coffee and communicates realistic expectations."
+     },
+     {
+      "name": "Unclaimed Mug",
+      "description": "No one knows whose it is. Everyone avoids asking, which gives it a strange authority."
+     }
+    ],
+    "Lanyard": [
+     {
+      "name": "All-Access Lanyard",
+      "description": "Opens most doors, several supply closets, and one conference room nobody admits exists."
+     },
+     {
+      "name": "Conference Swag Lanyard",
+      "description": "A tangle of old event badges that grants credibility in meetings and mild resistance to networking."
+     }
+    ]
+   }
+  },
+  "rulesItems": {
+   "healing": {
+    "name": "Break-Room Emergency Kit",
+    "description": "Restores Health with a granola bar, a clean bandage, and five minutes nobody has booked yet."
+   },
+   "cleansing": {
+    "name": "Incident Triage Checklist",
+    "description": "Removes harmful statuses. The checklist has been approved by someone who was not in the incident."
+   },
+   "buffs": [
+    {
+     "status": "Coffee-Fueled",
+     "name": "Mug of Unclear Origin",
+     "description": "Break-room coffee turns routine effort into alarming productivity. The mug is technically company property."
+    },
+    {
+     "status": "Clean Build",
+     "name": "Passing Test Suite",
+     "description": "A tested script and a passing review make the team more effective—and harder to surprise."
+    },
+    {
+     "status": "Strategic Delegation",
+     "name": "Delegation Receipt",
+     "description": "Someone else owns the action items now. You have time to get out of the way."
+    },
+    {
+     "status": "Snack Break",
+     "name": "Emergency Granola Bar",
+     "description": "A granola bar and five uninterrupted minutes restore stamina. The meeting can wait."
+    }
+   ],
+   "debuffs": [
+    {
+     "status": "Meeting Creep",
+     "name": "Agenda Expansion",
+     "description": "One agenda item becomes six. Leaving the conference room is somehow still on the agenda."
+    },
+    {
+     "status": "Reply-All Storm",
+     "name": "Reply-All Misfire",
+     "description": "Every response adds another notification, misunderstanding, and thing to investigate."
+    },
+    {
+     "status": "Scope Creep",
+     "name": "One Tiny Revision",
+     "description": "Requirements keep changing, leaving every plan exposed to one more executive suggestion."
+    }
+   ],
+   "bombs": {
+    "physical": {
+     "name": "Stapler With Intent",
+     "description": "Office damage delivered by a heavy-duty stapler whose service history is unavailable."
+    },
+    "magic": {
+     "name": "Recursive Ticket Script",
+     "description": "Cyber damage from an automation script that opens tickets faster than anyone can close them."
+    }
+   },
+   "valuables": [
+    {
+     "name": "Unclaimed Expense Receipt",
+     "description": "A faded receipt for something nobody remembers buying. Finance may accept it as evidence."
+    },
+    {
+     "name": "Conference Room Key",
+     "description": "Opens a room with a projector that works often enough to sustain hope."
+    },
+    {
+     "name": "Executive Approval Email",
+     "description": "A rare written approval. It does not specify what was approved."
+    },
+    {
+     "name": "Vintage Access Badge",
+     "description": "Belonged to an employee whose department was renamed three reorganizations ago."
+    },
+    {
+     "name": "Spreadsheet of Record",
+     "description": "The authoritative tracker, according to three people who each maintain a different copy."
+    }
+   ],
+   "crafts": {
+    "craft": {
+     "name": "Office Gear Assembly",
+     "description": "Make practical equipment from office supplies, documented exceptions, and whatever the supply closet has left."
+    },
+    "brew": {
+     "name": "Break-Room Concessions",
+     "description": "Prepare consumables from coffee, snacks, and ingredients whose best-before dates are merely advisory."
+    },
+    "upgrade": {
+     "name": "Process Improvement",
+     "description": "Strengthen gear with tested fixes, better parts, and a change request nobody has challenged yet."
+    },
+    "enchant": {
+     "name": "Configuration Drift",
+     "description": "Give gear a random new property through scripts, settings, and a careful refusal to ask why it works."
+    }
+   },
+   "materials": {
+    "hard": {
+     "name": "Office Hardware",
+     "description": "Staplers, brackets, spare keys, and other sturdy parts for tools and shields."
+    },
+    "soft": {
+     "name": "Supply Closet Stock",
+     "description": "Lanyards, foam, sleeves, and other soft goods for protective gear and accessories."
+    },
+    "essence": {
+     "name": "Configuration Notes",
+     "description": "Half-documented settings and useful fragments of institutional knowledge for gear modifications."
+    },
+    "reagent": {
+     "name": "Break-Room Supplies",
+     "description": "Coffee, tea, snacks, and powdered creamer for making consumables."
+    }
+   }
+  },
+  "fightLooks": {
+   "damageTypes": {
+    "Office": {
+     "shapes": [
+      "paper",
+      "shard"
+     ],
+     "colors": [
+      "#E9B978",
+      "#D18B47",
+      "#9A6134"
+     ],
+     "glow": false,
+     "motion": "burst",
+     "trail": "smoke"
+    },
+    "Cyber": {
+     "shapes": [
+      "pixel",
+      "glyph"
+     ],
+     "colors": [
+      "#A8D2F0",
+      "#4B8DCE",
+      "#315F91"
+     ],
+     "glow": true,
+     "motion": "burst",
+     "trail": "sparks"
+    }
+   },
+   "moves": {
+    "Office": {
+     "rush": "dash",
+     "shot": "lob",
+     "blast": "quake"
+    },
+    "Cyber": {
+     "rush": "blink",
+     "shot": "bolt",
+     "blast": "ring"
+    }
+   },
+   "healing": {
+    "shapes": [
+     "mote",
+     "droplet"
+    ],
+    "colors": [
+     "#F3D77A",
+     "#E8B84A",
+     "#8B5A2B"
+    ],
+    "glow": false,
+    "motion": "rise",
+    "trail": "motes"
+   },
+   "barrier": {
+    "shapes": [
+     "shard",
+     "pixel"
+    ],
+    "colors": [
+     "#B5D7E8",
+     "#557F9A",
+     "#537DA5"
+    ],
+    "glow": false,
+    "motion": "swirl",
+    "trail": "none"
+   },
+   "statuses": {
+    "Coffee-Fueled": {
+     "shapes": [
+      "droplet",
+      "spark"
+     ],
+     "colors": [
+      "#C68D5A",
+      "#8B5A2B"
+     ],
+     "glow": false,
+     "motion": "rise",
+     "trail": "sparks"
+    },
+    "Clean Build": {
+     "shapes": [
+      "pixel",
+      "glyph"
+     ],
+     "colors": [
+      "#8AD29D",
+      "#36A66A"
+     ],
+     "glow": true,
+     "motion": "swirl",
+     "trail": "motes"
+    },
+    "Strategic Delegation": {
+     "shapes": [
+      "note",
+      "mote"
+     ],
+     "colors": [
+      "#A9C2D8",
+      "#537DA5"
+     ],
+     "glow": false,
+     "motion": "drift",
+     "trail": "none"
+    },
+    "Snack Break": {
+     "shapes": [
+      "flake",
+      "mote"
+     ],
+     "colors": [
+      "#F6DB86",
+      "#E8B84A"
+     ],
+     "glow": false,
+     "motion": "rise",
+     "trail": "motes"
+    },
+    "Meeting Creep": {
+     "shapes": [
+      "note",
+      "glyph"
+     ],
+     "colors": [
+      "#B6A8CF",
+      "#8877A8"
+     ],
+     "glow": false,
+     "motion": "swirl",
+     "trail": "smoke"
+    },
+    "Reply-All Storm": {
+     "shapes": [
+      "glyph",
+      "pixel"
+     ],
+     "colors": [
+      "#EBA69C",
+      "#D26B5E"
+     ],
+     "glow": true,
+     "motion": "burst",
+     "trail": "sparks"
+    },
+    "Scope Creep": {
+     "shapes": [
+      "paper",
+      "shard"
+     ],
+     "colors": [
+      "#DEA578",
+      "#C47D45"
+     ],
+     "glow": false,
+     "motion": "swirl",
+     "trail": "none"
+    },
+    "Printer Jam": {
+     "shapes": [
+      "paper",
+      "flake"
+     ],
+     "colors": [
+      "#B8B8B8",
+      "#777777"
+     ],
+     "glow": false,
+     "motion": "burst",
+     "trail": "smoke"
+    },
+    "Calendar Hold": {
+     "shapes": [
+      "glyph",
+      "shard"
+     ],
+     "colors": [
+      "#A5C5D2",
+      "#557F9A"
+     ],
+     "glow": false,
+     "motion": "swirl",
+     "trail": "none"
+    },
+    "Corporate Mumble": {
+     "shapes": [
+      "smoke",
+      "glyph"
+     ],
+     "colors": [
+      "#D1C0B5",
+      "#AA8D7D"
+     ],
+     "glow": false,
+     "motion": "drift",
+     "trail": "smoke"
+    },
+    "Lost Badge": {
+     "shapes": [
+      "shard",
+      "mote"
+     ],
+     "colors": [
+      "#D58D8D",
+      "#A95656"
+     ],
+     "glow": false,
+     "motion": "fall",
+     "trail": "none"
+    },
+    "Paper Cut": {
+     "shapes": [
+      "shard",
+      "paper"
+     ],
+     "colors": [
+      "#F08C84",
+      "#C94141"
+     ],
+     "glow": false,
+     "motion": "burst",
+     "trail": "none"
+    }
+   }
+  },
+  "art": {
+   "artStyle": "Handcrafted claymation, tactile fingerprints and soft fabric textures, expressive characters and exaggerated physical comedy, muted beige office surroundings contrasted with playful teal and coral accents, soft practical lighting, dry affectionate humor",
+   "palette": {
+    "primary": "#C8B99D",
+    "secondary": "#587F78",
+    "accent": "#E8795B"
+   },
+   "interface": {
+    "material": "paper",
+    "ornament": "rivets",
+    "typeface": "modern",
+    "tint": "#B9AA8F",
+    "mood": "muted"
+   }
+  }
+ }
+}
